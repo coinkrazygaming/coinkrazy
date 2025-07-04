@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Crown,
   Coins,
@@ -29,7 +30,10 @@ export default function CasinoHeader() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link
+            to="/"
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+          >
             <div className="relative">
               <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center casino-pulse">
                 <Crown className="w-6 h-6 text-primary-foreground" />
@@ -42,39 +46,44 @@ export default function CasinoHeader() {
               </h1>
               <p className="text-xs text-muted-foreground">.com</p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6">
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
+              asChild
             >
-              🎰 Slots
+              <Link to="/slots">🎰 Slots</Link>
             </Button>
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
+              asChild
             >
-              🎲 Table Games
+              <Link to="/table-games">🎲 Table Games</Link>
             </Button>
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
+              asChild
             >
-              🏈 Sports
+              <Link to="/sports">🏈 Sports</Link>
             </Button>
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
+              asChild
             >
-              🎯 Mini Games
+              <Link to="/mini-games">🎯 Mini Games</Link>
             </Button>
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
+              asChild
             >
-              🏆 Bingo
+              <Link to="/bingo">🏆 Bingo</Link>
             </Button>
           </nav>
 
@@ -144,32 +153,42 @@ export default function CasinoHeader() {
               <Button
                 variant="ghost"
                 className="justify-start text-foreground hover:text-primary"
+                asChild
+                onClick={() => setIsMenuOpen(false)}
               >
-                🎰 Slots
+                <Link to="/slots">🎰 Slots</Link>
               </Button>
               <Button
                 variant="ghost"
                 className="justify-start text-foreground hover:text-primary"
+                asChild
+                onClick={() => setIsMenuOpen(false)}
               >
-                🎲 Table Games
+                <Link to="/table-games">🎲 Table Games</Link>
               </Button>
               <Button
                 variant="ghost"
                 className="justify-start text-foreground hover:text-primary"
+                asChild
+                onClick={() => setIsMenuOpen(false)}
               >
-                🏈 Sports
+                <Link to="/sports">🏈 Sports</Link>
               </Button>
               <Button
                 variant="ghost"
                 className="justify-start text-foreground hover:text-primary"
+                asChild
+                onClick={() => setIsMenuOpen(false)}
               >
-                🎯 Mini Games
+                <Link to="/mini-games">🎯 Mini Games</Link>
               </Button>
               <Button
                 variant="ghost"
                 className="justify-start text-foreground hover:text-primary"
+                asChild
+                onClick={() => setIsMenuOpen(false)}
               >
-                🏆 Bingo
+                <Link to="/bingo">🏆 Bingo</Link>
               </Button>
 
               {/* Mobile Balance */}

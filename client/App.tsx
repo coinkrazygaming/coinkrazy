@@ -11,6 +11,73 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Placeholder pages for future development
+const SlotsPage = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-primary mb-4">🎰 Slots Games</h1>
+      <p className="text-muted-foreground">Coming soon with 700+ slot games!</p>
+    </div>
+  </div>
+);
+
+const TableGamesPage = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-primary mb-4">🎲 Table Games</h1>
+      <p className="text-muted-foreground">
+        Blackjack, Roulette, Baccarat and more!
+      </p>
+    </div>
+  </div>
+);
+
+const SportsPage = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-primary mb-4">🏈 Sportsbook</h1>
+      <p className="text-muted-foreground">
+        Bet on virtual sports and live events!
+      </p>
+    </div>
+  </div>
+);
+
+const MiniGamesPage = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-primary mb-4">🎯 Mini Games</h1>
+      <p className="text-muted-foreground">
+        Play daily for FREE Sweepstakes Cash!
+      </p>
+    </div>
+  </div>
+);
+
+const BingoPage = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-primary mb-4">🏆 Bingo Hall</h1>
+      <p className="text-muted-foreground">
+        Live bingo games with real prizes!
+      </p>
+    </div>
+  </div>
+);
+
+const DashboardPage = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-primary mb-4">
+        👤 Player Dashboard
+      </h1>
+      <p className="text-muted-foreground">
+        Manage your account, view history, and more!
+      </p>
+    </div>
+  </div>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -19,6 +86,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/slots" element={<SlotsPage />} />
+          <Route path="/table-games" element={<TableGamesPage />} />
+          <Route path="/sports" element={<SportsPage />} />
+          <Route path="/mini-games" element={<MiniGamesPage />} />
+          <Route path="/bingo" element={<BingoPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
