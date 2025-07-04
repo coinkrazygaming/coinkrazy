@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import CasinoHeader from "@/components/CasinoHeader";
 import GameCard from "@/components/GameCard";
+import SlotGameCard from "@/components/SlotGameCard";
 import {
   Search,
   Filter,
@@ -25,14 +26,15 @@ export default function Slots() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [jackpotAmount, setJackpotAmount] = useState(245678.89);
 
-  // Mock slot games data
+  // Mock slot games data with real thumbnails
   const slotGames = [
     {
       id: "gold-rush",
       title: "Gold Rush Deluxe",
       provider: "Pragmatic Play",
       category: "popular",
-      emoji: "💰",
+      thumbnail:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?w=400&h=600&fit=crop&crop=center",
       rtp: "96.5%",
       volatility: "High",
       paylines: 25,
@@ -48,7 +50,8 @@ export default function Slots() {
       title: "Diamond Dreams",
       provider: "NetEnt",
       category: "new",
-      emoji: "💎",
+      thumbnail:
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop&crop=center",
       rtp: "97.2%",
       volatility: "Medium",
       paylines: 20,
@@ -64,7 +67,8 @@ export default function Slots() {
       title: "Lucky 777",
       provider: "Play'n GO",
       category: "classic",
-      emoji: "🍀",
+      thumbnail:
+        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
       rtp: "95.8%",
       volatility: "Low",
       paylines: 5,
@@ -80,7 +84,8 @@ export default function Slots() {
       title: "Wild Safari",
       provider: "Microgaming",
       category: "adventure",
-      emoji: "🦁",
+      thumbnail:
+        "https://images.unsplash.com/photo-1549366021-9f761d040a94?w=400&h=600&fit=crop&crop=center",
       rtp: "96.1%",
       volatility: "Medium",
       paylines: 243,
@@ -96,7 +101,8 @@ export default function Slots() {
       title: "Ocean Treasure",
       provider: "Pragmatic Play",
       category: "adventure",
-      emoji: "🌊",
+      thumbnail:
+        "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=400&h=600&fit=crop&crop=center",
       rtp: "96.8%",
       volatility: "High",
       paylines: 50,
@@ -112,7 +118,8 @@ export default function Slots() {
       title: "Space Adventure",
       provider: "NetEnt",
       category: "scifi",
-      emoji: "🚀",
+      thumbnail:
+        "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=600&fit=crop&crop=center",
       rtp: "97.5%",
       volatility: "Medium",
       paylines: 40,
@@ -128,7 +135,8 @@ export default function Slots() {
       title: "Mystic Fortune",
       provider: "Red Tiger",
       category: "magic",
-      emoji: "🔮",
+      thumbnail:
+        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center",
       rtp: "96.3%",
       volatility: "High",
       paylines: 30,
@@ -144,7 +152,8 @@ export default function Slots() {
       title: "Fruit Blast",
       provider: "Yggdrasil",
       category: "classic",
-      emoji: "🍎",
+      thumbnail:
+        "https://images.unsplash.com/photo-1615478503562-ec2d8aa0e24e?w=400&h=600&fit=crop&crop=center",
       rtp: "95.5%",
       volatility: "Low",
       paylines: 10,
@@ -160,7 +169,8 @@ export default function Slots() {
       title: "Pirate's Gold",
       provider: "Pragmatic Play",
       category: "adventure",
-      emoji: "🏴‍☠️",
+      thumbnail:
+        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center",
       rtp: "96.7%",
       volatility: "High",
       paylines: 25,
@@ -176,7 +186,8 @@ export default function Slots() {
       title: "Mega Millions",
       provider: "Evolution",
       category: "jackpot",
-      emoji: "💰",
+      thumbnail:
+        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
       rtp: "94.2%",
       volatility: "Very High",
       paylines: 1024,
@@ -192,7 +203,8 @@ export default function Slots() {
       title: "Egyptian Secrets",
       provider: "Play'n GO",
       category: "ancient",
-      emoji: "🏺",
+      thumbnail:
+        "https://images.unsplash.com/photo-1539650116574-75c0c6d0598c?w=400&h=600&fit=crop&crop=center",
       rtp: "96.4%",
       volatility: "Medium",
       paylines: 20,
@@ -208,7 +220,8 @@ export default function Slots() {
       title: "Sweet Bonanza",
       provider: "Pragmatic Play",
       category: "sweet",
-      emoji: "🍭",
+      thumbnail:
+        "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=600&fit=crop&crop=center",
       rtp: "96.9%",
       volatility: "High",
       paylines: "Cluster Pay",
@@ -286,6 +299,16 @@ export default function Slots() {
   const handlePlayGame = (gameId: string) => {
     // Implementation for launching slot game
     console.log(`Launching slot game: ${gameId}`);
+  };
+
+  const handlePlayWithGold = (gameId: string) => {
+    // Implementation for playing with Gold Coins
+    console.log(`Playing ${gameId} with Gold Coins`);
+  };
+
+  const handlePlayWithSweeps = (gameId: string) => {
+    // Implementation for playing with Sweeps Coins
+    console.log(`Playing ${gameId} with Sweeps Coins`);
   };
 
   return (
@@ -400,57 +423,20 @@ export default function Slots() {
                     .filter((game) => game.isPopular)
                     .slice(0, 4)
                     .map((game) => (
-                      <Card
+                      <SlotGameCard
                         key={game.id}
-                        className="casino-glow hover:scale-105 transition-all duration-300 cursor-pointer"
-                        onClick={() => handlePlayGame(game.id)}
-                      >
-                        <CardHeader className="text-center pb-2">
-                          <div className="text-4xl mb-2 animate-float">
-                            {game.emoji}
-                          </div>
-                          <CardTitle className="text-lg text-primary">
-                            {game.title}
-                          </CardTitle>
-                          <p className="text-sm text-muted-foreground">
-                            {game.provider}
-                          </p>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span>RTP:</span>
-                              <span className="font-bold text-green-500">
-                                {game.rtp}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Volatility:</span>
-                              <span className="font-bold">
-                                {game.volatility}
-                              </span>
-                            </div>
-                            {game.jackpot && (
-                              <div className="flex justify-between">
-                                <span>Jackpot:</span>
-                                <span className="font-bold text-accent">
-                                  {game.jackpot}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          <Button
-                            className="w-full mt-4 bg-primary hover:bg-primary/90"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handlePlayGame(game.id);
-                            }}
-                          >
-                            <Play className="w-4 h-4 mr-2" />
-                            🎰 Play Now
-                          </Button>
-                        </CardContent>
-                      </Card>
+                        title={game.title}
+                        provider={game.provider}
+                        thumbnail={game.thumbnail}
+                        category="Slots"
+                        rtp={game.rtp}
+                        volatility={game.volatility}
+                        isPopular={game.isPopular}
+                        isNew={game.isNew}
+                        jackpot={game.jackpot}
+                        onPlayGold={() => handlePlayWithGold(game.id)}
+                        onPlaySweeps={() => handlePlayWithSweeps(game.id)}
+                      />
                     ))}
                 </div>
               </div>
@@ -474,17 +460,19 @@ export default function Slots() {
 
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {filteredGames.map((game) => (
-                  <GameCard
+                  <SlotGameCard
                     key={game.id}
                     title={game.title}
                     provider={game.provider}
-                    image=""
+                    thumbnail={game.thumbnail}
                     category="Slots"
-                    emoji={game.emoji}
+                    rtp={game.rtp}
+                    volatility={game.volatility}
                     isPopular={game.isPopular}
                     isNew={game.isNew}
                     jackpot={game.jackpot}
-                    onClick={() => handlePlayGame(game.id)}
+                    onPlayGold={() => handlePlayWithGold(game.id)}
+                    onPlaySweeps={() => handlePlayWithSweeps(game.id)}
                   />
                 ))}
               </div>
