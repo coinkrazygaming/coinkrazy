@@ -1,18 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  Crown,
-  Coins,
-  User,
-  Menu,
-  X,
-  Wallet,
-  Gift,
-  Trophy,
-  MessageCircle,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Coins, User, Menu, X, Gift, MessageCircle } from "lucide-react";
 
 export default function CasinoHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,6 +17,7 @@ export default function CasinoHeader() {
 
   return (
     <header className="bg-card border-b border-border casino-glow sticky top-0 z-50">
+      {/* Top Row - Logo and User Info */}
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -35,8 +26,12 @@ export default function CasinoHeader() {
             className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
           >
             <div className="relative">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center casino-pulse">
-                <Crown className="w-6 h-6 text-primary-foreground" />
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center casino-pulse p-1">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fcbaa5477f6b142f38d01e67993167a9f%2F7884809e513c4e87b5cca659ca86cf77?format=webp&width=800"
+                  alt="CoinKrazy Logo"
+                  className="w-10 h-10 object-contain"
+                />
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full animate-ping" />
             </div>
@@ -47,45 +42,6 @@ export default function CasinoHeader() {
               <p className="text-xs text-muted-foreground">.com</p>
             </div>
           </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary"
-              asChild
-            >
-              <Link to="/slots">🎰 Slots</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary"
-              asChild
-            >
-              <Link to="/table-games">🎲 Table Games</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary"
-              asChild
-            >
-              <Link to="/sports">🏈 Sports</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary"
-              asChild
-            >
-              <Link to="/mini-games">🎯 Mini Games</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary"
-              asChild
-            >
-              <Link to="/bingo">🏆 Bingo</Link>
-            </Button>
-          </nav>
 
           {/* User Info & Actions */}
           <div className="flex items-center space-x-4">
@@ -243,123 +199,126 @@ export default function CasinoHeader() {
         </div>
       </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-lg">
-            <div className="container mx-auto px-4 py-4">
-              {/* Casino Games */}
-              <div className="mb-4">
-                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Casino Games</h3>
-                <div className="flex flex-col space-y-2">
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-primary"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/slots">🎰 Slots</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-primary"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/table-games">🎲 Table Games</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-primary"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/sports">🏈 Sports</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-primary"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/mini-games">��� Mini Games</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-primary"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/bingo">🏆 Bingo</Link>
-                  </Button>
-                </div>
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-lg">
+          <div className="container mx-auto px-4 py-4">
+            {/* Casino Games */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                Casino Games
+              </h3>
+              <div className="flex flex-col space-y-2">
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-primary"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/slots">🎰 Slots</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-primary"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/table-games">🎲 Table Games</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-primary"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/sports">🏈 Sports</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-primary"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/mini-games">🎯 Mini Games</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-primary"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/bingo">🏆 Bingo</Link>
+                </Button>
               </div>
+            </div>
 
-              {/* Dashboard Menu */}
-              <div className="mb-4">
-                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Dashboard</h3>
-                <div className="flex flex-col space-y-2">
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-accent"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/dashboard">👤 Profile</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-accent"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/dashboard">💰 Transactions</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-accent"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/dashboard">🎮 Game History</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-accent"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/dashboard">🛡️ KYC</Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-foreground hover:text-accent"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link to="/dashboard">🎁 Bonuses</Link>
-                  </Button>
-                </div>
+            {/* Dashboard Menu */}
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                Dashboard
+              </h3>
+              <div className="flex flex-col space-y-2">
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-accent"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/dashboard">👤 Profile</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-accent"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/dashboard">💰 Transactions</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-accent"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/dashboard">🎮 Game History</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-accent"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/dashboard">🛡️ KYC</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-accent"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/dashboard">🎁 Bonuses</Link>
+                </Button>
               </div>
+            </div>
 
-              {/* Mobile Balance */}
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
-                  <Coins className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">
-                    {user.goldCoins.toLocaleString()} GC
-                  </span>
-                </div>
-                <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
-                  <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-accent">
-                    {user.sweepstakes.toFixed(2)} SC
-                  </span>
-                </div>
+            {/* Mobile Balance */}
+            <div className="flex items-center justify-between pt-4 border-t border-border">
+              <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
+                <Coins className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-primary">
+                  {user.goldCoins.toLocaleString()} GC
+                </span>
+              </div>
+              <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
+                <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
+                <span className="text-sm font-medium text-accent">
+                  {user.sweepstakes.toFixed(2)} SC
+                </span>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 }
