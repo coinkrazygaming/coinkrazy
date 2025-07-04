@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -168,17 +169,23 @@ export default function Index() {
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3 casino-pulse"
+                asChild
               >
-                <Gift className="w-5 h-5 mr-2" />
-                🎁 Claim FREE 10,000 GC + 10 SC
+                <Link to="/auth">
+                  <Gift className="w-5 h-5 mr-2" />
+                  🎁 Claim FREE 10,000 GC + 10 SC
+                </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-background"
+                asChild
               >
-                <Gamepad2 className="w-5 h-5 mr-2" />
-                🎮 Play Mini Games
+                <Link to="/mini-games">
+                  <Gamepad2 className="w-5 h-5 mr-2" />
+                  🎮 Play Mini Games
+                </Link>
               </Button>
             </div>
           </div>
