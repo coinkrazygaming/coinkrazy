@@ -49,7 +49,7 @@ export default function CasinoHeader() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-6">
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
@@ -134,7 +134,7 @@ export default function CasinoHeader() {
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden"
+              className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -148,7 +148,7 @@ export default function CasinoHeader() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-border pt-4">
+          <div className="md:hidden mt-4 pb-4 border-t border-border pt-4">
             <div className="flex flex-col space-y-2">
               <Button
                 variant="ghost"
