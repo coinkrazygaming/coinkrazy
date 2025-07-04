@@ -8,6 +8,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
+import MiniGames from "./pages/MiniGames";
 
 const queryClient = new QueryClient();
 
@@ -69,7 +72,7 @@ const DashboardPage = () => (
   <div className="min-h-screen bg-background flex items-center justify-center">
     <div className="text-center">
       <h1 className="text-4xl font-bold text-primary mb-4">
-        👤 Player Dashboard
+        ��� Player Dashboard
       </h1>
       <p className="text-muted-foreground">
         Manage your account, view history, and more!
@@ -86,12 +89,15 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/login" element={<Auth />} />
+          <Route path="/register" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/mini-games" element={<MiniGames />} />
           <Route path="/slots" element={<SlotsPage />} />
           <Route path="/table-games" element={<TableGamesPage />} />
           <Route path="/sports" element={<SportsPage />} />
-          <Route path="/mini-games" element={<MiniGamesPage />} />
           <Route path="/bingo" element={<BingoPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
