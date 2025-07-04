@@ -29,6 +29,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: "18:24:15",
       provider: "CoinKrazy",
+      image:
+        "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Colin Shots",
@@ -36,6 +38,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: null,
       provider: "CoinKrazy",
+      image:
+        "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Flickin' My Bean",
@@ -43,6 +47,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: "12:45:30",
       provider: "CoinKrazy",
+      image:
+        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Haylie's Coins",
@@ -50,6 +56,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: null,
       provider: "CoinKrazy",
+      image:
+        "https://images.unsplash.com/photo-1543699565-003b8adda5fc?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Beth's Darts",
@@ -57,6 +65,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: "23:15:42",
       provider: "CoinKrazy",
+      image:
+        "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=400&h=600&fit=crop&crop=center",
     },
   ];
 
