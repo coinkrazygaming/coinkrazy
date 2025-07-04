@@ -16,7 +16,7 @@ import {
   FileText,
   Shield,
   CreditCard,
-  GameController2,
+  Gamepad2,
   Eye,
   Plus,
   Minus,
@@ -195,7 +195,7 @@ export default function AdminPanel() {
           </Card>
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
-              <GameController2 className="w-8 h-8 mx-auto mb-2 text-accent" />
+              <Gamepad2 className="w-8 h-8 mx-auto mb-2 text-accent" />
               <p className="text-2xl font-bold text-accent">
                 {realTimeStats.gamesPlaying}
               </p>
@@ -670,7 +670,7 @@ export default function AdminPanel() {
               <Card className="casino-glow">
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <GameController2 className="w-5 h-5 mr-2 text-primary" />
+                    <Gamepad2 className="w-5 h-5 mr-2 text-primary" />
                     Mini Games Control
                   </CardTitle>
                 </CardHeader>

@@ -19,7 +19,7 @@ import {
   Plus,
   Send,
   Pin,
-  GameController2,
+  Gamepad2,
   AlertTriangle,
   CheckCircle,
   XCircle,
