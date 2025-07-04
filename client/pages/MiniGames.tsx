@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import CasinoHeader from "@/components/CasinoHeader";
+import MiniGameCard from "@/components/MiniGameCard";
 import {
   Play,
   Trophy,
@@ -171,7 +172,7 @@ export default function MiniGames() {
             </h1>
             <p className="text-muted-foreground mb-4">{game.description}</p>
             <Badge className="bg-primary text-primary-foreground text-lg px-4 py-2">
-              CoinKrazy.com Exclusive 🏷️
+              CoinKrazy.com Exclusive ��️
             </Badge>
           </div>
 
