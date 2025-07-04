@@ -14,18 +14,11 @@ import MiniGames from "./pages/MiniGames";
 import AdminPanel from "./pages/AdminPanel";
 import StaffPanel from "./pages/StaffPanel";
 import GoldStore from "./pages/GoldStore";
+import Slots from "./pages/Slots";
 
 const queryClient = new QueryClient();
 
 // Placeholder pages for future development
-const SlotsPage = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-primary mb-4">🎰 Slots Games</h1>
-      <p className="text-muted-foreground">Coming soon with 700+ slot games!</p>
-    </div>
-  </div>
-);
 
 const TableGamesPage = () => (
   <div className="min-h-screen bg-background flex items-center justify-center">
@@ -101,7 +94,7 @@ const App = () => (
           <Route path="/staff" element={<StaffPanel />} />
           <Route path="/store" element={<GoldStore />} />
           <Route path="/gold-store" element={<GoldStore />} />
-          <Route path="/slots" element={<SlotsPage />} />
+          <Route path="/slots" element={<Slots />} />
           <Route path="/table-games" element={<TableGamesPage />} />
           <Route path="/sports" element={<SportsPage />} />
           <Route path="/bingo" element={<BingoPage />} />
