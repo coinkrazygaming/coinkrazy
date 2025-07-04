@@ -1,62 +1,421 @@
-import { DemoResponse } from "@shared/api";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import CasinoHeader from "@/components/CasinoHeader";
+import GameCard from "@/components/GameCard";
+import {
+  Gift,
+  TrendingUp,
+  Users,
+  Zap,
+  Star,
+  Crown,
+  Gamepad2,
+  Trophy,
+  Timer,
+} from "lucide-react";
 
 export default function Index() {
-  const [exampleFromServer, setExampleFromServer] = useState("");
-  // Fetch users on component mount
+  const [onlineUsers, setOnlineUsers] = useState(1247);
+  const [todaysPayout, setTodaysPayout] = useState(125678.45);
+
+  // Mock data for games
+  const miniGames = [
+    {
+      title: "Josey's Quack Attack",
+      emoji: "🦆",
+      category: "Mini Game",
+      cooldown: "18:24:15",
+      provider: "CoinKrazy",
+    },
+    {
+      title: "Colin Shots",
+      emoji: "🏀",
+      category: "Mini Game",
+      cooldown: null,
+      provider: "CoinKrazy",
+    },
+    {
+      title: "Flickin' My Bean",
+      emoji: "🎯",
+      category: "Mini Game",
+      cooldown: "12:45:30",
+      provider: "CoinKrazy",
+    },
+    {
+      title: "Haylie's Coins",
+      emoji: "🪙",
+      category: "Mini Game",
+      cooldown: null,
+      provider: "CoinKrazy",
+    },
+    {
+      title: "Beth's Darts",
+      emoji: "🎪",
+      category: "Mini Game",
+      cooldown: "23:15:42",
+      provider: "CoinKrazy",
+    },
+  ];
+
+  const slotGames = [
+    {
+      title: "Gold Rush Deluxe",
+      emoji: "💰",
+      category: "Slots",
+      isPopular: true,
+      jackpot: "$12,456",
+      provider: "Pragmatic Play",
+    },
+    {
+      title: "Diamond Dreams",
+      emoji: "💎",
+      category: "Slots",
+      isNew: true,
+      provider: "NetEnt",
+    },
+    {
+      title: "Lucky 777",
+      emoji: "🍀",
+      category: "Slots",
+      isPopular: true,
+      provider: "Play'n GO",
+    },
+    {
+      title: "Wild Safari",
+      emoji: "🦁",
+      category: "Slots",
+      provider: "Microgaming",
+    },
+    {
+      title: "Ocean Treasure",
+      emoji: "🌊",
+      category: "Slots",
+      jackpot: "$8,923",
+      provider: "Pragmatic Play",
+    },
+    {
+      title: "Space Adventure",
+      emoji: "🚀",
+      category: "Slots",
+      isNew: true,
+      provider: "NetEnt",
+    },
+  ];
+
+  const tableGames = [
+    {
+      title: "Blackjack Classic",
+      emoji: "🃏",
+      category: "Table Game",
+      isPopular: true,
+      provider: "Evolution",
+    },
+    {
+      title: "European Roulette",
+      emoji: "🎡",
+      category: "Table Game",
+      provider: "Evolution",
+    },
+    {
+      title: "Baccarat Deluxe",
+      emoji: "🎭",
+      category: "Table Game",
+      provider: "Playtech",
+    },
+    {
+      title: "Texas Hold'em",
+      emoji: "♠️",
+      category: "Poker",
+      isPopular: true,
+      provider: "PokerStars",
+    },
+  ];
+
   useEffect(() => {
-    fetchDemo();
+    // Simulate real-time updates
+    const interval = setInterval(() => {
+      setOnlineUsers((prev) => prev + Math.floor(Math.random() * 5) - 2);
+      setTodaysPayout((prev) => prev + Math.random() * 100);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  // Example of how to fetch data from the server (if needed)
-  const fetchDemo = async () => {
-    try {
-      const response = await fetch("/api/demo");
-      const data = (await response.json()) as DemoResponse;
-      setExampleFromServer(data.message);
-    } catch (error) {
-      console.error("Error fetching hello:", error);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="text-center">
-        {/* TODO: FUSION_GENERATION_APP_PLACEHOLDER replace everything here with the actual app! */}
-        <h1 className="text-2xl font-semibold text-slate-800 flex items-center justify-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-slate-400"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-30"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-            />
-            <circle
-              className="text-slate-600"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-              strokeDasharray="100"
-              strokeDashoffset="75"
-            />
-          </svg>
-          Generating your app...
-        </h1>
-        <p className="mt-4 text-slate-600 max-w-md">
-          Watch the chat on the left for updates that might need your attention
-          to finish generating
-        </p>
-        <p className="mt-4 hidden max-w-md">{exampleFromServer}</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <CasinoHeader />
+
+      {/* Hero Banner */}
+      <section className="relative py-12 casino-gradient">
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center text-white">
+            <div className="inline-flex items-center space-x-2 mb-4 bg-black/20 px-4 py-2 rounded-full">
+              <Crown className="w-5 h-5 text-gold-400" />
+              <span className="text-gold-400 font-semibold">
+                Welcome to CoinKrazy.com! 🎊
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              🎰 Social Casino Fun! 🎲
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 opacity-90">
+              Play for FREE • Win Real Prizes • Join the Fun! 🎉
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3 casino-pulse"
+              >
+                <Gift className="w-5 h-5 mr-2" />
+                🎁 Claim FREE 10,000 GC + 10 SC
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-background"
+              >
+                <Gamepad2 className="w-5 h-5 mr-2" />
+                🎮 Play Mini Games
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Bar */}
+      <section className="bg-card border-b border-border py-4">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="flex items-center justify-center space-x-1 text-primary">
+                <Users className="w-4 h-4" />
+                <span className="text-2xl font-bold">
+                  {onlineUsers.toLocaleString()}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground">🟢 Players Online</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center space-x-1 text-accent">
+                <TrendingUp className="w-4 h-4" />
+                <span className="text-2xl font-bold">
+                  ${todaysPayout.toLocaleString()}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                💰 Today's Payouts
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center space-x-1 text-primary">
+                <Trophy className="w-4 h-4" />
+                <span className="text-2xl font-bold">700+</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                🎮 Games Available
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center space-x-1 text-accent">
+                <Zap className="w-4 h-4" />
+                <span className="text-2xl font-bold">24/7</span>
+              </div>
+              <p className="text-sm text-muted-foreground">⚡ Live Support</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="container mx-auto px-4 py-8">
+        {/* Daily Mini Games */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground flex items-center">
+                <Timer className="w-6 h-6 mr-2 text-accent" />
+                🎯 Daily Mini Games
+              </h2>
+              <p className="text-muted-foreground">
+                Play once every 24 hours for FREE SC! 🆓
+              </p>
+            </div>
+            <Badge className="bg-destructive text-destructive-foreground animate-pulse">
+              🔥 Exclusive to CoinKrazy!
+            </Badge>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {miniGames.map((game, index) => (
+              <GameCard
+                key={index}
+                title={game.title}
+                provider={game.provider}
+                image=""
+                category={game.category}
+                emoji={game.emoji}
+                cooldown={game.cooldown}
+                onClick={() => console.log(`Playing ${game.title}`)}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Popular Slots */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground flex items-center">
+                <Star className="w-6 h-6 mr-2 text-primary" />
+                🎰 Popular Slots
+              </h2>
+              <p className="text-muted-foreground">
+                Top player favorites with big wins! 💎
+              </p>
+            </div>
+            <Button variant="outline">View All Slots →</Button>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {slotGames.map((game, index) => (
+              <GameCard
+                key={index}
+                title={game.title}
+                provider={game.provider}
+                image=""
+                category={game.category}
+                emoji={game.emoji}
+                isPopular={game.isPopular}
+                isNew={game.isNew}
+                jackpot={game.jackpot}
+                onClick={() => console.log(`Playing ${game.title}`)}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Table Games */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground flex items-center">
+                <Crown className="w-6 h-6 mr-2 text-accent" />
+                🎲 Table Games
+              </h2>
+              <p className="text-muted-foreground">
+                Classic casino favorites! 🃏
+              </p>
+            </div>
+            <Button variant="outline">View All Tables →</Button>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {tableGames.map((game, index) => (
+              <GameCard
+                key={index}
+                title={game.title}
+                provider={game.provider}
+                image=""
+                category={game.category}
+                emoji={game.emoji}
+                isPopular={game.isPopular}
+                onClick={() => console.log(`Playing ${game.title}`)}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Promotions */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
+            <Gift className="w-6 h-6 mr-2 text-primary" />
+            🎁 Active Promotions
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="casino-glow">
+              <CardHeader>
+                <CardTitle className="flex items-center text-primary">
+                  🎊 Welcome Bonus
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  New players get 10,000 GC + 10 SC FREE! 🎁
+                </p>
+                <Button className="w-full bg-primary hover:bg-primary/90">
+                  Claim Now! 🚀
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="casino-glow">
+              <CardHeader>
+                <CardTitle className="flex items-center text-accent">
+                  ⚡ Daily Login
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Login daily for increasing rewards! 📈
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-accent text-accent"
+                >
+                  Check In ✅
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="casino-glow">
+              <CardHeader>
+                <CardTitle className="flex items-center text-primary">
+                  🏆 Weekly Leaderboard
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Compete for the top prizes! 🥇
+                </p>
+                <Button variant="outline" className="w-full">
+                  View Rankings 📊
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-card border-t border-border py-8">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <Crown className="w-6 h-6 text-primary" />
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              CoinKrazy.com
+            </span>
+          </div>
+          <p className="text-muted-foreground mb-4">
+            🎰 Social Casino • 🎁 Free to Play • 🏆 Real Prizes
+          </p>
+          <div className="flex justify-center space-x-6 text-sm text-muted-foreground">
+            <a href="#" className="hover:text-primary">
+              Terms & Conditions
+            </a>
+            <a href="#" className="hover:text-primary">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-primary">
+              Responsible Gaming
+            </a>
+            <a href="#" className="hover:text-primary">
+              Support 💬
+            </a>
+          </div>
+          <p className="text-xs text-muted-foreground mt-4">
+            © 2024 CoinKrazy.com • 18+ Only • Play Responsibly 🎲
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
