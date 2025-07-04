@@ -15,6 +15,9 @@ import AdminPanel from "./pages/AdminPanel";
 import StaffPanel from "./pages/StaffPanel";
 import GoldStore from "./pages/GoldStore";
 import Slots from "./pages/Slots";
+import TableGames from "./pages/TableGames";
+import Sports from "./pages/Sports";
+import Bingo from "./pages/Bingo";
 
 const queryClient = new QueryClient();
 
@@ -95,9 +98,9 @@ const App = () => (
           <Route path="/store" element={<GoldStore />} />
           <Route path="/gold-store" element={<GoldStore />} />
           <Route path="/slots" element={<Slots />} />
-          <Route path="/table-games" element={<TableGamesPage />} />
-          <Route path="/sports" element={<SportsPage />} />
-          <Route path="/bingo" element={<BingoPage />} />
+          <Route path="/table-games" element={<TableGames />} />
+          <Route path="/sports" element={<Sports />} />
+          <Route path="/bingo" element={<Bingo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
