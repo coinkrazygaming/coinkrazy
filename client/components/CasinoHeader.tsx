@@ -124,9 +124,11 @@ export default function CasinoHeader() {
                 </div>
               </Button>
 
-              <Button variant="outline" size="sm">
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline ml-1">{user.name}</span>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/dashboard">
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:inline ml-1">{user.name}</span>
+                </Link>
               </Button>
             </div>
 
