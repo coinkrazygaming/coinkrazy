@@ -11,6 +11,9 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import MiniGames from "./pages/MiniGames";
+import AdminPanel from "./pages/AdminPanel";
+import StaffPanel from "./pages/StaffPanel";
+import GoldStore from "./pages/GoldStore";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +97,10 @@ const App = () => (
           <Route path="/register" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/mini-games" element={<MiniGames />} />
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/staff" element={<StaffPanel />} />
+          <Route path="/store" element={<GoldStore />} />
+          <Route path="/gold-store" element={<GoldStore />} />
           <Route path="/slots" element={<SlotsPage />} />
           <Route path="/table-games" element={<TableGamesPage />} />
           <Route path="/sports" element={<SportsPage />} />

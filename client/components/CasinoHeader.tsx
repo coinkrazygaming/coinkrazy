@@ -110,9 +110,12 @@ export default function CasinoHeader() {
               <Button
                 size="sm"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground casino-pulse hidden sm:flex"
+                asChild
               >
-                <Gift className="w-4 h-4 mr-1" />
-                🎁 Get Coins
+                <Link to="/store">
+                  <Gift className="w-4 h-4 mr-1" />
+                  🎁 Get Coins
+                </Link>
               </Button>
 
               <Button variant="outline" size="sm" className="relative">
