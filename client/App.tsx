@@ -21,65 +21,6 @@ import Bingo from "./pages/Bingo";
 
 const queryClient = new QueryClient();
 
-// Placeholder pages for future development
-
-const TableGamesPage = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-primary mb-4">🎲 Table Games</h1>
-      <p className="text-muted-foreground">
-        Blackjack, Roulette, Baccarat and more!
-      </p>
-    </div>
-  </div>
-);
-
-const SportsPage = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-primary mb-4">🏈 Sportsbook</h1>
-      <p className="text-muted-foreground">
-        Bet on virtual sports and live events!
-      </p>
-    </div>
-  </div>
-);
-
-const MiniGamesPage = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-primary mb-4">🎯 Mini Games</h1>
-      <p className="text-muted-foreground">
-        Play daily for FREE Sweepstakes Cash!
-      </p>
-    </div>
-  </div>
-);
-
-const BingoPage = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-primary mb-4">🏆 Bingo Hall</h1>
-      <p className="text-muted-foreground">
-        Live bingo games with real prizes!
-      </p>
-    </div>
-  </div>
-);
-
-const DashboardPage = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-primary mb-4">
-        ��� Player Dashboard
-      </h1>
-      <p className="text-muted-foreground">
-        Manage your account, view history, and more!
-      </p>
-    </div>
-  </div>
-);
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
