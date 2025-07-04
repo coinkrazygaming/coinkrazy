@@ -409,95 +409,19 @@ export default function MiniGames() {
 
         {/* Games Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {miniGames.map((game) => {
-            const isAvailable = !game.cooldown;
-            const isOnCooldown = !!game.cooldown;
-
-            return (
-              <Card
-                key={game.id}
-                className={`casino-glow transition-all duration-300 hover:scale-105 ${
-                  isOnCooldown
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:shadow-xl cursor-pointer"
-                }`}
-              >
-                <CardHeader className="text-center">
-                  <div className="text-6xl mb-4 animate-float">
-                    {game.emoji}
-                  </div>
-                  <CardTitle className="text-xl text-primary">
-                    {game.title}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {game.description}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Game Details */}
-                    <div className="bg-secondary p-3 rounded-lg">
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">
-                            Max Earn:
-                          </span>
-                          <div className="font-semibold text-accent">
-                            {game.maxEarning}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">
-                            Difficulty:
-                          </span>
-                          <div className="font-semibold">
-                            {game.difficulty === "Easy" && "🟢 Easy"}
-                            {game.difficulty === "Medium" && "🟡 Medium"}
-                            {game.difficulty === "Hard" && "🔴 Hard"}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Status */}
-                    {isAvailable ? (
-                      <div className="text-center">
-                        <Badge className="bg-green-500 text-white mb-3">
-                          ✅ Available Now!
-                        </Badge>
-                        <Button
-                          className="w-full bg-primary hover:bg-primary/90 casino-pulse"
-                          onClick={() => startGame(game.id)}
-                        >
-                          <Play className="w-4 h-4 mr-2" />
-                          🎮 Play Now!
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <Badge className="bg-yellow-500 text-white mb-3">
-                          ⏰ On Cooldown
-                        </Badge>
-                        <div className="text-sm text-muted-foreground mb-3">
-                          <Clock className="w-4 h-4 inline mr-1" />
-                          Available in: {game.cooldown}
-                        </div>
-                        <Button className="w-full" disabled>
-                          <RotateCcw className="w-4 h-4 mr-2" />
-                          Come Back Later
-                        </Button>
-                        {game.lastPlayed && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Last played: {game.lastPlayed}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {miniGames.map((game) => (
+            <MiniGameCard
+              key={game.id}
+              id={game.id}
+              title={game.title}
+              description={game.description}
+              maxEarning={game.maxEarning}
+              difficulty={game.difficulty}
+              cooldown={game.cooldown}
+              lastPlayed={game.lastPlayed}
+              onClick={() => startGame(game.id)}
+            />
+          ))}
         </div>
 
         {/* How It Works */}
