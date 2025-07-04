@@ -68,6 +68,8 @@ export default function Index() {
       isPopular: true,
       jackpot: "$12,456",
       provider: "Pragmatic Play",
+      image:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Diamond Dreams",
@@ -75,6 +77,8 @@ export default function Index() {
       category: "Slots",
       isNew: true,
       provider: "NetEnt",
+      image:
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Lucky 777",
@@ -82,12 +86,16 @@ export default function Index() {
       category: "Slots",
       isPopular: true,
       provider: "Play'n GO",
+      image:
+        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Wild Safari",
       emoji: "🦁",
       category: "Slots",
       provider: "Microgaming",
+      image:
+        "https://images.unsplash.com/photo-1549366021-9f761d040a94?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Ocean Treasure",
@@ -95,6 +103,8 @@ export default function Index() {
       category: "Slots",
       jackpot: "$8,923",
       provider: "Pragmatic Play",
+      image:
+        "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Space Adventure",
@@ -102,6 +112,8 @@ export default function Index() {
       category: "Slots",
       isNew: true,
       provider: "NetEnt",
+      image:
+        "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=600&fit=crop&crop=center",
     },
   ];
 
@@ -112,18 +124,24 @@ export default function Index() {
       category: "Table Game",
       isPopular: true,
       provider: "Evolution",
+      image:
+        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "European Roulette",
       emoji: "🎡",
       category: "Table Game",
       provider: "Evolution",
+      image:
+        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Baccarat Deluxe",
       emoji: "🎭",
       category: "Table Game",
       provider: "Playtech",
+      image:
+        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
     },
     {
       title: "Texas Hold'em",
@@ -131,6 +149,8 @@ export default function Index() {
       category: "Poker",
       isPopular: true,
       provider: "PokerStars",
+      image:
+        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
     },
   ];
 
@@ -259,7 +279,7 @@ export default function Index() {
                 key={index}
                 title={game.title}
                 provider={game.provider}
-                image=""
+                image={game.image}
                 category={game.category}
                 emoji={game.emoji}
                 cooldown={game.cooldown}
@@ -289,7 +309,7 @@ export default function Index() {
                 key={index}
                 title={game.title}
                 provider={game.provider}
-                image=""
+                image={game.image}
                 category={game.category}
                 emoji={game.emoji}
                 isPopular={game.isPopular}
@@ -321,7 +341,7 @@ export default function Index() {
                 key={index}
                 title={game.title}
                 provider={game.provider}
-                image=""
+                image={game.image}
                 category={game.category}
                 emoji={game.emoji}
                 isPopular={game.isPopular}
