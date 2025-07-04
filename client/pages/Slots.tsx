@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import CasinoHeader from "@/components/CasinoHeader";
 import GameCard from "@/components/GameCard";
 import SlotGameCard from "@/components/SlotGameCard";
+import GamePreviewModal from "@/components/GamePreviewModal";
+import SlotFilters from "@/components/SlotFilters";
 import {
   Search,
   Filter,
@@ -25,6 +27,12 @@ export default function Slots() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [jackpotAmount, setJackpotAmount] = useState(245678.89);
+  const [selectedProvider, setSelectedProvider] = useState("All Providers");
+  const [selectedVolatility, setSelectedVolatility] = useState("All");
+  const [rtpRange, setRtpRange] = useState<[number, number]>([90, 99]);
+  const [betRange, setBetRange] = useState<[number, number]>([0.1, 500]);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState<string[]>([]);
 
   // Mock slot games data with real thumbnails
   const slotGames = [
@@ -292,9 +300,55 @@ export default function Slots() {
       (selectedCategory === "new" && game.isNew) ||
       (selectedCategory === "jackpot" && game.jackpot) ||
       game.category === selectedCategory;
+    const matchesProvider =
+      selectedProvider === "All Providers" ||
+      game.provider === selectedProvider;
+    const matchesVolatility =
+      selectedVolatility === "All" || game.volatility === selectedVolatility;
+    const rtpValue = parseFloat(game.rtp.replace("%", ""));
+    const matchesRtp = rtpValue >= rtpRange[0] && rtpValue <= rtpRange[1];
+    const matchesBet = game.minBet >= betRange[0] && game.maxBet <= betRange[1];
 
-    return matchesSearch && matchesCategory;
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesProvider &&
+      matchesVolatility &&
+      matchesRtp &&
+      matchesBet
+    );
   });
+
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (selectedProvider !== "All Providers") count++;
+    if (selectedVolatility !== "All") count++;
+    if (rtpRange[0] !== 90 || rtpRange[1] !== 99) count++;
+    if (betRange[0] !== 0.1 || betRange[1] !== 500) count++;
+    return count;
+  };
+
+  const clearAllFilters = () => {
+    setSelectedProvider("All Providers");
+    setSelectedVolatility("All");
+    setRtpRange([90, 99]);
+    setBetRange([0.1, 500]);
+  };
+
+  const toggleFavorite = (gameId: string) => {
+    setFavorites((prev) =>
+      prev.includes(gameId)
+        ? prev.filter((id) => id !== gameId)
+        : [...prev, gameId],
+    );
+  };
+
+  const addToRecentlyPlayed = (gameId: string) => {
+    setRecentlyPlayed((prev) => {
+      const filtered = prev.filter((id) => id !== gameId);
+      return [gameId, ...filtered].slice(0, 10); // Keep last 10 played
+    });
+  };
 
   const handlePlayGame = (gameId: string) => {
     // Implementation for launching slot game
@@ -303,11 +357,13 @@ export default function Slots() {
 
   const handlePlayWithGold = (gameId: string) => {
     // Implementation for playing with Gold Coins
+    addToRecentlyPlayed(gameId);
     console.log(`Playing ${gameId} with Gold Coins`);
   };
 
   const handlePlayWithSweeps = (gameId: string) => {
     // Implementation for playing with Sweeps Coins
+    addToRecentlyPlayed(gameId);
     console.log(`Playing ${gameId} with Sweeps Coins`);
   };
 
@@ -371,33 +427,22 @@ export default function Slots() {
           </Card>
         </div>
 
-        {/* Search and Filters */}
+        {/* Enhanced Search and Filters */}
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search slot games... 🔍"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm">
-                <Filter className="w-4 h-4 mr-2" />
-                Provider
-              </Button>
-              <Button variant="outline" size="sm">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                RTP
-              </Button>
-              <Button variant="outline" size="sm">
-                <Coins className="w-4 h-4 mr-2" />
-                Bet Range
-              </Button>
-            </div>
-          </div>
+          <SlotFilters
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedProvider={selectedProvider}
+            onProviderChange={setSelectedProvider}
+            selectedVolatility={selectedVolatility}
+            onVolatilityChange={setSelectedVolatility}
+            rtpRange={rtpRange}
+            onRtpRangeChange={setRtpRange}
+            betRange={betRange}
+            onBetRangeChange={setBetRange}
+            onClearFilters={clearAllFilters}
+            activeFiltersCount={getActiveFiltersCount()}
+          />
         </div>
 
         {/* Game Categories */}
@@ -442,6 +487,48 @@ export default function Slots() {
               </div>
             )}
 
+            {/* Recently Played */}
+            {recentlyPlayed.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center">
+                  <Clock className="w-6 h-6 mr-2 text-accent" />
+                  🕐 Recently Played
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  {recentlyPlayed
+                    .slice(0, 6)
+                    .map((gameId) => {
+                      const game = slotGames.find((g) => g.id === gameId);
+                      return game ? (
+                        <GamePreviewModal
+                          key={game.id}
+                          game={game}
+                          onPlayGold={() => handlePlayWithGold(game.id)}
+                          onPlaySweeps={() => handlePlayWithSweeps(game.id)}
+                        >
+                          <div className="cursor-pointer">
+                            <SlotGameCard
+                              title={game.title}
+                              provider={game.provider}
+                              thumbnail={game.thumbnail}
+                              category="Slots"
+                              rtp={game.rtp}
+                              volatility={game.volatility}
+                              isPopular={game.isPopular}
+                              isNew={game.isNew}
+                              jackpot={game.jackpot}
+                              onPlayGold={() => handlePlayWithGold(game.id)}
+                              onPlaySweeps={() => handlePlayWithSweeps(game.id)}
+                            />
+                          </div>
+                        </GamePreviewModal>
+                      ) : null;
+                    })
+                    .filter(Boolean)}
+                </div>
+              </div>
+            )}
+
             {/* All Games Grid */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
@@ -460,20 +547,28 @@ export default function Slots() {
 
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {filteredGames.map((game) => (
-                  <SlotGameCard
+                  <GamePreviewModal
                     key={game.id}
-                    title={game.title}
-                    provider={game.provider}
-                    thumbnail={game.thumbnail}
-                    category="Slots"
-                    rtp={game.rtp}
-                    volatility={game.volatility}
-                    isPopular={game.isPopular}
-                    isNew={game.isNew}
-                    jackpot={game.jackpot}
+                    game={game}
                     onPlayGold={() => handlePlayWithGold(game.id)}
                     onPlaySweeps={() => handlePlayWithSweeps(game.id)}
-                  />
+                  >
+                    <div className="cursor-pointer">
+                      <SlotGameCard
+                        title={game.title}
+                        provider={game.provider}
+                        thumbnail={game.thumbnail}
+                        category="Slots"
+                        rtp={game.rtp}
+                        volatility={game.volatility}
+                        isPopular={game.isPopular}
+                        isNew={game.isNew}
+                        jackpot={game.jackpot}
+                        onPlayGold={() => handlePlayWithGold(game.id)}
+                        onPlaySweeps={() => handlePlayWithSweeps(game.id)}
+                      />
+                    </div>
+                  </GamePreviewModal>
                 ))}
               </div>
 
