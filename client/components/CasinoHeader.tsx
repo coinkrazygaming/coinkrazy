@@ -139,7 +139,7 @@ export default function CasinoHeader() {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -150,54 +150,199 @@ export default function CasinoHeader() {
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-border pt-4">
-            <div className="flex flex-col space-y-2">
+      {/* Second Row - Navigation Menus */}
+      <div className="bg-secondary/30 border-t border-border">
+        <div className="container mx-auto px-4 py-2">
+          <div className="flex items-center justify-between">
+            {/* Main Casino Navigation */}
+            <nav className="hidden lg:flex items-center space-x-6">
               <Button
                 variant="ghost"
-                className="justify-start text-foreground hover:text-primary"
+                className="text-foreground hover:text-primary"
                 asChild
-                onClick={() => setIsMenuOpen(false)}
               >
                 <Link to="/slots">🎰 Slots</Link>
               </Button>
               <Button
                 variant="ghost"
-                className="justify-start text-foreground hover:text-primary"
+                className="text-foreground hover:text-primary"
                 asChild
-                onClick={() => setIsMenuOpen(false)}
               >
                 <Link to="/table-games">🎲 Table Games</Link>
               </Button>
               <Button
                 variant="ghost"
-                className="justify-start text-foreground hover:text-primary"
+                className="text-foreground hover:text-primary"
                 asChild
-                onClick={() => setIsMenuOpen(false)}
               >
                 <Link to="/sports">🏈 Sports</Link>
               </Button>
               <Button
                 variant="ghost"
-                className="justify-start text-foreground hover:text-primary"
+                className="text-foreground hover:text-primary"
                 asChild
-                onClick={() => setIsMenuOpen(false)}
               >
                 <Link to="/mini-games">🎯 Mini Games</Link>
               </Button>
               <Button
                 variant="ghost"
-                className="justify-start text-foreground hover:text-primary"
+                className="text-foreground hover:text-primary"
                 asChild
-                onClick={() => setIsMenuOpen(false)}
               >
                 <Link to="/bingo">🏆 Bingo</Link>
               </Button>
+            </nav>
+
+            {/* Gamers Dashboard Navigation */}
+            <nav className="hidden lg:flex items-center space-x-4">
+              <span className="text-sm text-muted-foreground">Dashboard:</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-foreground hover:text-accent"
+                asChild
+              >
+                <Link to="/dashboard">👤 Profile</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-foreground hover:text-accent"
+                asChild
+              >
+                <Link to="/dashboard">💰 Transactions</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-foreground hover:text-accent"
+                asChild
+              >
+                <Link to="/dashboard">🎮 Game History</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-foreground hover:text-accent"
+                asChild
+              >
+                <Link to="/dashboard">🛡️ KYC</Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-foreground hover:text-accent"
+                asChild
+              >
+                <Link to="/dashboard">🎁 Bonuses</Link>
+              </Button>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-lg">
+            <div className="container mx-auto px-4 py-4">
+              {/* Casino Games */}
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Casino Games</h3>
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-primary"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/slots">🎰 Slots</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-primary"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/table-games">🎲 Table Games</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-primary"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/sports">🏈 Sports</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-primary"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/mini-games">��� Mini Games</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-primary"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/bingo">🏆 Bingo</Link>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Dashboard Menu */}
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Dashboard</h3>
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-accent"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/dashboard">👤 Profile</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-accent"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/dashboard">💰 Transactions</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-accent"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/dashboard">🎮 Game History</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-accent"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/dashboard">🛡️ KYC</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-foreground hover:text-accent"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/dashboard">🎁 Bonuses</Link>
+                  </Button>
+                </div>
+              </div>
 
               {/* Mobile Balance */}
-              <div className="flex items-center justify-between pt-4 border-t border-border mt-4">
+              <div className="flex items-center justify-between pt-4 border-t border-border">
                 <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
                   <Coins className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">
