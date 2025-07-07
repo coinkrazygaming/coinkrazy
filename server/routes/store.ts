@@ -87,16 +87,16 @@ router.post("/purchase", verifyToken, async (req: any, res) => {
     const validatedData = purchaseSchema.parse(req.body);
 
     // Get package details
-    const package = await executeQuery(
+    const storePackage = await executeQuery(
       "SELECT * FROM store_packages WHERE id = ? AND is_active = TRUE",
       [validatedData.packageId],
     );
 
-    if (package.length === 0) {
+    if (storePackage.length === 0) {
       return res.status(404).json({ message: "Package not found" });
     }
 
-    const pkg = package[0];
+    const pkg = storePackage[0];
 
     // Simulate payment processing
     const paymentSuccess = await processPayment(
