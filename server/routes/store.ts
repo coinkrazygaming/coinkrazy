@@ -26,11 +26,11 @@ function verifyToken(req: any, res: any, next: any) {
 router.get("/packages", async (req, res) => {
   try {
     const packages = await executeQuery(
-      `SELECT 
+      `SELECT
         id, name, description, price, gold_coins, bonus_sweeps_coins,
         package_type, is_featured, sort_order
-      FROM store_packages 
-      WHERE is_active = TRUE 
+      FROM store_packages
+      WHERE is_active = TRUE
       ORDER BY sort_order, price ASC`,
     );
 
@@ -44,16 +44,16 @@ router.get("/packages", async (req, res) => {
 // Get package details
 router.get("/packages/:id", async (req, res) => {
   try {
-    const package = await executeQuery(
+    const storePackage = await executeQuery(
       `SELECT * FROM store_packages WHERE id = ? AND is_active = TRUE`,
       [req.params.id],
     );
 
-    if (package.length === 0) {
+    if (storePackage.length === 0) {
       return res.status(404).json({ message: "Package not found" });
     }
 
-    res.json({ package: package[0] });
+    res.json({ package: storePackage[0] });
   } catch (error) {
     console.error("Package details fetch error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -155,9 +155,9 @@ router.post("/purchase", verifyToken, async (req: any, res) => {
     // Create transaction records
     await executeQuery(
       `INSERT INTO transactions (
-        user_id, transaction_type, coin_type, amount, 
+        user_id, transaction_type, coin_type, amount,
         previous_balance, new_balance, description, status, reference_id
-      ) VALUES 
+      ) VALUES
       (?, 'purchase', 'gold', ?, ?, ?, ?, 'completed', ?),
       (?, 'purchase', 'sweeps', ?, ?, ?, ?, 'completed', ?)`,
       [
@@ -204,8 +204,8 @@ router.get("/purchases", verifyToken, async (req: any, res) => {
     const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
 
     const purchases = await executeQuery(
-      `SELECT 
-        p.id, p.amount, p.payment_method, p.status, 
+      `SELECT
+        p.id, p.amount, p.payment_method, p.status,
         p.gold_coins_received, p.sweeps_coins_received, p.created_at,
         sp.name as package_name, sp.description as package_description
       FROM purchases p
@@ -218,12 +218,12 @@ router.get("/purchases", verifyToken, async (req: any, res) => {
 
     // Get total purchase stats
     const stats = await executeQuery(
-      `SELECT 
+      `SELECT
         COUNT(*) as total_purchases,
         SUM(amount) as total_spent,
         SUM(gold_coins_received) as total_gold_coins,
         SUM(sweeps_coins_received) as total_sweeps_coins
-      FROM purchases 
+      FROM purchases
       WHERE user_id = ? AND status = 'completed'`,
       [req.user.id],
     );
@@ -247,7 +247,7 @@ router.get("/purchases", verifyToken, async (req: any, res) => {
 router.get("/purchases/:id/receipt", verifyToken, async (req: any, res) => {
   try {
     const purchase = await executeQuery(
-      `SELECT 
+      `SELECT
         p.*, sp.name as package_name, sp.description as package_description,
         u.email, u.first_name, u.last_name
       FROM purchases p
@@ -279,7 +279,7 @@ router.get("/purchases/:id/receipt", verifyToken, async (req: any, res) => {
 router.get("/stats", verifyToken, async (req: any, res) => {
   try {
     const stats = await executeQuery(
-      `SELECT 
+      `SELECT
         COUNT(DISTINCT DATE(created_at)) as days_purchased,
         COUNT(*) as total_purchases,
         SUM(amount) as total_spent,
@@ -287,18 +287,18 @@ router.get("/stats", verifyToken, async (req: any, res) => {
         MAX(amount) as largest_purchase,
         SUM(gold_coins_received) as total_gold_received,
         SUM(sweeps_coins_received) as total_sweeps_received
-      FROM purchases 
+      FROM purchases
       WHERE user_id = ? AND status = 'completed'`,
       [req.user.id],
     );
 
     // Get monthly spending
     const monthlySpending = await executeQuery(
-      `SELECT 
+      `SELECT
         DATE_FORMAT(created_at, '%Y-%m') as month,
         COUNT(*) as purchases,
         SUM(amount) as total
-      FROM purchases 
+      FROM purchases
       WHERE user_id = ? AND status = 'completed'
       AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
       GROUP BY DATE_FORMAT(created_at, '%Y-%m')
@@ -308,7 +308,7 @@ router.get("/stats", verifyToken, async (req: any, res) => {
 
     // Get favorite package type
     const favoritePackage = await executeQuery(
-      `SELECT 
+      `SELECT
         sp.package_type,
         COUNT(*) as purchase_count,
         SUM(p.amount) as total_spent
