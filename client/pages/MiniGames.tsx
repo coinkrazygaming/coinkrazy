@@ -105,6 +105,92 @@ export default function MiniGames() {
     },
   ];
 
+  const spawnDuck = () => {
+    const directions = ["left", "right", "up", "diagonal"] as const;
+    const direction = directions[Math.floor(Math.random() * directions.length)];
+
+    let startX, startY;
+    if (direction === "left") {
+      startX = -50;
+      startY = Math.random() * 300 + 100;
+    } else if (direction === "right") {
+      startX = 850;
+      startY = Math.random() * 300 + 100;
+    } else if (direction === "up") {
+      startX = Math.random() * 600 + 100;
+      startY = 450;
+    } else {
+      // diagonal
+      startX = Math.random() * 200;
+      startY = 400;
+    }
+
+    const newDuck: Duck = {
+      id: Math.random().toString(36).substr(2, 9),
+      x: startX,
+      y: startY,
+      direction,
+      speed: Math.random() * 3 + 2,
+      alive: true,
+      hit: false,
+    };
+
+    setDucks((prev) => [...prev, newDuck]);
+  };
+
+  const moveDucks = () => {
+    setDucks((prev) =>
+      prev
+        .map((duck) => {
+          if (!duck.alive) return duck;
+
+          let newX = duck.x;
+          let newY = duck.y;
+
+          switch (duck.direction) {
+            case "left":
+              newX += duck.speed;
+              break;
+            case "right":
+              newX -= duck.speed;
+              break;
+            case "up":
+              newY -= duck.speed;
+              break;
+            case "diagonal":
+              newX += duck.speed;
+              newY -= duck.speed;
+              break;
+          }
+
+          // Remove duck if it goes off screen
+          if (newX > 900 || newX < -100 || newY < -50) {
+            return { ...duck, alive: false };
+          }
+
+          return { ...duck, x: newX, y: newY };
+        })
+        .filter((duck) => duck.alive || duck.hit),
+    );
+  };
+
+  const shootDuck = (duckId: string) => {
+    if (bullets <= 0) return;
+
+    setBullets((prev) => prev - 1);
+
+    setDucks((prev) =>
+      prev.map((duck) => {
+        if (duck.id === duckId && duck.alive && !duck.hit) {
+          setDucksShot((prevShot) => prevShot + 1);
+          setGameScore((prevScore) => prevScore + 1);
+          return { ...duck, hit: true, alive: false };
+        }
+        return duck;
+      }),
+    );
+  };
+
   const startGame = (gameId: string) => {
     const game = miniGames.find((g) => g.id === gameId);
     if (!game || game.cooldown) return;
