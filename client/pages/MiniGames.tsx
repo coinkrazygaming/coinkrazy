@@ -34,7 +34,13 @@ export default function MiniGames() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
   const [totalEarned, setTotalEarned] = useState(0);
+  const [ducks, setDucks] = useState<Duck[]>([]);
+  const [ducksShot, setDucksShot] = useState(0);
+  const [bullets, setBullets] = useState(3);
+  const [round, setRound] = useState(1);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const duckSpawnRef = useRef<NodeJS.Timeout | null>(null);
+  const duckMoveRef = useRef<NodeJS.Timeout | null>(null);
 
   const miniGames = [
     {
