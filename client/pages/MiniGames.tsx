@@ -525,11 +525,23 @@ export default function MiniGames() {
                         <div>Round {round}</div>
                       </div>
 
-                      {/* CoinKrazy Branding */}
-                      <div className="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded-full">
-                        <span className="text-primary font-bold text-sm">
-                          CoinKrazy.com Exclusive
-                        </span>
+                      {/* Enhanced CoinKrazy Branding */}
+                      <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-accent px-4 py-2 rounded-lg border-2 border-gold-400 shadow-lg">
+                        <div className="text-center">
+                          <div className="text-white font-bold text-lg">
+                            🎰 COINKRIZY.COM
+                          </div>
+                          <div className="text-yellow-300 text-xs font-semibold">
+                            EXCLUSIVE MINI GAME
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Branding Watermark */}
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
+                        <div className="text-6xl font-bold text-white rotate-12">
+                          COINKRIZY.COM
+                        </div>
                       </div>
 
                       {/* Bullets indicator */}
@@ -715,7 +727,7 @@ export default function MiniGames() {
             <div>
               <div className="text-2xl font-bold text-primary">0.10</div>
               <div className="text-sm text-muted-foreground">
-                💰 Max SC/Game
+                ���� Max SC/Game
               </div>
             </div>
             <div>
