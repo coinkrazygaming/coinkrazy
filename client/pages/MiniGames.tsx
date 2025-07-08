@@ -573,7 +573,10 @@ export default function MiniGames() {
                       {/* Instructions */}
                       {ducks.length === 0 && (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center text-white bg-black/50 p-6 rounded-lg">
+                          <div className="text-center text-white bg-black/70 p-6 rounded-lg border border-primary">
+                            <div className="text-primary font-bold text-sm mb-2">
+                              🎰 COINKRIZY.COM EXCLUSIVE
+                            </div>
                             <h3 className="text-2xl font-bold mb-2">
                               🦆 Duck Hunt!
                             </h3>
@@ -582,6 +585,9 @@ export default function MiniGames() {
                             </p>
                             <p className="text-sm mt-2">
                               Each duck = 0.01 SC • {bullets} bullets left
+                            </p>
+                            <p className="text-xs text-yellow-300 mt-1">
+                              🏆 Premium CoinKrazy Gaming Experience
                             </p>
                           </div>
                         </div>
