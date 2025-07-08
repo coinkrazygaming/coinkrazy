@@ -615,8 +615,9 @@ export default function MiniGames() {
                   Exit Game
                 </Button>
                 <p className="text-sm text-muted-foreground mt-2">
-                  🎯 Keep clicking to score points! Each successful action earns
-                  SC!
+                  {activeGame === "quack-attack"
+                    ? "🦆 Click on flying ducks to shoot them! Each duck = 0.01 SC!"
+                    : "🎯 Keep clicking to score points! Each successful action earns SC!"}
                 </p>
               </div>
             </div>
