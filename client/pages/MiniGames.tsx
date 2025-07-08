@@ -237,11 +237,24 @@ export default function MiniGames() {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    if (duckSpawnRef.current) {
+      clearInterval(duckSpawnRef.current);
+      duckSpawnRef.current = null;
+    }
+    if (duckMoveRef.current) {
+      clearInterval(duckMoveRef.current);
+      duckMoveRef.current = null;
+    }
     setGameStarted(false);
     setGameEnded(true);
 
-    // Calculate final earnings
-    const finalEarnings = (gameScore * (Math.random() * 0.1)).toFixed(2);
+    // Calculate final earnings - For Duck Hunt: 0.01 SC per duck shot
+    let finalEarnings;
+    if (activeGame === "quack-attack") {
+      finalEarnings = (ducksShot * 0.01).toFixed(2);
+    } else {
+      finalEarnings = (gameScore * (Math.random() * 0.1)).toFixed(2);
+    }
     setTotalEarned(parseFloat(finalEarnings));
   };
 
