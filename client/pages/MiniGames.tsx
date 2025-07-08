@@ -201,6 +201,10 @@ export default function MiniGames() {
     setTimeLeft(60);
     setGameStarted(true);
     setGameEnded(false);
+    setDucks([]);
+    setDucksShot(0);
+    setBullets(3);
+    setRound(1);
 
     // Start the countdown timer
     intervalRef.current = setInterval(() => {
@@ -212,6 +216,20 @@ export default function MiniGames() {
         return prev - 1;
       });
     }, 1000);
+
+    // Duck Hunt specific logic
+    if (gameId === "quack-attack") {
+      // Spawn ducks every 2-4 seconds
+      duckSpawnRef.current = setInterval(() => {
+        if (Math.random() < 0.7) {
+          // 70% chance to spawn
+          spawnDuck();
+        }
+      }, 2000);
+
+      // Move ducks every 50ms for smooth animation
+      duckMoveRef.current = setInterval(moveDucks, 50);
+    }
   };
 
   const endGame = () => {
