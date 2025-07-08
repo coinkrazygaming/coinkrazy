@@ -284,7 +284,7 @@ export default function MiniGames() {
   };
 
   const handleGameAction = () => {
-    if (!gameStarted || timeLeft <= 0) return;
+    if (!gameStarted || timeLeft <= 0 || activeGame === "quack-attack") return;
 
     // Simulate successful action (hit/shot/throw)
     const success = Math.random() > 0.3; // 70% success rate
