@@ -47,12 +47,12 @@ export default function MiniGames() {
       id: "quack-attack",
       title: "Josey's Quack Attack",
       emoji: "🦆",
-      description: "Shoot flying duck targets for 60 seconds!",
+      description: "Classic Duck Hunt style shooting game!",
       instructions:
-        "Click on the flying ducks to shoot them. Each duck is worth 0.00-0.10 SC!",
+        "Click on the flying ducks to shoot them. Each duck is worth exactly 0.01 SC! You have 3 bullets per round.",
       cooldown: null, // Available to play
       lastPlayed: null,
-      maxEarning: "0.10 SC per duck",
+      maxEarning: "0.01 SC per duck",
       difficulty: "Easy",
     },
     {
