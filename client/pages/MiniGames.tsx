@@ -16,6 +16,17 @@ import {
   RotateCcw,
 } from "lucide-react";
 
+// Duck Hunt game interfaces
+interface Duck {
+  id: string;
+  x: number;
+  y: number;
+  direction: "left" | "right" | "up" | "diagonal";
+  speed: number;
+  alive: boolean;
+  hit: boolean;
+}
+
 export default function MiniGames() {
   const [activeGame, setActiveGame] = useState<string | null>(null);
   const [gameScore, setGameScore] = useState(0);
