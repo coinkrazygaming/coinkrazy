@@ -58,7 +58,7 @@ export default function MiniGames() {
     {
       id: "colin-shots",
       title: "Colin Shots",
-      emoji: "🏀",
+      emoji: "���",
       description: "Make basketball shots for 60 seconds!",
       instructions:
         "Click to shoot basketballs into the hoop. Each successful shot earns 0.00-0.10 SC!",
@@ -265,9 +265,21 @@ export default function MiniGames() {
     setTimeLeft(60);
     setGameStarted(false);
     setGameEnded(false);
+    setDucks([]);
+    setDucksShot(0);
+    setBullets(3);
+    setRound(1);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
+    }
+    if (duckSpawnRef.current) {
+      clearInterval(duckSpawnRef.current);
+      duckSpawnRef.current = null;
+    }
+    if (duckMoveRef.current) {
+      clearInterval(duckMoveRef.current);
+      duckMoveRef.current = null;
     }
   };
 
@@ -325,7 +337,7 @@ export default function MiniGames() {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="bg-secondary p-3 rounded-lg">
                       <h3 className="font-semibold text-primary">
-                        ⏰ Duration
+                        �� Duration
                       </h3>
                       <p className="text-2xl font-bold">60 seconds</p>
                     </div>
