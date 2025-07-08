@@ -267,7 +267,7 @@ export default function MiniGames() {
     setGameEnded(false);
     setDucks([]);
     setDucksShot(0);
-    setBullets(3);
+    setBullets(25);
     setRound(1);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -488,7 +488,7 @@ export default function MiniGames() {
                         🌿
                       </div>
                       <div className="absolute bottom-6 right-20 text-2xl">
-                        🌿
+                        ��
                       </div>
 
                       {/* Flying Ducks */}
