@@ -443,47 +443,169 @@ export default function MiniGames() {
 
               {/* Game Area */}
               <Card className="casino-glow mb-4">
-                <CardContent className="p-8">
-                  <div
-                    className="aspect-video bg-gradient-to-br from-casino-blue-900 to-casino-blue-700 rounded-lg relative overflow-hidden cursor-crosshair"
-                    onClick={handleGameAction}
-                  >
-                    {/* Game-specific UI */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center text-white">
-                        <div className="text-6xl mb-4 animate-bounce">
-                          {game.emoji}
-                        </div>
-                        <h3 className="text-2xl font-bold mb-2">
-                          🎮 Click to Play!
-                        </h3>
-                        <p className="text-lg">
-                          Click anywhere in this area to{" "}
-                          {game.id === "quack-attack" && "shoot ducks"}
-                          {game.id === "colin-shots" && "shoot basketballs"}
-                          {game.id === "flickin-bean" && "throw bean bags"}
-                          {game.id === "haylie-coins" && "drop coins"}
-                          {game.id === "beth-darts" && "throw darts"}
-                        </p>
+                <CardContent className="p-4">
+                  {activeGame === "quack-attack" ? (
+                    <div
+                      className="aspect-video bg-gradient-to-b from-blue-400 via-green-400 to-green-600 rounded-lg relative overflow-hidden cursor-crosshair"
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, #87CEEB 0%, #87CEEB 30%, #228B22 30%, #228B22 70%, #8B4513 70%, #8B4513 100%)",
+                      }}
+                    >
+                      {/* Sky and clouds */}
+                      <div className="absolute top-4 left-4 text-white text-2xl opacity-75">
+                        ☁️
                       </div>
-                    </div>
+                      <div className="absolute top-8 right-8 text-white text-3xl opacity-60">
+                        ☁️
+                      </div>
+                      <div className="absolute top-12 left-1/3 text-white text-2xl opacity-50">
+                        ☁️
+                      </div>
 
-                    {/* CoinKrazy Branding */}
-                    <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full">
-                      <span className="text-primary font-bold text-sm">
-                        CoinKrazy.com
-                      </span>
-                    </div>
+                      {/* Trees in background */}
+                      <div className="absolute bottom-20 left-0 text-6xl">
+                        🌲
+                      </div>
+                      <div className="absolute bottom-20 left-16 text-5xl">
+                        🌲
+                      </div>
+                      <div className="absolute bottom-20 right-0 text-6xl">
+                        🌲
+                      </div>
+                      <div className="absolute bottom-20 right-20 text-5xl">
+                        🌲
+                      </div>
 
-                    {/* Score Popup Effects */}
-                    {gameScore > 0 && (
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                        <div className="text-gold-400 text-4xl font-bold animate-ping">
-                          +1
+                      {/* Grass */}
+                      <div className="absolute bottom-8 left-4 text-2xl">
+                        🌿
+                      </div>
+                      <div className="absolute bottom-6 left-20 text-2xl">
+                        🌿
+                      </div>
+                      <div className="absolute bottom-8 right-4 text-2xl">
+                        🌿
+                      </div>
+                      <div className="absolute bottom-6 right-20 text-2xl">
+                        🌿
+                      </div>
+
+                      {/* Flying Ducks */}
+                      {ducks.map((duck) => (
+                        <div
+                          key={duck.id}
+                          className={`absolute transition-all duration-100 cursor-pointer hover:scale-110 ${duck.hit ? "animate-pulse" : ""}`}
+                          style={{
+                            left: `${duck.x}px`,
+                            top: `${duck.y}px`,
+                            transform:
+                              duck.direction === "right"
+                                ? "scaleX(-1)"
+                                : "scaleX(1)",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            shootDuck(duck.id);
+                          }}
+                        >
+                          <div
+                            className={`text-4xl ${duck.hit ? "text-red-500" : "text-yellow-600"} ${duck.alive ? "animate-bounce" : ""}`}
+                          >
+                            {duck.hit ? "💥" : "🦆"}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Duck Hunt UI Elements */}
+                      <div className="absolute top-4 left-4 bg-black/70 px-3 py-2 rounded text-white text-sm">
+                        <div className="font-bold text-yellow-400">
+                          DUCK HUNT
+                        </div>
+                        <div>Round {round}</div>
+                      </div>
+
+                      {/* CoinKrazy Branding */}
+                      <div className="absolute top-4 right-4 bg-black/70 px-3 py-1 rounded-full">
+                        <span className="text-primary font-bold text-sm">
+                          CoinKrazy.com Exclusive
+                        </span>
+                      </div>
+
+                      {/* Bullets indicator */}
+                      <div className="absolute bottom-4 left-4 bg-black/70 px-4 py-2 rounded text-white">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-red-400">🔫</span>
+                          <span className="font-bold">Bullets: {bullets}</span>
                         </div>
                       </div>
-                    )}
-                  </div>
+
+                      {/* Score indicator */}
+                      <div className="absolute bottom-4 right-4 bg-black/70 px-4 py-2 rounded text-white">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-yellow-400">🎯</span>
+                          <span className="font-bold">Hit: {ducksShot}</span>
+                        </div>
+                      </div>
+
+                      {/* Instructions */}
+                      {ducks.length === 0 && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center text-white bg-black/50 p-6 rounded-lg">
+                            <h3 className="text-2xl font-bold mb-2">
+                              🦆 Duck Hunt!
+                            </h3>
+                            <p className="text-lg">
+                              Click on flying ducks to shoot them!
+                            </p>
+                            <p className="text-sm mt-2">
+                              Each duck = 0.01 SC • {bullets} bullets left
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div
+                      className="aspect-video bg-gradient-to-br from-casino-blue-900 to-casino-blue-700 rounded-lg relative overflow-hidden cursor-crosshair"
+                      onClick={handleGameAction}
+                    >
+                      {/* Game-specific UI */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center text-white">
+                          <div className="text-6xl mb-4 animate-bounce">
+                            {game.emoji}
+                          </div>
+                          <h3 className="text-2xl font-bold mb-2">
+                            🎮 Click to Play!
+                          </h3>
+                          <p className="text-lg">
+                            Click anywhere in this area to{" "}
+                            {game.id === "colin-shots" && "shoot basketballs"}
+                            {game.id === "flickin-bean" && "throw bean bags"}
+                            {game.id === "haylie-coins" && "drop coins"}
+                            {game.id === "beth-darts" && "throw darts"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* CoinKrazy Branding */}
+                      <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full">
+                        <span className="text-primary font-bold text-sm">
+                          CoinKrazy.com
+                        </span>
+                      </div>
+
+                      {/* Score Popup Effects */}
+                      {gameScore > 0 && (
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                          <div className="text-gold-400 text-4xl font-bold animate-ping">
+                            +1
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
