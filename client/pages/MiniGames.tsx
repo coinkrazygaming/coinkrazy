@@ -49,7 +49,7 @@ export default function MiniGames() {
       emoji: "🦆",
       description: "Classic Duck Hunt style shooting game!",
       instructions:
-        "Click on the flying ducks to shoot them. Each duck is worth exactly 0.01 SC! You have 3 bullets per round.",
+        "Click on the flying ducks to shoot them. Each duck is worth exactly 0.01 SC! You have 25 bullets per round.",
       cooldown: null, // Available to play
       lastPlayed: null,
       maxEarning: "0.01 SC per duck",
@@ -488,7 +488,7 @@ export default function MiniGames() {
                         🌿
                       </div>
                       <div className="absolute bottom-6 right-20 text-2xl">
-                        ��
+                        🌿
                       </div>
 
                       {/* Flying Ducks */}
