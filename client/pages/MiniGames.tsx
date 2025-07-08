@@ -203,7 +203,7 @@ export default function MiniGames() {
     setGameEnded(false);
     setDucks([]);
     setDucksShot(0);
-    setBullets(3);
+    setBullets(25);
     setRound(1);
 
     // Start the countdown timer
