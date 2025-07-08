@@ -545,18 +545,28 @@ export default function MiniGames() {
                       </div>
 
                       {/* Bullets indicator */}
-                      <div className="absolute bottom-4 left-4 bg-black/70 px-4 py-2 rounded text-white">
+                      <div className="absolute bottom-4 left-4 bg-black/80 px-4 py-2 rounded-lg border border-red-400 shadow-lg">
                         <div className="flex items-center space-x-2">
                           <span className="text-red-400">🔫</span>
-                          <span className="font-bold">Bullets: {bullets}</span>
+                          <span className="font-bold text-white">
+                            Bullets: {bullets}
+                          </span>
+                        </div>
+                        <div className="text-xs text-red-300">
+                          CoinKrazy Ammo
                         </div>
                       </div>
 
                       {/* Score indicator */}
-                      <div className="absolute bottom-4 right-4 bg-black/70 px-4 py-2 rounded text-white">
+                      <div className="absolute bottom-4 right-4 bg-black/80 px-4 py-2 rounded-lg border border-yellow-400 shadow-lg">
                         <div className="flex items-center space-x-2">
                           <span className="text-yellow-400">🎯</span>
-                          <span className="font-bold">Hit: {ducksShot}</span>
+                          <span className="font-bold text-white">
+                            Hit: {ducksShot}
+                          </span>
+                        </div>
+                        <div className="text-xs text-yellow-300">
+                          Earning: {(ducksShot * 0.01).toFixed(2)} SC
                         </div>
                       </div>
 
@@ -727,7 +737,7 @@ export default function MiniGames() {
             <div>
               <div className="text-2xl font-bold text-primary">0.10</div>
               <div className="text-sm text-muted-foreground">
-                ���� Max SC/Game
+                💰 Max SC/Game
               </div>
             </div>
             <div>
