@@ -368,35 +368,78 @@ export default function MiniGames() {
           {gameStarted && (
             <div className="max-w-4xl mx-auto">
               {/* Game Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                <Card className="casino-glow">
-                  <CardContent className="p-4 text-center">
-                    <Clock className="w-8 h-8 mx-auto mb-2 text-destructive" />
-                    <p className="text-3xl font-bold text-destructive">
-                      {timeLeft}s
-                    </p>
-                    <p className="text-sm text-muted-foreground">Time Left</p>
-                  </CardContent>
-                </Card>
-                <Card className="casino-glow">
-                  <CardContent className="p-4 text-center">
-                    <Target className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <p className="text-3xl font-bold text-primary">
-                      {gameScore}
-                    </p>
-                    <p className="text-sm text-muted-foreground">Score</p>
-                  </CardContent>
-                </Card>
-                <Card className="casino-glow">
-                  <CardContent className="p-4 text-center">
-                    <Coins className="w-8 h-8 mx-auto mb-2 text-accent" />
-                    <p className="text-3xl font-bold text-accent">
-                      {(gameScore * 0.05).toFixed(2)} SC
-                    </p>
-                    <p className="text-sm text-muted-foreground">Estimated</p>
-                  </CardContent>
-                </Card>
-              </div>
+              {activeGame === "quack-attack" ? (
+                <div className="grid grid-cols-4 gap-4 mb-8">
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <Clock className="w-8 h-8 mx-auto mb-2 text-destructive" />
+                      <p className="text-3xl font-bold text-destructive">
+                        {timeLeft}s
+                      </p>
+                      <p className="text-sm text-muted-foreground">Time Left</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <Target className="w-8 h-8 mx-auto mb-2 text-primary" />
+                      <p className="text-3xl font-bold text-primary">
+                        {ducksShot}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Ducks Shot
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <div className="text-red-500 text-2xl mb-2">🔫</div>
+                      <p className="text-3xl font-bold text-red-500">
+                        {bullets}
+                      </p>
+                      <p className="text-sm text-muted-foreground">Bullets</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <Coins className="w-8 h-8 mx-auto mb-2 text-accent" />
+                      <p className="text-3xl font-bold text-accent">
+                        {(ducksShot * 0.01).toFixed(2)} SC
+                      </p>
+                      <p className="text-sm text-muted-foreground">Earned</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <Clock className="w-8 h-8 mx-auto mb-2 text-destructive" />
+                      <p className="text-3xl font-bold text-destructive">
+                        {timeLeft}s
+                      </p>
+                      <p className="text-sm text-muted-foreground">Time Left</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <Target className="w-8 h-8 mx-auto mb-2 text-primary" />
+                      <p className="text-3xl font-bold text-primary">
+                        {gameScore}
+                      </p>
+                      <p className="text-sm text-muted-foreground">Score</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="casino-glow">
+                    <CardContent className="p-4 text-center">
+                      <Coins className="w-8 h-8 mx-auto mb-2 text-accent" />
+                      <p className="text-3xl font-bold text-accent">
+                        {(gameScore * 0.05).toFixed(2)} SC
+                      </p>
+                      <p className="text-sm text-muted-foreground">Estimated</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
 
               {/* Game Area */}
               <Card className="casino-glow mb-4">
