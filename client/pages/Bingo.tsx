@@ -496,7 +496,7 @@ export default function Bingo() {
                 <CardTitle className="text-xl text-primary">
                   {room.name}
                 </CardTitle>
-                <div className="flex items-center justify-center space-x-2">
+                <div className="flex items-center justify-center space-x-2 flex-wrap gap-1">
                   <Badge
                     className={`${
                       room.status === "active"
@@ -508,6 +508,11 @@ export default function Bingo() {
                   </Badge>
                   <Badge className="bg-accent text-accent-foreground">
                     👩‍💼 {room.caller}
+                  </Badge>
+                  <Badge
+                    className={`${room.currency === "SC" ? "bg-green-600 text-white" : "bg-gold-600 text-white"} font-bold`}
+                  >
+                    {room.currency === "SC" ? "💰 SC ROOM" : "🪙 GC ROOM"}
                   </Badge>
                 </div>
               </CardHeader>
