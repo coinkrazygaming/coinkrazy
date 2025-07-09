@@ -10,6 +10,7 @@ import CasinoHeader from "@/components/CasinoHeader";
 import {
   Settings,
   Users,
+  User,
   Coins,
   TrendingUp,
   UserCheck,
