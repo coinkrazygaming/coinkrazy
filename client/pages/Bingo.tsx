@@ -259,7 +259,10 @@ export default function Bingo() {
             </div>
             <p className="text-muted-foreground">
               Caller: {selectedRoomData.caller} • Pattern:{" "}
-              {selectedRoomData.pattern} • Jackpot: ${selectedRoomData.jackpot}
+              {selectedRoomData.pattern} • Jackpot:{" "}
+              {selectedRoomData.currency === "SC"
+                ? `${selectedRoomData.jackpot} SC`
+                : `${selectedRoomData.jackpot.toLocaleString()} GC`}
             </p>
           </div>
 
