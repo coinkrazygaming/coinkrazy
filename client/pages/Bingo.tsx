@@ -418,9 +418,20 @@ export default function Bingo() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-accent mb-2">
-                      ${selectedRoomData.jackpot}
+                    <div
+                      className={`text-3xl font-bold mb-2 ${selectedRoomData.currency === "SC" ? "text-green-500" : "text-accent"}`}
+                    >
+                      {selectedRoomData.currency === "SC"
+                        ? `${selectedRoomData.jackpot} SC`
+                        : `${selectedRoomData.jackpot.toLocaleString()} GC`}
                     </div>
+                    <Badge
+                      className={`mb-2 ${selectedRoomData.currency === "SC" ? "bg-green-600 text-white" : "bg-gold-600 text-white"}`}
+                    >
+                      {selectedRoomData.currency === "SC"
+                        ? "💰 Sweeps Coins"
+                        : "🪙 Gold Coins"}
+                    </Badge>
                     <p className="text-sm text-muted-foreground mb-2">
                       Pattern: {selectedRoomData.pattern}
                     </p>
