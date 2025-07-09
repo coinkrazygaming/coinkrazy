@@ -27,7 +27,7 @@ export default function Bingo() {
   const [gameInProgress, setGameInProgress] = useState(false);
   const [timeToNext, setTimeToNext] = useState(120);
 
-  // Mock bingo rooms data
+  // Mock bingo rooms data - Half SC (Sweeps Coins) and Half GC (Gold Coins)
   const bingoRooms = [
     {
       id: "golden-hall",
@@ -37,6 +37,7 @@ export default function Bingo() {
       maxPlayers: 100,
       jackpot: 125.5,
       ticketPrice: 2,
+      currency: "SC",
       gameType: "75-Ball",
       status: "active",
       nextDraw: "2024-12-20 15:30",
@@ -50,8 +51,9 @@ export default function Bingo() {
       emoji: "💎",
       players: 32,
       maxPlayers: 75,
-      jackpot: 89.75,
-      ticketPrice: 1,
+      jackpot: 1789.75,
+      ticketPrice: 20,
+      currency: "GC",
       gameType: "90-Ball",
       status: "waiting",
       nextDraw: "2024-12-20 16:00",
@@ -67,6 +69,7 @@ export default function Bingo() {
       maxPlayers: 50,
       jackpot: 67.25,
       ticketPrice: 1.5,
+      currency: "SC",
       gameType: "75-Ball",
       status: "waiting",
       nextDraw: "2024-12-20 15:45",
@@ -80,8 +83,9 @@ export default function Bingo() {
       emoji: "💚",
       players: 56,
       maxPlayers: 150,
-      jackpot: 234.8,
-      ticketPrice: 5,
+      jackpot: 4680.8,
+      ticketPrice: 100,
+      currency: "GC",
       gameType: "90-Ball",
       status: "active",
       nextDraw: "2024-12-20 15:35",
@@ -97,6 +101,7 @@ export default function Bingo() {
       maxPlayers: 30,
       jackpot: 45.6,
       ticketPrice: 0.5,
+      currency: "SC",
       gameType: "75-Ball",
       status: "waiting",
       nextDraw: "2024-12-20 16:15",
@@ -110,8 +115,9 @@ export default function Bingo() {
       emoji: "⚪",
       players: 89,
       maxPlayers: 200,
-      jackpot: 456.9,
-      ticketPrice: 10,
+      jackpot: 9137.9,
+      ticketPrice: 200,
+      currency: "GC",
       gameType: "90-Ball",
       status: "active",
       nextDraw: "2024-12-20 15:25",
