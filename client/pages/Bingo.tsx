@@ -526,13 +526,23 @@ export default function Bingo() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-muted-foreground">Jackpot:</span>
-                      <div className="font-bold text-accent">
-                        ${room.jackpot}
+                      <div
+                        className={`font-bold ${room.currency === "SC" ? "text-green-500" : "text-accent"}`}
+                      >
+                        {room.currency === "SC"
+                          ? `${room.jackpot} SC`
+                          : `${room.jackpot.toLocaleString()} GC`}
                       </div>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Ticket:</span>
-                      <div className="font-bold">{room.ticketPrice} GC</div>
+                      <div
+                        className={`font-bold ${room.currency === "SC" ? "text-green-500" : "text-accent"}`}
+                      >
+                        {room.currency === "SC"
+                          ? `${room.ticketPrice} SC`
+                          : `${room.ticketPrice} GC`}
+                      </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
