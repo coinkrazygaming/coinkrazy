@@ -102,12 +102,34 @@ export default function CasinoHeader() {
                 </div>
               </Button>
 
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/dashboard">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline ml-1">{user.name}</span>
-                </Link>
-              </Button>
+              {user ? (
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/dashboard">
+                      <User className="w-4 h-4" />
+                      <span className="hidden sm:inline ml-1">
+                        {user.username}
+                      </span>
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={logout}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden sm:inline ml-1">Logout</span>
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/auth">
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline ml-1">Login</span>
+                  </Link>
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
