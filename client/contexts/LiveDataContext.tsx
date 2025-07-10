@@ -55,16 +55,25 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
     try {
       const response = await fetch(url, config);
-      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "API call failed");
+        // Try to get error message from response if possible
+        let errorMessage = "API call failed";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error("API call error:", error);
-      // Return mock data if API fails
+      // Return null if API fails - fetchStats will handle this gracefully
       return null;
     }
   };
