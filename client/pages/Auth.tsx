@@ -217,6 +217,41 @@ export default function Auth() {
                       />
                     </div>
 
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="firstName">First Name</Label>
+                        <Input
+                          id="firstName"
+                          type="text"
+                          placeholder="First name"
+                          value={registerData.firstName}
+                          onChange={(e) =>
+                            setRegisterData({
+                              ...registerData,
+                              firstName: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="lastName">Last Name</Label>
+                        <Input
+                          id="lastName"
+                          type="text"
+                          placeholder="Last name"
+                          value={registerData.lastName}
+                          onChange={(e) =>
+                            setRegisterData({
+                              ...registerData,
+                              lastName: e.target.value,
+                            })
+                          }
+                          required
+                        />
+                      </div>
+                    </div>
+
                     <div>
                       <Label htmlFor="email">Email Address</Label>
                       <Input
