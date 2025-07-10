@@ -14,6 +14,7 @@ import transactionRoutes from "./routes/transactions.js";
 import adminRoutes from "./routes/admin.js";
 import staffRoutes from "./routes/staff.js";
 import storeRoutes from "./routes/store.js";
+import publicRoutes from "./routes/public.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
