@@ -8,6 +8,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LiveDataProvider } from "./contexts/LiveDataContext";
+import { ChatProvider } from "./contexts/ChatContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -28,100 +30,104 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <LiveDataProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/login" element={<Auth />} />
-              <Route path="/register" element={<Auth />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/mini-games"
-                element={
-                  <ProtectedRoute>
-                    <MiniGames />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminPanel />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/staff"
-                element={
-                  <ProtectedRoute>
-                    <StaffPanel />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/store"
-                element={
-                  <ProtectedRoute>
-                    <GoldStore />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/gold-store"
-                element={
-                  <ProtectedRoute>
-                    <GoldStore />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/slots"
-                element={
-                  <ProtectedRoute>
-                    <Slots />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/table-games"
-                element={
-                  <ProtectedRoute>
-                    <TableGames />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/sports"
-                element={
-                  <ProtectedRoute>
-                    <Sports />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/bingo"
-                element={
-                  <ProtectedRoute>
-                    <Bingo />
-                  </ProtectedRoute>
-                }
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <NotificationProvider>
+          <ChatProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/login" element={<Auth />} />
+                  <Route path="/register" element={<Auth />} />
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/mini-games"
+                    element={
+                      <ProtectedRoute>
+                        <MiniGames />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute>
+                        <AdminPanel />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/staff"
+                    element={
+                      <ProtectedRoute>
+                        <StaffPanel />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/store"
+                    element={
+                      <ProtectedRoute>
+                        <GoldStore />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/gold-store"
+                    element={
+                      <ProtectedRoute>
+                        <GoldStore />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/slots"
+                    element={
+                      <ProtectedRoute>
+                        <Slots />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/table-games"
+                    element={
+                      <ProtectedRoute>
+                        <TableGames />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/sports"
+                    element={
+                      <ProtectedRoute>
+                        <Sports />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/bingo"
+                    element={
+                      <ProtectedRoute>
+                        <Bingo />
+                      </ProtectedRoute>
+                    }
+                  />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </ChatProvider>
+        </NotificationProvider>
       </LiveDataProvider>
     </AuthProvider>
   </QueryClientProvider>

@@ -10,14 +10,26 @@ import {
   Gift,
   MessageCircle,
   LogOut,
+  Bell,
+  Star,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLiveData } from "@/contexts/LiveDataContext";
+import { useNotifications } from "@/contexts/NotificationContext";
+import ChatWindow from "@/components/Chat/ChatWindow";
+import NotificationCenter from "@/components/Notifications/NotificationCenter";
 
 export default function CasinoHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatMinimized, setIsChatMinimized] = useState(false);
   const { user, logout } = useAuth();
   const { stats } = useLiveData();
+  const {
+    unreadCount,
+    isOpen: isNotificationsOpen,
+    toggleNotifications,
+  } = useNotifications();
 
   return (
     <header className="bg-card border-b border-border casino-glow sticky top-0 z-50">
@@ -321,7 +333,7 @@ export default function CasinoHeader() {
                   asChild
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Link to="/dashboard">🎮 Game History</Link>
+                  <Link to="/dashboard">���� Game History</Link>
                 </Button>
                 <Button
                   variant="ghost"
