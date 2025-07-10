@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Coins, Crown } from "lucide-react";
+import GameLauncher from "./GameLauncher";
 
 interface SlotGameCardProps {
   title: string;
+  gameSymbol?: string;
   provider?: string;
   thumbnail: string;
   isPopular?: boolean;
