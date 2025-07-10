@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import CasinoHeader from "@/components/CasinoHeader";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   User,
   Coins,
@@ -24,97 +26,176 @@ import {
   Clock,
   CheckCircle,
   XCircle,
+  Loader2,
+  Gamepad2,
+  Target,
+  Calendar,
+  Award,
 } from "lucide-react";
+
+interface Transaction {
+  id: string;
+  type: string;
+  amount: number;
+  currency: string;
+  description: string;
+  status: string;
+  created_at: string;
+  bonus_amount?: number;
+}
+
+interface GameSession {
+  id: number;
+  game_name: string;
+  game_type: string;
+  amount_wagered: number;
+  amount_won: number;
+  created_at: string;
+  duration_minutes: number;
+  currency_type: string;
+}
+
+interface UserStats {
+  total_wagered: number;
+  total_won: number;
+  games_played: number;
+  favorite_game: string;
+  win_rate: number;
+  biggest_win: number;
+  current_streak: number;
+}
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("profile");
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [gameHistory, setGameHistory] = useState<GameSession[]>([]);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { user, token } = useAuth();
+  const { toast } = useToast();
 
-  // Mock user data
-  const user = {
-    username: "Player123",
-    email: "player123@example.com",
-    level: 12,
-    xp: 8750,
-    xpToNext: 10000,
-    joinDate: "2024-01-15",
-    goldCoins: 25650,
-    sweepstakes: 127.5,
-    totalWagered: 156780,
-    totalWon: 89450,
-    gamesPlayed: 2547,
-    kycStatus: "verified",
-    vipTier: "Gold",
+  // Calculate derived user data
+  const getVipTier = (level: number) => {
+    if (level >= 50) return "Diamond";
+    if (level >= 30) return "Platinum";
+    if (level >= 15) return "Gold";
+    if (level >= 5) return "Silver";
+    return "Bronze";
   };
 
-  const transactionHistory = [
-    {
-      id: "TXN001",
-      type: "deposit",
-      amount: 5000,
-      currency: "GC",
-      method: "Google Pay",
-      status: "completed",
-      date: "2024-12-19 14:30",
-      bonus: 500,
-    },
-    {
-      id: "TXN002",
-      type: "win",
-      amount: 25.5,
-      currency: "SC",
-      method: "Slot Game",
-      status: "completed",
-      date: "2024-12-19 13:15",
-    },
-    {
-      id: "TXN003",
-      type: "withdraw",
-      amount: 50.0,
-      currency: "SC",
-      method: "Bank Transfer",
-      status: "pending",
-      date: "2024-12-19 12:00",
-    },
-    {
-      id: "TXN004",
-      type: "mini_game",
-      amount: 2.5,
-      currency: "SC",
-      method: "Josey's Quack Attack",
-      status: "completed",
-      date: "2024-12-19 11:30",
-    },
-  ];
+  const getXpToNext = (level: number) => {
+    return level * 1000; // Simple formula: next level requires level * 1000 XP
+  };
 
-  const gameHistory = [
-    {
-      game: "Gold Rush Deluxe",
-      type: "Slot",
-      played: "2024-12-19 14:45",
-      wagered: 50,
-      won: 125,
-      profit: 75,
-      duration: "15:30",
-    },
-    {
-      game: "Colin Shots",
-      type: "Mini Game",
-      played: "2024-12-19 11:30",
-      wagered: 0,
-      won: 2.5,
-      profit: 2.5,
-      duration: "01:00",
-    },
-    {
-      game: "Blackjack Classic",
-      type: "Table Game",
-      played: "2024-12-19 10:15",
-      wagered: 25,
-      won: 0,
-      profit: -25,
-      duration: "08:45",
-    },
-  ];
+  // Fetch user dashboard data
+  useEffect(() => {
+    if (!user || !token) return;
+
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch recent transactions
+        const transactionsRes = await fetch("/api/transactions/recent", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (transactionsRes.ok) {
+          const transactionsData = await transactionsRes.json();
+          setTransactions(transactionsData.slice(0, 10)); // Show last 10 transactions
+        }
+
+        // Fetch game history
+        const gameHistoryRes = await fetch("/api/games/history", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (gameHistoryRes.ok) {
+          const gameHistoryData = await gameHistoryRes.json();
+          setGameHistory(gameHistoryData.slice(0, 10)); // Show last 10 games
+        }
+
+        // Fetch user statistics
+        const statsRes = await fetch("/api/user/stats", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          setUserStats(statsData);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        toast({
+          title: "Error",
+          description:
+            "Failed to load dashboard data. Please refresh the page.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user, token, toast]);
+
+  // Claim daily bonus
+  const claimDailyBonus = async () => {
+    try {
+      const response = await fetch("/api/user/claim-daily-bonus", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        toast({
+          title: "Bonus Claimed! 🎉",
+          description: `You received ${result.amount} ${result.currency}!`,
+        });
+        // Refresh user data
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Cannot Claim Bonus",
+          description:
+            error.message || "You have already claimed today's bonus.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to claim bonus. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -126,7 +207,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground flex items-center">
-                <User className="w-8 h-8 mr-3 text-primary" />
+                <Gamepad2 className="w-8 h-8 mr-3 text-primary" />
                 Player Dashboard 🎮
               </h1>
               <p className="text-muted-foreground">
@@ -135,10 +216,11 @@ export default function Dashboard() {
             </div>
             <div className="text-right">
               <Badge className="bg-primary text-primary-foreground mb-2">
-                {user.vipTier} VIP 👑
+                {getVipTier(user.level)} VIP 👑
               </Badge>
               <p className="text-sm text-muted-foreground">
-                Level {user.level} • {user.xp.toLocaleString()} XP
+                Level {user.level} • {user.experience_points.toLocaleString()}{" "}
+                XP
               </p>
             </div>
           </div>
@@ -148,10 +230,13 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">Level Progress</span>
               <span className="text-sm text-muted-foreground">
-                {user.xp} / {user.xpToNext} XP
+                {user.experience_points} / {getXpToNext(user.level)} XP
               </span>
             </div>
-            <Progress value={(user.xp / user.xpToNext) * 100} className="h-2" />
+            <Progress
+              value={(user.experience_points / getXpToNext(user.level)) * 100}
+              className="h-2"
+            />
           </div>
         </div>
 
@@ -160,40 +245,106 @@ export default function Dashboard() {
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
               <Coins className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <p className="text-2xl font-bold text-primary">
-                {user.goldCoins.toLocaleString()}
-              </p>
+              {loading ? (
+                <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
+              ) : (
+                <p className="text-2xl font-bold text-primary">
+                  {user.gold_coins.toLocaleString()}
+                </p>
+              )}
               <p className="text-sm text-muted-foreground">Gold Coins</p>
             </CardContent>
           </Card>
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
               <Star className="w-8 h-8 mx-auto mb-2 text-accent" />
-              <p className="text-2xl font-bold text-accent">
-                {user.sweepstakes.toFixed(1)}
-              </p>
+              {loading ? (
+                <Loader2 className="w-6 h-6 animate-spin mx-auto text-accent" />
+              ) : (
+                <p className="text-2xl font-bold text-accent">
+                  {user.sweeps_coins.toFixed(2)}
+                </p>
+              )}
               <p className="text-sm text-muted-foreground">Sweepstakes Cash</p>
             </CardContent>
           </Card>
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
               <TrendingUp className="w-8 h-8 mx-auto mb-2 text-green-500" />
-              <p className="text-2xl font-bold text-green-500">
-                ${user.totalWon.toLocaleString()}
-              </p>
+              {loading ? (
+                <Loader2 className="w-6 h-6 animate-spin mx-auto text-green-500" />
+              ) : (
+                <p className="text-2xl font-bold text-green-500">
+                  ${userStats?.total_won.toLocaleString() || "0"}
+                </p>
+              )}
               <p className="text-sm text-muted-foreground">Total Won</p>
             </CardContent>
           </Card>
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
               <Trophy className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <p className="text-2xl font-bold text-primary">
-                {user.gamesPlayed.toLocaleString()}
-              </p>
+              {loading ? (
+                <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
+              ) : (
+                <p className="text-2xl font-bold text-primary">
+                  {userStats?.games_played.toLocaleString() || "0"}
+                </p>
+              )}
               <p className="text-sm text-muted-foreground">Games Played</p>
             </CardContent>
           </Card>
         </div>
+
+        {/* Performance Overview */}
+        {userStats && !loading && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <Card className="casino-glow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Win Rate</p>
+                    <p className="text-2xl font-bold text-green-500">
+                      {userStats.win_rate
+                        ? (userStats.win_rate * 100).toFixed(1)
+                        : "0"}
+                      %
+                    </p>
+                  </div>
+                  <Target className="w-8 h-8 text-green-500" />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="casino-glow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Biggest Win</p>
+                    <p className="text-2xl font-bold text-primary">
+                      ${userStats.biggest_win?.toLocaleString() || "0"}
+                    </p>
+                  </div>
+                  <Award className="w-8 h-8 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="casino-glow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Current Streak
+                    </p>
+                    <p className="text-2xl font-bold text-accent">
+                      {userStats.current_streak || 0} days
+                    </p>
+                  </div>
+                  <Calendar className="w-8 h-8 text-accent" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Dashboard Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -236,10 +387,19 @@ export default function Dashboard() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="joinDate">Member Since</Label>
+                      <Label htmlFor="firstName">First Name</Label>
                       <Input
-                        id="joinDate"
-                        value={new Date(user.joinDate).toLocaleDateString()}
+                        id="firstName"
+                        value={user.first_name}
+                        disabled
+                        className="bg-muted"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        value={user.last_name}
                         disabled
                         className="bg-muted"
                       />
@@ -253,22 +413,72 @@ export default function Dashboard() {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span>KYC Status:</span>
-                          <Badge className="bg-green-500 text-white">
-                            ✅ Verified
+                          <Badge
+                            className={
+                              user.kyc_status === "verified"
+                                ? "bg-green-500 text-white"
+                                : "bg-yellow-500 text-white"
+                            }
+                          >
+                            {user.kyc_status === "verified"
+                              ? "✅ Verified"
+                              : "⏳ Pending"}
                           </Badge>
                         </div>
                         <div className="flex justify-between">
                           <span>VIP Tier:</span>
                           <Badge className="bg-primary text-primary-foreground">
-                            👑 {user.vipTier}
+                            👑 {getVipTier(user.level)}
                           </Badge>
                         </div>
                         <div className="flex justify-between">
                           <span>Account Level:</span>
                           <span className="font-medium">{user.level}</span>
                         </div>
+                        <div className="flex justify-between">
+                          <span>Role:</span>
+                          <Badge variant="outline">
+                            {user.is_admin
+                              ? "🔒 Admin"
+                              : user.is_staff
+                                ? "⚡ Staff"
+                                : "🎮 Player"}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
+                    {userStats && (
+                      <div className="bg-primary/10 p-4 rounded-lg">
+                        <h3 className="font-semibold mb-2 text-primary">
+                          Gaming Stats 🎯
+                        </h3>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span>Favorite Game:</span>
+                            <span className="font-medium">
+                              {userStats.favorite_game || "None yet"}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Total Wagered:</span>
+                            <span className="font-medium">
+                              ${userStats.total_wagered.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Net Profit:</span>
+                            <span
+                              className={`font-medium ${userStats.total_won - userStats.total_wagered > 0 ? "text-green-500" : "text-red-500"}`}
+                            >
+                              $
+                              {(
+                                userStats.total_won - userStats.total_wagered
+                              ).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <Button className="w-full">
                       <Shield className="w-4 h-4 mr-2" />
                       Update Profile Settings
@@ -295,65 +505,94 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {transactionHistory.map((tx) => (
-                    <div
-                      key={tx.id}
-                      className="flex items-center justify-between p-4 bg-secondary rounded-lg"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                          {tx.type === "deposit" && (
-                            <Upload className="w-5 h-5 text-primary" />
-                          )}
-                          {tx.type === "withdraw" && (
-                            <Download className="w-5 h-5 text-accent" />
-                          )}
-                          {tx.type === "win" && (
-                            <Trophy className="w-5 h-5 text-green-500" />
-                          )}
-                          {tx.type === "mini_game" && (
-                            <Gift className="w-5 h-5 text-primary" />
-                          )}
+                {loading ? (
+                  <div className="text-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+                    <p>Loading transactions...</p>
+                  </div>
+                ) : transactions.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Wallet className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      No transactions yet. Start playing to see your activity
+                      here!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {transactions.map((tx) => (
+                      <div
+                        key={tx.id}
+                        className="flex items-center justify-between p-4 bg-secondary rounded-lg"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            {(tx.type === "deposit" ||
+                              tx.type === "purchase") && (
+                              <Upload className="w-5 h-5 text-primary" />
+                            )}
+                            {tx.type === "withdrawal" && (
+                              <Download className="w-5 h-5 text-accent" />
+                            )}
+                            {(tx.type === "win" || tx.type === "game_win") && (
+                              <Trophy className="w-5 h-5 text-green-500" />
+                            )}
+                            {tx.type === "bonus" && (
+                              <Gift className="w-5 h-5 text-primary" />
+                            )}
+                            {tx.type === "mini_game" && (
+                              <Target className="w-5 h-5 text-primary" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium">
+                              {tx.type === "deposit" && "💰 Deposit"}
+                              {tx.type === "purchase" && "💰 Purchase"}
+                              {tx.type === "withdrawal" && "💸 Withdrawal"}
+                              {tx.type === "win" && "🎉 Game Win"}
+                              {tx.type === "game_win" && "🎉 Game Win"}
+                              {tx.type === "bonus" && "🎁 Bonus"}
+                              {tx.type === "mini_game" && "🎯 Mini Game"}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {tx.description} •{" "}
+                              {new Date(tx.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium">
-                            {tx.type === "deposit" && "💰 Deposit"}
-                            {tx.type === "withdraw" && "💸 Withdrawal"}
-                            {tx.type === "win" && "🎉 Game Win"}
-                            {tx.type === "mini_game" && "🎯 Mini Game Win"}
+                        <div className="text-right">
+                          <p className="font-bold text-lg">
+                            {tx.amount > 0 ? "+" : ""}
+                            {tx.amount.toLocaleString()} {tx.currency}
                           </p>
-                          <p className="text-sm text-muted-foreground">
-                            {tx.method} • {tx.date}
-                          </p>
+                          {tx.bonus_amount && (
+                            <p className="text-sm text-green-500">
+                              +{tx.bonus_amount} {tx.currency} bonus
+                            </p>
+                          )}
+                          <div className="flex items-center justify-end mt-1">
+                            {tx.status === "completed" ? (
+                              <Badge className="bg-green-500 text-white">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Completed
+                              </Badge>
+                            ) : tx.status === "pending" ? (
+                              <Badge className="bg-yellow-500 text-white">
+                                <Clock className="w-3 h-3 mr-1" />
+                                Pending
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-red-500 text-white">
+                                <XCircle className="w-3 h-3 mr-1" />
+                                {tx.status}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg">
-                          {tx.amount.toLocaleString()} {tx.currency}
-                        </p>
-                        {tx.bonus && (
-                          <p className="text-sm text-green-500">
-                            +{tx.bonus} {tx.currency} bonus
-                          </p>
-                        )}
-                        <div className="flex items-center justify-end mt-1">
-                          {tx.status === "completed" ? (
-                            <Badge className="bg-green-500 text-white">
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              Completed
-                            </Badge>
-                          ) : (
-                            <Badge className="bg-yellow-500 text-white">
-                              <Clock className="w-3 h-3 mr-1" />
-                              Pending
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -368,44 +607,62 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {gameHistory.map((game, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-secondary rounded-lg"
-                    >
-                      <div>
-                        <h3 className="font-semibold">{game.game}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {game.type} • {game.played}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Duration: {game.duration}
-                        </p>
+                {loading ? (
+                  <div className="text-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+                    <p>Loading game history...</p>
+                  </div>
+                ) : gameHistory.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Gamepad2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      No games played yet. Start playing to build your history!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {gameHistory.map((game) => (
+                      <div
+                        key={game.id}
+                        className="flex items-center justify-between p-4 bg-secondary rounded-lg"
+                      >
+                        <div>
+                          <h3 className="font-semibold">{game.game_name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {game.game_type} •{" "}
+                            {new Date(game.created_at).toLocaleString()}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Duration: {game.duration_minutes} min
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm">
+                            Wagered: {game.amount_wagered} {game.currency_type}
+                          </p>
+                          <p className="text-sm">
+                            Won: {game.amount_won} {game.currency_type}
+                          </p>
+                          <p
+                            className={`font-bold ${
+                              game.amount_won - game.amount_wagered > 0
+                                ? "text-green-500"
+                                : game.amount_won - game.amount_wagered < 0
+                                  ? "text-destructive"
+                                  : "text-muted-foreground"
+                            }`}
+                          >
+                            {game.amount_won - game.amount_wagered > 0
+                              ? "+"
+                              : ""}
+                            {(game.amount_won - game.amount_wagered).toFixed(2)}{" "}
+                            {game.currency_type}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm">Wagered: {game.wagered} GC</p>
-                        <p className="text-sm">
-                          Won: {game.won}{" "}
-                          {game.type === "Mini Game" ? "SC" : "GC"}
-                        </p>
-                        <p
-                          className={`font-bold ${
-                            game.profit > 0
-                              ? "text-green-500"
-                              : game.profit < 0
-                                ? "text-destructive"
-                                : "text-muted-foreground"
-                          }`}
-                        >
-                          {game.profit > 0 ? "+" : ""}
-                          {game.profit}{" "}
-                          {game.type === "Mini Game" ? "SC" : "GC"}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -421,24 +678,76 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-500" />
-                  <h3 className="text-xl font-semibold mb-2 text-green-500">
-                    ✅ KYC Verification Complete!
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Your identity has been verified. You can now withdraw
-                    Sweepstakes Cash prizes! 🎉
-                  </p>
-                  <div className="bg-secondary p-4 rounded-lg inline-block">
-                    <p className="text-sm">
-                      <strong>Verified Documents:</strong>
-                    </p>
-                    <ul className="text-sm text-left mt-2 space-y-1">
-                      <li>✅ Government ID</li>
-                      <li>✅ Proof of Address</li>
-                      <li>✅ Bank Account Information</li>
-                    </ul>
-                  </div>
+                  {user.kyc_status === "verified" ? (
+                    <>
+                      <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-500" />
+                      <h3 className="text-xl font-semibold mb-2 text-green-500">
+                        ✅ KYC Verification Complete!
+                      </h3>
+                      <p className="text-muted-foreground mb-6">
+                        Your identity has been verified. You can now withdraw
+                        Sweepstakes Cash prizes! 🎉
+                      </p>
+                      <div className="bg-secondary p-4 rounded-lg inline-block">
+                        <p className="text-sm">
+                          <strong>Verified Documents:</strong>
+                        </p>
+                        <ul className="text-sm text-left mt-2 space-y-1">
+                          <li>✅ Government ID</li>
+                          <li>✅ Proof of Address</li>
+                          <li>✅ Bank Account Information</li>
+                        </ul>
+                      </div>
+                    </>
+                  ) : user.kyc_status === "pending" ? (
+                    <>
+                      <Clock className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
+                      <h3 className="text-xl font-semibold mb-2 text-yellow-600">
+                        ⏳ KYC Verification Pending
+                      </h3>
+                      <p className="text-muted-foreground mb-6">
+                        Your documents are being reviewed. This usually takes
+                        1-3 business days.
+                      </p>
+                      <div className="bg-secondary p-4 rounded-lg inline-block">
+                        <p className="text-sm">
+                          <strong>Submitted Documents:</strong>
+                        </p>
+                        <ul className="text-sm text-left mt-2 space-y-1">
+                          <li>⏳ Government ID - Under Review</li>
+                          <li>⏳ Proof of Address - Under Review</li>
+                          <li>⏳ Bank Account Information - Under Review</li>
+                        </ul>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
+                      <h3 className="text-xl font-semibold mb-2 text-red-500">
+                        🔒 KYC Verification Required
+                      </h3>
+                      <p className="text-muted-foreground mb-6">
+                        Complete KYC verification to withdraw Sweepstakes Cash
+                        prizes.
+                      </p>
+                      <Button className="mb-4">
+                        <Shield className="w-4 h-4 mr-2" />
+                        Start KYC Verification
+                      </Button>
+                      <div className="bg-secondary p-4 rounded-lg inline-block">
+                        <p className="text-sm">
+                          <strong>Required Documents:</strong>
+                        </p>
+                        <ul className="text-sm text-left mt-2 space-y-1">
+                          <li>📄 Government ID (Driver's License, Passport)</li>
+                          <li>
+                            🏠 Proof of Address (Utility Bill, Bank Statement)
+                          </li>
+                          <li>🏦 Bank Account Information</li>
+                        </ul>
+                      </div>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -460,24 +769,67 @@ export default function Dashboard() {
                       🎁 Daily Login Bonus
                     </h3>
                     <p className="text-sm text-muted-foreground mb-3">
-                      You've logged in for 5 consecutive days!
+                      Login daily to earn bonus coins!
                     </p>
-                    <Button size="sm" className="w-full">
-                      Claim Today's Bonus (500 GC)
+                    <Button
+                      size="sm"
+                      className="w-full"
+                      onClick={claimDailyBonus}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Gift className="w-4 h-4 mr-2" />
+                      )}
+                      Claim Today's Bonus
                     </Button>
                   </div>
 
                   <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
                     <h3 className="font-semibold text-accent mb-2">
-                      ⚡ VIP Gold Benefits
+                      ⚡ VIP {getVipTier(user.level)} Benefits
                     </h3>
                     <p className="text-sm text-muted-foreground mb-3">
-                      Enjoy exclusive perks as a Gold VIP member!
+                      Enjoy exclusive perks as a {getVipTier(user.level)} VIP
+                      member!
                     </p>
                     <ul className="text-xs space-y-1">
-                      <li>• 20% bonus on all deposits</li>
-                      <li>• Priority customer support</li>
-                      <li>• Exclusive VIP tournaments</li>
+                      {getVipTier(user.level) === "Bronze" && (
+                        <>
+                          <li>• 5% bonus on deposits</li>
+                          <li>• Basic customer support</li>
+                          <li>• Access to all games</li>
+                        </>
+                      )}
+                      {getVipTier(user.level) === "Silver" && (
+                        <>
+                          <li>• 10% bonus on deposits</li>
+                          <li>• Enhanced customer support</li>
+                          <li>• Weekly bonus opportunities</li>
+                        </>
+                      )}
+                      {getVipTier(user.level) === "Gold" && (
+                        <>
+                          <li>• 20% bonus on deposits</li>
+                          <li>• Priority customer support</li>
+                          <li>• Exclusive VIP tournaments</li>
+                        </>
+                      )}
+                      {getVipTier(user.level) === "Platinum" && (
+                        <>
+                          <li>• 35% bonus on deposits</li>
+                          <li>• VIP account manager</li>
+                          <li>• Exclusive high-roller games</li>
+                        </>
+                      )}
+                      {getVipTier(user.level) === "Diamond" && (
+                        <>
+                          <li>• 50% bonus on deposits</li>
+                          <li>• Personal VIP concierge</li>
+                          <li>• Custom betting limits</li>
+                        </>
+                      )}
                     </ul>
                   </div>
 
@@ -491,13 +843,30 @@ export default function Dashboard() {
                     <div className="mb-3">
                       <div className="flex justify-between text-sm mb-1">
                         <span>Progress</span>
-                        <span>32/50 games</span>
+                        <span>
+                          {Math.min(userStats?.games_played || 0, 50)}/50 games
+                        </span>
                       </div>
-                      <Progress value={64} className="h-2" />
+                      <Progress
+                        value={Math.min(
+                          ((userStats?.games_played || 0) / 50) * 100,
+                          100,
+                        )}
+                        className="h-2"
+                      />
                     </div>
                     <p className="text-xs text-green-500">
                       Reward: 1,000 GC + 5 SC
                     </p>
+                    {userStats && userStats.games_played >= 50 && (
+                      <Button
+                        size="sm"
+                        className="w-full mt-2 bg-green-500 hover:bg-green-600"
+                      >
+                        <Trophy className="w-4 h-4 mr-2" />
+                        Claim Reward!
+                      </Button>
+                    )}
                   </div>
 
                   <div className="bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/20">
