@@ -37,16 +37,86 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/register" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/mini-games" element={<MiniGames />} />
-              <Route path="/admin" element={<AdminPanel />} />
-              <Route path="/staff" element={<StaffPanel />} />
-              <Route path="/store" element={<GoldStore />} />
-              <Route path="/gold-store" element={<GoldStore />} />
-              <Route path="/slots" element={<Slots />} />
-              <Route path="/table-games" element={<TableGames />} />
-              <Route path="/sports" element={<Sports />} />
-              <Route path="/bingo" element={<Bingo />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mini-games"
+                element={
+                  <ProtectedRoute>
+                    <MiniGames />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminPanel />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/staff"
+                element={
+                  <ProtectedRoute>
+                    <StaffPanel />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/store"
+                element={
+                  <ProtectedRoute>
+                    <GoldStore />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/gold-store"
+                element={
+                  <ProtectedRoute>
+                    <GoldStore />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/slots"
+                element={
+                  <ProtectedRoute>
+                    <Slots />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/table-games"
+                element={
+                  <ProtectedRoute>
+                    <TableGames />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/sports"
+                element={
+                  <ProtectedRoute>
+                    <Sports />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bingo"
+                element={
+                  <ProtectedRoute>
+                    <Bingo />
+                  </ProtectedRoute>
+                }
+              />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
