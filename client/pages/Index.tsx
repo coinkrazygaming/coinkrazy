@@ -190,27 +190,55 @@ export default function Index() {
               Play for FREE • Win Real Prizes • Join the Fun! 🎉
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3 casino-pulse"
-                asChild
-              >
-                <Link to="/auth">
-                  <Gift className="w-5 h-5 mr-2" />
-                  🎁 Claim FREE 10,000 GC + 10 SC
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-background"
-                asChild
-              >
-                <Link to="/mini-games">
-                  <Gamepad2 className="w-5 h-5 mr-2" />
-                  🎮 Play Mini Games
-                </Link>
-              </Button>
+              {user ? (
+                <>
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3 casino-pulse"
+                    asChild
+                  >
+                    <Link to="/slots">
+                      <Star className="w-5 h-5 mr-2" />
+                      🎰 Play Slots Now!
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-white text-white hover:bg-white hover:text-background"
+                    asChild
+                  >
+                    <Link to="/mini-games">
+                      <Gamepad2 className="w-5 h-5 mr-2" />
+                      🎮 Play Mini Games
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3 casino-pulse"
+                    asChild
+                  >
+                    <Link to="/auth">
+                      <Gift className="w-5 h-5 mr-2" />
+                      🎁 Claim FREE 10,000 GC + 10 SC
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-white text-white hover:bg-white hover:text-background"
+                    asChild
+                  >
+                    <Link to="/auth">
+                      <Crown className="w-5 h-5 mr-2" />
+                      🔐 Login & Play
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
