@@ -50,20 +50,35 @@ export default function CasinoHeader() {
           {/* User Info & Actions */}
           <div className="flex items-center space-x-4">
             {/* Balance Display */}
-            <div className="hidden md:flex items-center space-x-3">
-              <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
-                <Coins className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">
-                  {user.goldCoins.toLocaleString()} GC
-                </span>
+            {user ? (
+              <div className="hidden md:flex items-center space-x-3">
+                <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
+                  <Coins className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    {user.gold_coins.toLocaleString()} GC
+                  </span>
+                </div>
+                <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
+                  <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
+                  <span className="text-sm font-medium text-accent">
+                    {user.sweeps_coins.toFixed(2)} SC
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
-                <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-accent">
-                  {user.sweepstakes.toFixed(2)} SC
-                </span>
+            ) : (
+              <div className="hidden md:flex items-center space-x-3">
+                <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
+                  <Coins className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    -- GC
+                  </span>
+                </div>
+                <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
+                  <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
+                  <span className="text-sm font-medium text-accent">-- SC</span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-2">
