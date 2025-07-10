@@ -15,6 +15,8 @@ import adminRoutes from "./routes/admin.js";
 import staffRoutes from "./routes/staff.js";
 import storeRoutes from "./routes/store.js";
 import publicRoutes from "./routes/public.js";
+import chatRoutes from "./routes/chat.js";
+import notificationRoutes from "./routes/notifications.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
