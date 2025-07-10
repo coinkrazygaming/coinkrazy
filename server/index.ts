@@ -66,6 +66,8 @@ export function createServer() {
   app.use("/api/admin", adminRoutes);
   app.use("/api/staff", staffRoutes);
   app.use("/api/store", storeRoutes);
+  app.use("/api/chat", chatRoutes);
+  app.use("/api/notifications", notificationRoutes);
 
   // Health check
   app.get("/api/health", (req, res) => {
