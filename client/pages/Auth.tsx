@@ -502,8 +502,9 @@ export default function Auth() {
                       type="submit"
                       className="w-full bg-primary hover:bg-primary/90"
                       size="lg"
+                      disabled={isLoading}
                     >
-                      🎰 Login & Play Now!
+                      {isLoading ? "Logging in..." : "🎰 Login & Play Now!"}
                     </Button>
 
                     <div className="text-center">
