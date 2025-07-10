@@ -2,18 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Coins, User, Menu, X, Gift, MessageCircle } from "lucide-react";
+import {
+  Coins,
+  User,
+  Menu,
+  X,
+  Gift,
+  MessageCircle,
+  LogOut,
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLiveData } from "@/contexts/LiveDataContext";
 
 export default function CasinoHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Mock user data - replace with real user context
-  const user = {
-    name: "Player123",
-    goldCoins: 25650,
-    sweepstakes: 127.5,
-    level: 12,
-  };
+  const { user, logout } = useAuth();
+  const { stats } = useLiveData();
 
   return (
     <header className="bg-card border-b border-border casino-glow sticky top-0 z-50">
