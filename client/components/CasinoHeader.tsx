@@ -105,13 +105,40 @@ export default function CasinoHeader() {
                 </Link>
               </Button>
 
-              <Button variant="outline" size="sm" className="relative">
+              {/* Notifications Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleNotifications}
+                className="relative"
+              >
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 w-5 h-5 p-0 text-xs flex items-center justify-center"
+                  >
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </Badge>
+                )}
+              </Button>
+
+              {/* Chat Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (isChatOpen && !isChatMinimized) {
+                    setIsChatMinimized(true);
+                  } else {
+                    setIsChatOpen(true);
+                    setIsChatMinimized(false);
+                  }
+                }}
+                className="relative"
+              >
                 <MessageCircle className="w-4 h-4" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full text-xs flex items-center justify-center">
-                  <span className="text-destructive-foreground text-[10px]">
-                    3
-                  </span>
-                </div>
+                <span className="hidden sm:inline ml-1">Chat</span>
               </Button>
 
               {user ? (
@@ -402,6 +429,23 @@ export default function CasinoHeader() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Chat Window */}
+      {user && isChatOpen && (
+        <ChatWindow
+          isMinimized={isChatMinimized}
+          onToggleMinimize={() => setIsChatMinimized(!isChatMinimized)}
+          onClose={() => setIsChatOpen(false)}
+        />
+      )}
+
+      {/* Notification Center */}
+      {user && (
+        <NotificationCenter
+          isOpen={isNotificationsOpen}
+          onClose={toggleNotifications}
+        />
       )}
     </header>
   );
