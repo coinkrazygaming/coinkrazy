@@ -494,6 +494,7 @@ export default function Slots() {
                       <SlotGameCard
                         key={game.id}
                         title={game.title}
+                        gameSymbol={game.gameSymbol}
                         provider={game.provider}
                         thumbnail={game.thumbnail}
                         category="Slots"
