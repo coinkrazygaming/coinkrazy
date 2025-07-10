@@ -22,6 +22,7 @@ interface SlotGameCardProps {
 
 export default function SlotGameCard({
   title,
+  gameSymbol,
   provider,
   thumbnail,
   isPopular,
@@ -33,6 +34,26 @@ export default function SlotGameCard({
   onPlayGold,
   onPlaySweeps,
 }: SlotGameCardProps) {
+  const [showLauncher, setShowLauncher] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<"GC" | "SC">("GC");
+
+  const handlePlayGold = () => {
+    if (gameSymbol) {
+      setSelectedCurrency("GC");
+      setShowLauncher(true);
+    } else if (onPlayGold) {
+      onPlayGold();
+    }
+  };
+
+  const handlePlaySweeps = () => {
+    if (gameSymbol) {
+      setSelectedCurrency("SC");
+      setShowLauncher(true);
+    } else if (onPlaySweeps) {
+      onPlaySweeps();
+    }
+  };
   return (
     <Card className="group relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 casino-glow hover:shadow-xl">
       <div className="relative">
