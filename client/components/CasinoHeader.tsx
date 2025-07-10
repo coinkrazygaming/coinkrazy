@@ -342,19 +342,50 @@ export default function CasinoHeader() {
               </div>
             </div>
 
-            {/* Mobile Balance */}
-            <div className="flex items-center justify-between pt-4 border-t border-border">
-              <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
-                <Coins className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">
-                  {user.goldCoins.toLocaleString()} GC
-                </span>
-              </div>
-              <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
-                <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-accent">
-                  {user.sweepstakes.toFixed(2)} SC
-                </span>
+            {/* Mobile Balance & Auth */}
+            <div className="pt-4 border-t border-border">
+              {user ? (
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-1 bg-secondary px-3 py-1 rounded-full">
+                    <Coins className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      {user.gold_coins.toLocaleString()} GC
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-1 bg-accent/20 px-3 py-1 rounded-full">
+                    <div className="w-4 h-4 bg-accent rounded-full animate-pulse" />
+                    <span className="text-sm font-medium text-accent">
+                      {user.sweeps_coins.toFixed(2)} SC
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+              <div className="flex flex-col space-y-2">
+                {user ? (
+                  <Button
+                    variant="outline"
+                    className="justify-start text-destructive hover:text-destructive"
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="justify-start"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/auth">
+                      <User className="w-4 h-4 mr-2" />
+                      Login / Register
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
