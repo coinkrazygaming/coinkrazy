@@ -35,41 +35,43 @@ export default function Slots() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState<string[]>([]);
 
-  // Mock slot games data with real thumbnails
+  // PragmaticPlay slot games with real API integration
   const slotGames = [
     {
-      id: "gold-rush",
-      title: "Gold Rush Deluxe",
+      id: "doghouse",
+      title: "The Dog House",
+      gameSymbol: "vs20doghouse",
       provider: "Pragmatic Play",
       category: "popular",
       thumbnail:
-        "https://images.unsplash.com/photo-1541278107931-e006523892df?w=400&h=600&fit=crop&crop=center",
-      rtp: "96.5%",
+        "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=600&fit=crop",
+      rtp: "96.51%",
       volatility: "High",
-      paylines: 25,
-      minBet: 0.25,
-      maxBet: 125,
-      jackpot: "$12,456",
-      isNew: false,
-      isPopular: true,
-      description: "Strike gold in this exciting mining adventure!",
-    },
-    {
-      id: "diamond-dreams",
-      title: "Diamond Dreams",
-      provider: "NetEnt",
-      category: "new",
-      thumbnail:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop&crop=center",
-      rtp: "97.2%",
-      volatility: "Medium",
       paylines: 20,
       minBet: 0.2,
+      maxBet: 125,
+      jackpot: "$15,420",
+      isNew: false,
+      isPopular: true,
+      description: "Enjoy a fun-filled adventure with man's best friend!",
+    },
+    {
+      id: "sweetbonanza",
+      title: "Sweet Bonanza",
+      gameSymbol: "vs25sweetbonanza",
+      provider: "Pragmatic Play",
+      category: "new",
+      thumbnail:
+        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
+      rtp: "96.51%",
+      volatility: "High",
+      paylines: "Pays Anywhere",
+      minBet: 0.2,
       maxBet: 100,
-      jackpot: null,
+      jackpot: "$21,100",
       isNew: true,
-      isPopular: false,
-      description: "Sparkling gems await in this dazzling slot!",
+      isPopular: true,
+      description: "Sweet treats and big wins in this tumbling slot!",
     },
     {
       id: "lucky-777",
