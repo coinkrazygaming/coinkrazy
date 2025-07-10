@@ -56,6 +56,7 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
   // API routes
+  app.use("/api/public", publicRoutes);
   app.use("/api/auth", authRoutes);
   app.use("/api/user", userRoutes);
   app.use("/api/games", gameRoutes);
