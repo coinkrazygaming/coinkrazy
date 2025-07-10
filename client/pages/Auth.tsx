@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import {
   Crown,
   Mail,
@@ -20,8 +22,11 @@ import {
 } from "lucide-react";
 
 export default function Auth() {
+  const navigate = useNavigate();
+  const { login, register, user, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -31,20 +36,103 @@ export default function Auth() {
     email: "",
     password: "",
     confirmPassword: "",
+    firstName: "",
+    lastName: "",
     dateOfBirth: "",
+    country: "United States",
+    state: "",
+    zipCode: "",
+    phone: "",
     agreeToTerms: false,
   });
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && !loading) {
+      navigate("/dashboard");
+    }
+  }, [user, loading, navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log("Login:", loginData);
+    if (!loginData.email || !loginData.password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const success = await login(loginData.email, loginData.password);
+      if (success) {
+        toast.success("Login successful! Welcome back!");
+        navigate("/dashboard");
+      } else {
+        toast.error("Invalid email or password. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic with welcome bonus
-    console.log("Register:", registerData);
+
+    // Validation
+    if (
+      !registerData.username ||
+      !registerData.email ||
+      !registerData.password
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (registerData.password !== registerData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (registerData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    if (!registerData.agreeToTerms) {
+      toast.error("Please agree to the terms and conditions");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const success = await register({
+        username: registerData.username,
+        email: registerData.email,
+        password: registerData.password,
+        firstName: registerData.firstName,
+        lastName: registerData.lastName,
+        dateOfBirth: registerData.dateOfBirth,
+        country: registerData.country,
+        state: registerData.state,
+        zipCode: registerData.zipCode,
+        phone: registerData.phone,
+      });
+
+      if (success) {
+        toast.success("Registration successful! Welcome to CoinKrazy! 🎉");
+        toast.success("You've received 10,000 Gold Coins + 10 Sweeps Coins!");
+        navigate("/dashboard");
+      } else {
+        toast.error(
+          "Registration failed. Email or username may already exist.",
+        );
+      }
+    } catch (error) {
+      toast.error("Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
