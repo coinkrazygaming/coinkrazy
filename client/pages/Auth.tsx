@@ -384,9 +384,12 @@ export default function Auth() {
                       type="submit"
                       className="w-full bg-primary hover:bg-primary/90 casino-pulse"
                       size="lg"
+                      disabled={isLoading}
                     >
                       <Gift className="w-5 h-5 mr-2" />
-                      🎊 Create Account & Get FREE Bonus!
+                      {isLoading
+                        ? "Creating Account..."
+                        : "🎊 Create Account & Get FREE Bonus!"}
                     </Button>
 
                     <div className="text-center">
