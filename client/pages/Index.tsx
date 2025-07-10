@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CasinoHeader from "@/components/CasinoHeader";
 import GameCard from "@/components/GameCard";
+import { useLiveData } from "@/contexts/LiveDataContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Gift,
   TrendingUp,
@@ -18,8 +20,8 @@ import {
 } from "lucide-react";
 
 export default function Index() {
-  const [onlineUsers, setOnlineUsers] = useState(1247);
-  const [todaysPayout, setTodaysPayout] = useState(125678.45);
+  const { stats } = useLiveData();
+  const { user } = useAuth();
 
   // Mock data for games
   const miniGames = [
@@ -52,7 +54,7 @@ export default function Index() {
     },
     {
       title: "Haylie's Coins",
-      emoji: "🪙",
+      emoji: "���",
       category: "Mini Game",
       cooldown: null,
       provider: "CoinKrazy",
