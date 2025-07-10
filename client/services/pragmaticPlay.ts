@@ -30,9 +30,12 @@ class PragmaticPlayService {
   constructor() {
     this.config = {
       apiUrl:
-        process.env.PRAGMATIC_PLAY_API_URL || "https://api.pragmaticplay.net",
-      operatorId: process.env.PRAGMATIC_PLAY_OPERATOR_ID || "coinkriazy_demo",
-      secretKey: process.env.PRAGMATIC_PLAY_SECRET_KEY || "demo_secret_key",
+        import.meta.env.VITE_PRAGMATIC_PLAY_API_URL ||
+        "https://api.pragmaticplay.net",
+      operatorId:
+        import.meta.env.VITE_PRAGMATIC_PLAY_OPERATOR_ID || "coinkriazy_demo",
+      secretKey:
+        import.meta.env.VITE_PRAGMATIC_PLAY_SECRET_KEY || "demo_secret_key",
       currency: "USD",
       mode: "demo", // Default to demo mode for sweepstakes compliance
     };
