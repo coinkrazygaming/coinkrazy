@@ -25,30 +25,34 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/login" element={<Auth />} />
-          <Route path="/register" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/mini-games" element={<MiniGames />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/staff" element={<StaffPanel />} />
-          <Route path="/store" element={<GoldStore />} />
-          <Route path="/gold-store" element={<GoldStore />} />
-          <Route path="/slots" element={<Slots />} />
-          <Route path="/table-games" element={<TableGames />} />
-          <Route path="/sports" element={<Sports />} />
-          <Route path="/bingo" element={<Bingo />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <LiveDataProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/login" element={<Auth />} />
+              <Route path="/register" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/mini-games" element={<MiniGames />} />
+              <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/staff" element={<StaffPanel />} />
+              <Route path="/store" element={<GoldStore />} />
+              <Route path="/gold-store" element={<GoldStore />} />
+              <Route path="/slots" element={<Slots />} />
+              <Route path="/table-games" element={<TableGames />} />
+              <Route path="/sports" element={<Sports />} />
+              <Route path="/bingo" element={<Bingo />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LiveDataProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
