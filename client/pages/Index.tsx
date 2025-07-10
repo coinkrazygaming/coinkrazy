@@ -166,15 +166,7 @@ export default function Index() {
     },
   ];
 
-  useEffect(() => {
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setOnlineUsers((prev) => prev + Math.floor(Math.random() * 5) - 2);
-      setTodaysPayout((prev) => prev + Math.random() * 100);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+  // No longer needed - using live data context
 
   return (
     <div className="min-h-screen bg-background">
