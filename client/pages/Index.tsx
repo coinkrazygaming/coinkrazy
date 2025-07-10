@@ -224,7 +224,7 @@ export default function Index() {
               <div className="flex items-center justify-center space-x-1 text-primary">
                 <Users className="w-4 h-4" />
                 <span className="text-2xl font-bold">
-                  {onlineUsers.toLocaleString()}
+                  {stats.usersOnline.toLocaleString()}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">🟢 Players Online</p>
@@ -233,7 +233,7 @@ export default function Index() {
               <div className="flex items-center justify-center space-x-1 text-accent">
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-2xl font-bold">
-                  ${todaysPayout.toLocaleString()}
+                  ${stats.totalPayout.toLocaleString()}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">
