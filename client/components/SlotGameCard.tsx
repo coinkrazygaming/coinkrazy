@@ -126,7 +126,7 @@ export default function SlotGameCard({
               <Button
                 className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                 size="sm"
-                onClick={onPlayGold}
+                onClick={handlePlayGold}
               >
                 <Coins className="w-3 h-3 mr-1" />
                 Play with Gold Coins
@@ -134,7 +134,7 @@ export default function SlotGameCard({
               <Button
                 className="w-full bg-green-600 hover:bg-green-700 text-white"
                 size="sm"
-                onClick={onPlaySweeps}
+                onClick={handlePlaySweeps}
               >
                 <Crown className="w-3 h-3 mr-1" />
                 Play with Sweeps Coins
@@ -143,6 +143,16 @@ export default function SlotGameCard({
           </div>
         </CardContent>
       </div>
+
+      {/* Game Launcher Modal */}
+      {showLauncher && gameSymbol && (
+        <GameLauncher
+          gameSymbol={gameSymbol}
+          gameName={title}
+          currency={selectedCurrency}
+          onClose={() => setShowLauncher(false)}
+        />
+      )}
     </Card>
   );
 }
