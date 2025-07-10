@@ -82,30 +82,44 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const data = await apiCall("/admin/dashboard");
+      const data = await apiCall("/public/stats");
 
-      if (data) {
+      if (data && data.stats) {
         setStats({
-          usersOnline: data.userStats?.active_today || stats.usersOnline,
-          totalPayout: data.financialStats?.total_revenue || stats.totalPayout,
-          jackpotAmount: stats.jackpotAmount,
-          gamesPlaying: data.gameStats?.total_plays || stats.gamesPlaying,
-          totalWithdrawals:
-            Math.abs(data.financialStats?.total_withdrawals) ||
-            stats.totalWithdrawals,
-          pendingWithdrawals:
-            data.financialStats?.pending_withdrawals ||
-            stats.pendingWithdrawals,
-          newUsersToday: data.userStats?.new_today || stats.newUsersToday,
-          activeGames: data.gameStats?.active_games || stats.activeGames,
+          usersOnline: data.stats.usersOnline,
+          totalPayout: data.stats.totalPayout,
+          jackpotAmount: data.stats.jackpotAmount,
+          gamesPlaying: data.stats.gamesPlaying,
+          totalWithdrawals: data.stats.totalWithdrawals,
+          pendingWithdrawals: data.stats.pendingWithdrawals,
+          newUsersToday: data.stats.newUsersToday,
+          activeGames: data.stats.activeGames,
         });
+      } else {
+        // Simulate live data with small random changes if API fails
+        setStats((prev) => ({
+          ...prev,
+          usersOnline: Math.max(
+            247,
+            prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+          ),
+          totalPayout: prev.totalPayout + Math.random() * 1000,
+          jackpotAmount: prev.jackpotAmount + Math.random() * 100,
+          gamesPlaying: Math.max(
+            0,
+            prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
+          ),
+        }));
       }
     } catch (error) {
       console.error("Failed to fetch live stats:", error);
       // Simulate live data with small random changes
       setStats((prev) => ({
         ...prev,
-        usersOnline: prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+        usersOnline: Math.max(
+          247,
+          prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+        ),
         totalPayout: prev.totalPayout + Math.random() * 1000,
         jackpotAmount: prev.jackpotAmount + Math.random() * 100,
         gamesPlaying: Math.max(
