@@ -1,7 +1,7 @@
 import express from "express";
-import { authenticateToken } from "../middleware/auth";
-import pool from "../config/database";
-import { RowDataPacket, ResultSetHeader } from "mysql2";
+import { authenticateToken } from "../middleware/auth.js";
+import { executeQuery } from "../config/database.js";
+import { z } from "zod";
 
 const router = express.Router();
 
@@ -13,9 +13,9 @@ router.get("/", authenticateToken, async (req, res) => {
     const offset = parseInt(req.query.offset as string) || 0;
 
     const [notifications] = await pool.execute<RowDataPacket[]>(
-      `SELECT * FROM notifications 
-       WHERE user_id = ? 
-       ORDER BY created_at DESC 
+      `SELECT * FROM notifications
+       WHERE user_id = ?
+       ORDER BY created_at DESC
        LIMIT ? OFFSET ?`,
       [userId, limit, offset],
     );
@@ -82,8 +82,8 @@ router.post("/", authenticateToken, async (req, res) => {
     const targetUserId = user_id || req.user!.id;
 
     const [result] = await pool.execute<ResultSetHeader>(
-      `INSERT INTO notifications 
-       (user_id, type, title, message, amount, currency, priority, action_url, icon, created_at) 
+      `INSERT INTO notifications
+       (user_id, type, title, message, amount, currency, priority, action_url, icon, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
       [
         targetUserId,
@@ -184,13 +184,13 @@ router.get("/stats", authenticateToken, async (req, res) => {
     const userId = req.user!.id;
 
     const [stats] = await pool.execute<RowDataPacket[]>(
-      `SELECT 
+      `SELECT
         COUNT(*) as total,
         SUM(CASE WHEN is_read = false THEN 1 ELSE 0 END) as unread,
         SUM(CASE WHEN type = 'win' THEN 1 ELSE 0 END) as wins,
         SUM(CASE WHEN type = 'bonus' THEN 1 ELSE 0 END) as bonuses,
         SUM(CASE WHEN priority = 'high' THEN 1 ELSE 0 END) as high_priority
-       FROM notifications 
+       FROM notifications
        WHERE user_id = ?`,
       [userId],
     );
@@ -213,8 +213,8 @@ export const createGameNotification = async (
 ) => {
   try {
     await pool.execute(
-      `INSERT INTO notifications 
-       (user_id, type, title, message, amount, currency, priority, created_at) 
+      `INSERT INTO notifications
+       (user_id, type, title, message, amount, currency, priority, created_at)
        VALUES (?, ?, ?, ?, ?, ?, 'high', NOW())`,
       [userId, type, title, message, amount || null, currency || null],
     );
@@ -234,8 +234,8 @@ export const createSystemNotification = async (
     if (userId) {
       // Send to specific user
       await pool.execute(
-        `INSERT INTO notifications 
-         (user_id, type, title, message, priority, created_at) 
+        `INSERT INTO notifications
+         (user_id, type, title, message, priority, created_at)
          VALUES (?, 'system', ?, ?, ?, NOW())`,
         [userId, title, message, priority],
       );
@@ -247,8 +247,8 @@ export const createSystemNotification = async (
 
       for (const user of users) {
         await pool.execute(
-          `INSERT INTO notifications 
-           (user_id, type, title, message, priority, created_at) 
+          `INSERT INTO notifications
+           (user_id, type, title, message, priority, created_at)
            VALUES (?, 'system', ?, ?, ?, NOW())`,
           [user.id, title, message, priority],
         );

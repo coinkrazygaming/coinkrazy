@@ -1,7 +1,7 @@
 import express from "express";
-import { authenticateToken } from "../middleware/auth";
-import pool from "../config/database";
-import { RowDataPacket, ResultSetHeader } from "mysql2";
+import { authenticateToken } from "../middleware/auth.js";
+import { executeQuery } from "../config/database.js";
+import { z } from "zod";
 
 const router = express.Router();
 
@@ -13,7 +13,7 @@ router.get("/messages/:room", authenticateToken, async (req, res) => {
     const offset = parseInt(req.query.offset as string) || 0;
 
     const [messages] = await pool.execute<RowDataPacket[]>(
-      `SELECT 
+      `SELECT
         cm.*,
         u.username,
         u.level,
@@ -61,14 +61,14 @@ router.post("/messages", authenticateToken, async (req, res) => {
 
     // Insert message
     const [result] = await pool.execute<ResultSetHeader>(
-      `INSERT INTO chat_messages (user_id, room, message, created_at) 
+      `INSERT INTO chat_messages (user_id, room, message, created_at)
        VALUES (?, ?, ?, NOW())`,
       [userId, room, message.trim()],
     );
 
     // Get the complete message with user data
     const [newMessage] = await pool.execute<RowDataPacket[]>(
-      `SELECT 
+      `SELECT
         cm.*,
         u.username,
         u.level,
@@ -135,8 +135,8 @@ router.get("/rooms", authenticateToken, async (req, res) => {
     // Get active user counts for each room (simplified)
     for (const room of rooms) {
       const [count] = await pool.execute<RowDataPacket[]>(
-        `SELECT COUNT(DISTINCT user_id) as count 
-         FROM chat_messages 
+        `SELECT COUNT(DISTINCT user_id) as count
+         FROM chat_messages
          WHERE room = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
         [room.id],
       );
@@ -168,9 +168,9 @@ router.post("/mute", authenticateToken, async (req, res) => {
 
     // Add mute record
     await pool.execute(
-      `INSERT INTO chat_mutes (user_id, muted_by, expires_at, created_at) 
+      `INSERT INTO chat_mutes (user_id, muted_by, expires_at, created_at)
        VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? HOUR), NOW())
-       ON DUPLICATE KEY UPDATE 
+       ON DUPLICATE KEY UPDATE
        expires_at = DATE_ADD(NOW(), INTERVAL ? HOUR),
        muted_by = ?`,
       [user_id, adminId, duration_hours, duration_hours, adminId],
@@ -191,7 +191,7 @@ router.post("/report", authenticateToken, async (req, res) => {
 
     // Insert report
     await pool.execute(
-      `INSERT INTO chat_reports (message_id, reported_by, reason, created_at) 
+      `INSERT INTO chat_reports (message_id, reported_by, reason, created_at)
        VALUES (?, ?, ?, NOW())`,
       [message_id, reporterId, reason],
     );
@@ -209,8 +209,8 @@ router.get("/mute-status", authenticateToken, async (req, res) => {
     const userId = req.user!.id;
 
     const [muteStatus] = await pool.execute<RowDataPacket[]>(
-      `SELECT expires_at, reason 
-       FROM chat_mutes 
+      `SELECT expires_at, reason
+       FROM chat_mutes
        WHERE user_id = ? AND expires_at > NOW()`,
       [userId],
     );
