@@ -580,6 +580,7 @@ export default function Slots() {
                     <div className="cursor-pointer">
                       <SlotGameCard
                         title={game.title}
+                        gameSymbol={game.gameSymbol}
                         provider={game.provider}
                         thumbnail={game.thumbnail}
                         category="Slots"
