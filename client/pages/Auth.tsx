@@ -588,45 +588,6 @@ export default function Auth() {
                       </div>
                     </div>
                   </form>
-
-                  {/* Demo Credentials Section */}
-                  <div className="mt-6 pt-6 border-t">
-                    <p className="text-sm text-muted-foreground mb-3 text-center">
-                      🔧 Quick Demo Access:
-                    </p>
-                    <div className="grid grid-cols-3 gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => loadDemoCredentials("admin")}
-                        className="text-xs"
-                      >
-                        👑 Admin Panel
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => loadDemoCredentials("staff")}
-                        className="text-xs"
-                      >
-                        👮 Staff Panel
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => loadDemoCredentials("user")}
-                        className="text-xs"
-                      >
-                        🎮 Demo User
-                      </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2 text-center">
-                      Email: coinkrazy00@gmail.com | Password: Woot6969!
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
