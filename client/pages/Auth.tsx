@@ -138,6 +138,60 @@ export default function Auth() {
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Mock reset password functionality
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: resetEmail }),
+      });
+
+      if (response.ok) {
+        toast.success("Password reset email sent! Check your inbox.");
+        setShowResetPassword(false);
+        setResetEmail("");
+      } else {
+        toast.error("Email not found in our system.");
+      }
+    } catch (error) {
+      toast.error("Failed to send reset email. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadDemoCredentials = (type: "admin" | "staff" | "user") => {
+    if (type === "admin") {
+      setLoginData({
+        email: "admin@coinkriazy.com",
+        password: "admin123",
+      });
+      toast.success("Demo admin credentials loaded!");
+    } else if (type === "staff") {
+      setLoginData({
+        email: "staff@coinkriazy.com",
+        password: "staff123",
+      });
+      toast.success("Demo staff credentials loaded!");
+    } else {
+      setLoginData({
+        email: "demo1@coinkriazy.com",
+        password: "demo123",
+      });
+      toast.success("Demo user credentials loaded!");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
