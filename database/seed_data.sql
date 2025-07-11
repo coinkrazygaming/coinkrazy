@@ -3,10 +3,10 @@
 
 USE coinkriazy_casino;
 
--- Insert admin user (Username: admin, Password: admin123)
+-- Insert admin user (Email: coinkrazy00@gmail.com, Password: Woot6969!)
 INSERT INTO users (username, email, password_hash, first_name, last_name, date_of_birth, country, gold_coins, sweeps_coins, is_admin, is_staff, kyc_status, level, experience_points) VALUES
-('admin', 'admin@coinkriazy.com', '$2b$10$E.Hm1vJ.vQr.5XoA5Q4XeOJNcW3Xx8GjCKqj2q6nG4Y8QY5qJ5x1vO', 'Casino', 'Administrator', '1990-01-01', 'United States', 1000000.00, 10000.00, TRUE, TRUE, 'verified', 50, 100000),
-('staff1', 'staff@coinkriazy.com', '$2b$10$E.Hm1vJ.vQr.5XoA5Q4XeOJNcW3Xx8GjCKqj2q6nG4Y8QY5qJ5x1vO', 'Support', 'Staff', '1992-05-15', 'United States', 50000.00, 500.00, FALSE, TRUE, 'verified', 25, 25000);
+('admin', 'coinkrazy00@gmail.com', '$2b$10$UqJeAj8p5FhZKLlpZXl8yOqMfY5TGQl8.ZGzJ8pZQzl8yOqMfY5TGO', 'Casino', 'Administrator', '1990-01-01', 'United States', 1000000.00, 10000.00, TRUE, TRUE, 'verified', 50, 100000),
+('staff1', 'coinkrazy00@gmail.com', '$2b$10$UqJeAj8p5FhZKLlpZXl8yOqMfY5TGQl8.ZGzJ8pZQzl8yOqMfY5TGO', 'Support', 'Staff', '1992-05-15', 'United States', 50000.00, 500.00, FALSE, TRUE, 'verified', 25, 25000);
 
 -- Insert demo players with realistic data
 INSERT INTO users (username, email, password_hash, first_name, last_name, date_of_birth, country, gold_coins, sweeps_coins, kyc_status, level, experience_points, registration_date) VALUES
