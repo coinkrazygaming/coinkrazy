@@ -75,56 +75,46 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
   // Fetch live stats from API
   const fetchStats = async () => {
-    try {
-      setLoading(true);
-      const data = await apiCall("/public/stats");
+    setLoading(true);
+    const data = await apiCall("/public/stats");
 
-      if (data && data.stats) {
-        setStats({
-          usersOnline: data.stats.usersOnline,
-          totalPayout: data.stats.totalPayout,
-          jackpotAmount: data.stats.jackpotAmount,
-          gamesPlaying: data.stats.gamesPlaying,
-          totalWithdrawals: data.stats.totalWithdrawals,
-          pendingWithdrawals: data.stats.pendingWithdrawals,
-          newUsersToday: data.stats.newUsersToday,
-          activeGames: data.stats.activeGames,
-        });
-      } else {
-        // Simulate live data with small random changes if API fails
-        setStats((prev) => ({
-          ...prev,
-          usersOnline: Math.max(
-            247,
-            prev.usersOnline + Math.floor(Math.random() * 10) - 5,
-          ),
-          totalPayout: prev.totalPayout + Math.random() * 1000,
-          jackpotAmount: prev.jackpotAmount + Math.random() * 100,
-          gamesPlaying: Math.max(
-            0,
-            prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
-          ),
-        }));
-      }
-    } catch (error) {
-      console.error("Failed to fetch live stats:", error);
-      // Simulate live data with small random changes
+    if (data && data.stats) {
+      // Successfully got data from API
+      setStats({
+        usersOnline: data.stats.usersOnline,
+        totalPayout: data.stats.totalPayout,
+        jackpotAmount: data.stats.jackpotAmount,
+        gamesPlaying: data.stats.gamesPlaying,
+        totalWithdrawals: data.stats.totalWithdrawals,
+        pendingWithdrawals: data.stats.pendingWithdrawals,
+        newUsersToday: data.stats.newUsersToday,
+        activeGames: data.stats.activeGames,
+      });
+    } else {
+      // API failed or returned null, simulate live data with small random changes
       setStats((prev) => ({
         ...prev,
         usersOnline: Math.max(
-          247,
-          prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+          1200,
+          prev.usersOnline + Math.floor(Math.random() * 20) - 10,
         ),
-        totalPayout: prev.totalPayout + Math.random() * 1000,
-        jackpotAmount: prev.jackpotAmount + Math.random() * 100,
+        totalPayout: prev.totalPayout + Math.random() * 2000,
+        jackpotAmount: prev.jackpotAmount + Math.random() * 150,
         gamesPlaying: Math.max(
-          0,
-          prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
+          300,
+          prev.gamesPlaying + Math.floor(Math.random() * 10) - 5,
+        ),
+        newUsersToday: Math.max(
+          50,
+          prev.newUsersToday + Math.floor(Math.random() * 4) - 2,
+        ),
+        activeGames: Math.max(
+          700,
+          prev.activeGames + Math.floor(Math.random() * 6) - 3,
         ),
       }));
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   // Refresh stats manually
