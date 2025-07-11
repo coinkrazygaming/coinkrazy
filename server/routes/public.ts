@@ -7,59 +7,98 @@ const router = express.Router();
 router.get("/stats", async (req, res) => {
   try {
     // Get REAL users online (last login within 30 minutes) plus simulated activity
-    const userStats = await executeQuery(
-      `SELECT
-        COUNT(CASE WHEN last_login >= DATE_SUB(NOW(), INTERVAL 30 MINUTE) THEN 1 END) as users_online,
-        COUNT(CASE WHEN DATE(registration_date) = CURDATE() THEN 1 END) as new_users_today,
-        COUNT(*) as total_users
-      FROM users
-      WHERE is_active = TRUE`,
-    );
+    let userStats = [{ users_online: 0, new_users_today: 0, total_users: 0 }];
+    let financialStats = [
+      {
+        todays_payouts: 0,
+        total_payouts: 0,
+        pending_withdrawals: 0,
+        total_withdrawals: 0,
+      },
+    ];
+    let gameStats = [{ total_games: 0, active_games: 0, total_plays: 0 }];
+    let activeSessionsResult = [{ games_playing: 0 }];
+    let jackpotResult = [{ max_jackpot: 100000 }];
 
-    // Get REAL financial statistics for today's payouts
-    const financialStats = await executeQuery(
-      `SELECT
-        COALESCE(SUM(CASE
-          WHEN (transaction_type = 'game_win' OR transaction_type = 'win' OR transaction_type = 'bonus')
-          AND DATE(created_at) = CURDATE()
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as todays_payouts,
-        COALESCE(SUM(CASE
-          WHEN transaction_type = 'game_win' OR transaction_type = 'win'
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as total_payouts,
-        COUNT(CASE WHEN transaction_type = 'withdrawal' AND status = 'pending' THEN 1 END) as pending_withdrawals,
-        COALESCE(SUM(CASE
-          WHEN transaction_type = 'withdrawal' AND status = 'completed'
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as total_withdrawals
-      FROM transactions`,
-    );
+    try {
+      userStats = await executeQuery(
+        `SELECT
+          COUNT(CASE WHEN last_login >= DATE_SUB(NOW(), INTERVAL 30 MINUTE) THEN 1 END) as users_online,
+          COUNT(CASE WHEN DATE(registration_date) = CURDATE() THEN 1 END) as new_users_today,
+          COUNT(*) as total_users
+        FROM users
+        WHERE is_active = TRUE`,
+      );
+    } catch (error) {
+      console.warn("User stats query failed, using defaults:", error.message);
+    }
 
-    // Get game statistics
-    const gameStats = await executeQuery(
-      `SELECT
-        COUNT(*) as total_games,
-        COUNT(CASE WHEN is_active = TRUE THEN 1 END) as active_games,
-        COALESCE(SUM(play_count), 0) as total_plays
-      FROM games`,
-    );
+    try {
+      // Get REAL financial statistics for today's payouts
+      financialStats = await executeQuery(
+        `SELECT
+          COALESCE(SUM(CASE
+            WHEN (transaction_type = 'game_win' OR transaction_type = 'win' OR transaction_type = 'bonus')
+            AND DATE(created_at) = CURDATE()
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as todays_payouts,
+          COALESCE(SUM(CASE
+            WHEN transaction_type = 'game_win' OR transaction_type = 'win'
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as total_payouts,
+          COUNT(CASE WHEN transaction_type = 'withdrawal' AND status = 'pending' THEN 1 END) as pending_withdrawals,
+          COALESCE(SUM(CASE
+            WHEN transaction_type = 'withdrawal' AND status = 'completed'
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as total_withdrawals
+        FROM transactions`,
+      );
+    } catch (error) {
+      console.warn(
+        "Financial stats query failed, using defaults:",
+        error.message,
+      );
+    }
 
-    // Get active game sessions (players currently playing)
-    const activeSessionsResult = await executeQuery(
-      `SELECT COUNT(DISTINCT user_id) as games_playing
-      FROM game_sessions
-      WHERE status = 'active'
-      AND session_start >= DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
-    );
+    try {
+      // Get game statistics
+      gameStats = await executeQuery(
+        `SELECT
+          COUNT(*) as total_games,
+          COUNT(CASE WHEN is_active = TRUE THEN 1 END) as active_games,
+          COALESCE(SUM(play_count), 0) as total_plays
+        FROM games`,
+      );
+    } catch (error) {
+      console.warn("Game stats query failed, using defaults:", error.message);
+    }
 
-    // Get progressive jackpot info
-    const jackpotResult = await executeQuery(
-      `SELECT COALESCE(MAX(max_win), 100000) as max_jackpot FROM games WHERE is_active = TRUE`,
-    );
+    try {
+      // Get active game sessions (players currently playing)
+      activeSessionsResult = await executeQuery(
+        `SELECT COUNT(DISTINCT user_id) as games_playing
+        FROM game_sessions
+        WHERE status = 'active'
+        AND session_start >= DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
+      );
+    } catch (error) {
+      console.warn(
+        "Active sessions query failed, using defaults:",
+        error.message,
+      );
+    }
+
+    try {
+      // Get progressive jackpot info
+      jackpotResult = await executeQuery(
+        `SELECT COALESCE(MAX(max_win), 100000) as max_jackpot FROM games WHERE is_active = TRUE`,
+      );
+    } catch (error) {
+      console.warn("Jackpot query failed, using defaults:", error.message);
+    }
 
     // Calculate real-time numbers
     const realUsersOnline = userStats[0]?.users_online || 0;
