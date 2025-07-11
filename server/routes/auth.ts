@@ -132,11 +132,12 @@ router.post("/login", async (req, res) => {
         id: 1,
         username: "admin",
         email: "coinkrazy00@gmail.com",
-        password_hash: "$2b$10$rK5.c0Y7xJvUPmQYSx6F1.8KqHQJ6x8jBHgUQl5zK8xJvUPmQYSx6F",
+        password_hash:
+          "$2b$10$rK5.c0Y7xJvUPmQYSx6F1.8KqHQJ6x8jBHgUQl5zK8xJvUPmQYSx6F",
         first_name: "Casino",
         last_name: "Administrator",
-        gold_coins: 1000000.00,
-        sweeps_coins: 10000.00,
+        gold_coins: 1000000.0,
+        sweeps_coins: 10000.0,
         level: 50,
         experience_points: 100000,
         kyc_status: "verified",
@@ -148,18 +149,19 @@ router.post("/login", async (req, res) => {
         id: 2,
         username: "demo1",
         email: "demo1@coinkriazy.com",
-        password_hash: "$2b$10$E.Hm1vJ.vQr.5XoA5Q4XeOJNcW3Xx8GjCKqj2q6nG4Y8QY5qJ5x1vO",
+        password_hash:
+          "$2b$10$E.Hm1vJ.vQr.5XoA5Q4XeOJNcW3Xx8GjCKqj2q6nG4Y8QY5qJ5x1vO",
         first_name: "Demo",
         last_name: "Player",
-        gold_coins: 15000.00,
-        sweeps_coins: 25.50,
+        gold_coins: 15000.0,
+        sweeps_coins: 25.5,
         level: 12,
         experience_points: 8500,
         kyc_status: "verified",
         is_admin: false,
         is_staff: false,
         is_active: true,
-      }
+      },
     ];
 
     let users = [];
@@ -172,7 +174,7 @@ router.post("/login", async (req, res) => {
     } catch (dbError) {
       console.log("Database not available, using mock data for login");
       // Use mock data if database fails
-      users = mockUsers.filter(u => u.email === email);
+      users = mockUsers.filter((u) => u.email === email);
     }
 
     if (users.length === 0) {
@@ -195,7 +197,6 @@ router.post("/login", async (req, res) => {
     } catch (dbError) {
       console.log("Could not update last login - database unavailable");
     }
-    ]);
 
     // Generate token
     const token = generateToken(user);
