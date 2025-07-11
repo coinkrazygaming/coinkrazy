@@ -57,22 +57,17 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       const response = await fetch(url, config);
 
       if (!response.ok) {
-        // Try to get error message from response if possible
-        let errorMessage = "API call failed";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          // If we can't parse the error response, use status text
-          errorMessage = response.statusText || errorMessage;
-        }
-        throw new Error(errorMessage);
+        console.warn(
+          `API call to ${endpoint} failed with status ${response.status}`,
+        );
+        // Don't throw error, just return null to use fallback data
+        return null;
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("API call error:", error);
+      console.warn("API call error:", error);
       // Return null if API fails - fetchStats will handle this gracefully
       return null;
     }
