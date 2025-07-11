@@ -328,7 +328,7 @@ Post-Game (30 minutes after):
 
 ## 🃏 Live Poker Room Management
 
-### ��� Poker Room Structure
+### 🎲 Poker Room Structure
 
 ```
 Game Types Available:
@@ -377,7 +377,7 @@ Weekly Tournament Schedule:
 ├── Wednesday: $1,000 Guaranteed (50SC buy-in)
 ├── Thursday: Turbo Thursday (25SC buy-in)
 ├── Friday: $2,500 Weekend Starter (100SC)
-├── Saturday: $5,000 Main Event (250SC)
+��── Saturday: $5,000 Main Event (250SC)
 └── Sunday: $10,000 Sunday Special (500SC)
 
 Monthly Special Events:
@@ -755,7 +755,7 @@ Manual Review Triggers:
 Incident Classification:
 ├── Level 1: Minor issues (password resets)
 ├── Level 2: Moderate issues (account compromise)
-├���─ Level 3: Major issues (data breach attempt)
+├── Level 3: Major issues (data breach attempt)
 ├── Level 4: Critical issues (system compromise)
 └── Level 5: Catastrophic (full system breach)
 
@@ -971,7 +971,7 @@ Executive Dashboard (Updated Hourly):
 └── Competitive benchmarking
 
 Operations Dashboard (Updated Every 15 Minutes):
-├── Current player counts by game
+├─�� Current player counts by game
 ├── Customer support queue status
 ├── Payment processing volumes
 ├── Fraud alert notifications
@@ -1055,7 +1055,7 @@ Data Storage Requirements:
 ├── Backup storage: Geographic redundancy
 ├── Archive storage: Long-term retention
 ├── Access controls: Role-based permissions
-├── Audit trails: Complete access logging
+├��─ Audit trails: Complete access logging
 └── Disaster recovery: 99.99% availability
 ```
 
@@ -1097,6 +1097,15 @@ External Emergency Contacts:
 - Technical support specialists
 - Escalation to management available
 
+### 🔐 Default Admin Access
+
+**Admin/Staff Panel Login:**
+
+- **Email**: coinkrazy00@gmail.com
+- **Password**: Woot6969!
+- **Access Level**: Full admin and staff panel access
+- **Note**: Change these credentials immediately in production
+
 ---
 
 ## 📚 Additional Resources
@@ -1127,10 +1136,10 @@ External Emergency Contacts:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: December 2024  
-**Next Review**: Quarterly  
-**Document Owner**: Chief Operating Officer  
+**Document Version**: 1.0
+**Last Updated**: December 2024
+**Next Review**: Quarterly
+**Document Owner**: Chief Operating Officer
 **Approval**: Executive Team
 
 _This operations guide is proprietary and confidential. Distribution is restricted to authorized personnel only._
