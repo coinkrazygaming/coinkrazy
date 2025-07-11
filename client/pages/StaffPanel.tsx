@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import CasinoHeader from "@/components/CasinoHeader";
 import {
   Clock,
@@ -25,12 +27,37 @@ import {
   XCircle,
   Star,
   Headphones,
+  Search,
+  Filter,
+  Ban,
+  Edit,
+  Mail,
+  Phone,
+  Calendar,
+  DollarSign,
+  Timer,
+  Activity,
+  Award,
+  Target,
 } from "lucide-react";
 
 export default function StaffPanel() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [shiftStart] = useState(new Date("2024-12-19T08:00:00"));
+  const [searchTerm, setSearchTerm] = useState("");
+  const { user, token } = useAuth();
+  const { toast } = useToast();
+
+  const [staffStats, setStaffStats] = useState({
+    activeChats: 3,
+    resolvedToday: 12,
+    kycReviewed: 5,
+    hoursWorked: 6.5,
+    responseTime: 2.3,
+    satisfaction: 4.8,
+  });
+
   const [activeChatUsers, setActiveChatUsers] = useState([
     {
       id: "user1",
@@ -38,6 +65,8 @@ export default function StaffPanel() {
       message: "Hi, I need help with my withdrawal",
       timestamp: "14:30",
       priority: "high",
+      lastResponse: "5 minutes ago",
+      status: "waiting",
     },
     {
       id: "user2",
@@ -45,11 +74,21 @@ export default function StaffPanel() {
       message: "Can't access mini games",
       timestamp: "14:25",
       priority: "medium",
+      lastResponse: "2 minutes ago",
+      status: "responding",
+    },
+    {
+      id: "user3",
+      username: "NewPlayer",
+      message: "How do I verify my KYC documents?",
+      timestamp: "14:20",
+      priority: "low",
+      lastResponse: "Just started",
+      status: "new",
     },
   ]);
 
-  // Mock data
-  const onlineUsers = [
+  const [onlineUsers, setOnlineUsers] = useState([
     {
       id: "USR001",
       username: "Player123",
@@ -60,7 +99,15 @@ export default function StaffPanel() {
       location: "Slots",
       loginTime: "2024-12-19 13:30",
       kycStatus: "verified",
-      notes: [],
+      lastActivity: "Playing slot games",
+      flags: ["high_activity"],
+      notes: [
+        {
+          text: "Player requested bonus help",
+          author: "staff_mike",
+          timestamp: "2024-12-19 13:45",
+        },
+      ],
     },
     {
       id: "USR002",
@@ -72,23 +119,41 @@ export default function StaffPanel() {
       location: "Mini Games",
       loginTime: "2024-12-19 14:00",
       kycStatus: "pending",
+      lastActivity: "Mini game session",
+      flags: [],
+      notes: [],
+    },
+    {
+      id: "USR003",
+      username: "VIPPlayer",
+      level: 25,
+      gcBalance: 156000,
+      scBalance: 450.75,
+      currentGame: "Diamond Dreams",
+      location: "Slots",
+      loginTime: "2024-12-19 12:15",
+      kycStatus: "verified",
+      lastActivity: "High stakes gaming",
+      flags: ["vip", "high_roller"],
       notes: [
         {
-          text: "Player requested bonus help",
-          author: "staff_mike",
-          timestamp: "2024-12-19 13:45",
+          text: "VIP member, priority support",
+          author: "admin_sarah",
+          timestamp: "2024-12-18 16:30",
         },
       ],
     },
-  ];
+  ]);
 
-  const pendingKYC = [
+  const [pendingKYC, setPendingKYC] = useState([
     {
       id: "KYC001",
       username: "NewPlayer99",
       submittedDate: "2024-12-19 12:00",
       documents: ["ID", "Proof of Address"],
       status: "pending",
+      priority: "normal",
+      reviewTime: "2 hours ago",
     },
     {
       id: "KYC002",
@@ -96,10 +161,21 @@ export default function StaffPanel() {
       submittedDate: "2024-12-19 11:30",
       documents: ["ID", "Bank Statement"],
       status: "pending",
+      priority: "high",
+      reviewTime: "3 hours ago",
     },
-  ];
+    {
+      id: "KYC003",
+      username: "LuckyPlayer",
+      submittedDate: "2024-12-19 10:15",
+      documents: ["Passport", "Utility Bill"],
+      status: "pending",
+      priority: "normal",
+      reviewTime: "4 hours ago",
+    },
+  ]);
 
-  const bingoSessions = [
+  const [bingoSessions, setBingoSessions] = useState([
     {
       id: "BINGO001",
       roomName: "🌟 Golden Hall",
@@ -108,6 +184,7 @@ export default function StaffPanel() {
       currentNumber: "B-7",
       numbersDrawn: 23,
       jackpot: "125.50 SC",
+      timeRemaining: "12:34",
     },
     {
       id: "BINGO002",
@@ -117,8 +194,31 @@ export default function StaffPanel() {
       currentNumber: null,
       numbersDrawn: 0,
       jackpot: "89.75 SC",
+      timeRemaining: "Starting soon",
     },
-  ];
+    {
+      id: "BINGO003",
+      roomName: "🏆 Platinum Hall",
+      players: 28,
+      status: "active",
+      currentNumber: "G-15",
+      numbersDrawn: 31,
+      jackpot: "200.00 SC",
+      timeRemaining: "8:42",
+    },
+  ]);
+
+  // Redirect if not staff
+  useEffect(() => {
+    if (user && !user.is_staff && !user.is_admin) {
+      toast({
+        title: "Access Denied",
+        description: "You need staff privileges to access this page.",
+        variant: "destructive",
+      });
+      window.location.href = "/dashboard";
+    }
+  }, [user]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -134,15 +234,119 @@ export default function StaffPanel() {
     return `${hours}h ${minutes}m`;
   };
 
-  const handleChatSend = (userId: string, message: string) => {
-    // Implementation for sending chat message
-    console.log(`Sending message to ${userId}: ${message}`);
+  const handleChatResponse = async (userId: string, message: string) => {
+    try {
+      const response = await fetch(`/api/staff/chat/${userId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent",
+          description: "Your response has been sent to the user.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const addPlayerNote = (userId: string, note: string) => {
-    // Implementation for adding player note
-    console.log(`Adding note to ${userId}: ${note}`);
+  const addPlayerNote = async (userId: string, note: string) => {
+    try {
+      const response = await fetch(`/api/staff/users/${userId}/notes`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ note }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Note Added",
+          description: "Player note has been saved successfully.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add note.",
+        variant: "destructive",
+      });
+    }
   };
+
+  const handleKYCAction = async (
+    kycId: string,
+    action: "approve" | "reject",
+  ) => {
+    try {
+      const response = await fetch(`/api/staff/kyc/${kycId}/${action}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setPendingKYC((prev) => prev.filter((kyc) => kyc.id !== kycId));
+        toast({
+          title: "KYC Updated",
+          description: `KYC document ${action === "approve" ? "approved" : "rejected"} successfully.`,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update KYC status.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const clockIn = () => {
+    toast({
+      title: "Clocked In",
+      description: "Your shift has started. Have a great day!",
+    });
+  };
+
+  const clockOut = () => {
+    toast({
+      title: "Clocked Out",
+      description: "Your shift has ended. Great work today!",
+    });
+  };
+
+  if (!user?.is_staff && !user?.is_admin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-96 text-center">
+          <CardContent className="p-8">
+            <Headphones className="w-16 h-16 mx-auto mb-4 text-destructive" />
+            <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
+            <p className="text-muted-foreground mb-4">
+              You need staff privileges to access this panel.
+            </p>
+            <Button onClick={() => (window.location.href = "/dashboard")}>
+              Return to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -158,7 +362,8 @@ export default function StaffPanel() {
                 👮 Staff Control Panel
               </h1>
               <p className="text-muted-foreground">
-                Level 1 Staff Access • CoinKrazy Support Team 🎧
+                Level 1 Staff Access • CoinKrazy Support Team • Logged in as:{" "}
+                {user.username}
               </p>
             </div>
             <div className="text-right">
@@ -168,63 +373,83 @@ export default function StaffPanel() {
               <p className="text-sm text-muted-foreground">
                 Shift Time: {formatShiftTime(shiftStart, currentTime)}
               </p>
+              <p className="text-xs text-muted-foreground">Rate: $18.50/hour</p>
             </div>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
-              <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <MessageCircle className="w-8 h-8 mx-auto mb-2 text-primary" />
               <p className="text-2xl font-bold text-primary">
-                {onlineUsers.length}
-              </p>
-              <p className="text-sm text-muted-foreground">🟢 Users Online</p>
-            </CardContent>
-          </Card>
-          <Card className="casino-glow">
-            <CardContent className="p-4 text-center">
-              <MessageCircle className="w-8 h-8 mx-auto mb-2 text-accent" />
-              <p className="text-2xl font-bold text-accent">
-                {activeChatUsers.length}
+                {staffStats.activeChats}
               </p>
               <p className="text-sm text-muted-foreground">💬 Active Chats</p>
             </CardContent>
           </Card>
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
-              <FileText className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <p className="text-2xl font-bold text-primary">
-                {pendingKYC.length}
+              <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" />
+              <p className="text-2xl font-bold text-green-500">
+                {staffStats.resolvedToday}
               </p>
-              <p className="text-sm text-muted-foreground">📋 KYC Pending</p>
+              <p className="text-sm text-muted-foreground">✅ Resolved Today</p>
             </CardContent>
           </Card>
           <Card className="casino-glow">
             <CardContent className="p-4 text-center">
-              <Clock className="w-8 h-8 mx-auto mb-2 text-accent" />
+              <FileText className="w-8 h-8 mx-auto mb-2 text-accent" />
               <p className="text-2xl font-bold text-accent">
-                {formatShiftTime(shiftStart, currentTime)}
+                {staffStats.kycReviewed}
               </p>
-              <p className="text-sm text-muted-foreground">⏰ Shift Time</p>
+              <p className="text-sm text-muted-foreground">📋 KYC Reviewed</p>
+            </CardContent>
+          </Card>
+          <Card className="casino-glow">
+            <CardContent className="p-4 text-center">
+              <Clock className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <p className="text-2xl font-bold text-primary">
+                {staffStats.hoursWorked}h
+              </p>
+              <p className="text-sm text-muted-foreground">⏰ Hours Worked</p>
+            </CardContent>
+          </Card>
+          <Card className="casino-glow">
+            <CardContent className="p-4 text-center">
+              <Timer className="w-8 h-8 mx-auto mb-2 text-accent" />
+              <p className="text-2xl font-bold text-accent">
+                {staffStats.responseTime}m
+              </p>
+              <p className="text-sm text-muted-foreground">⚡ Avg Response</p>
+            </CardContent>
+          </Card>
+          <Card className="casino-glow">
+            <CardContent className="p-4 text-center">
+              <Star className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <p className="text-2xl font-bold text-primary">
+                {staffStats.satisfaction}/5
+              </p>
+              <p className="text-sm text-muted-foreground">⭐ Satisfaction</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Staff Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full mb-6">
+          <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full mb-6">
             <TabsTrigger value="dashboard">📊 Dashboard</TabsTrigger>
             <TabsTrigger value="chat">💬 Live Chat</TabsTrigger>
             <TabsTrigger value="users">👥 Users</TabsTrigger>
             <TabsTrigger value="kyc">🛡️ KYC</TabsTrigger>
             <TabsTrigger value="bingo">🏆 Bingo</TabsTrigger>
+            <TabsTrigger value="reports">📈 Reports</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard">
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-3 gap-6">
               <Card className="casino-glow">
                 <CardHeader>
                   <CardTitle className="flex items-center">
@@ -243,7 +468,11 @@ export default function StaffPanel() {
                           Player123 - Withdrawal issue
                         </p>
                       </div>
-                      <Button size="sm" variant="outline">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setActiveTab("chat")}
+                      >
                         Respond
                       </Button>
                     </div>
@@ -253,24 +482,32 @@ export default function StaffPanel() {
                           KYC Review
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          2 documents awaiting review
+                          {pendingKYC.length} documents awaiting review
                         </p>
                       </div>
-                      <Button size="sm" variant="outline">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setActiveTab("kyc")}
+                      >
                         Review
                       </Button>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg">
                       <div>
                         <p className="font-semibold text-accent">
-                          Mini Game Issue
+                          Bingo Sessions
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Colin Shots needs restart
+                          Monitor active bingo rooms
                         </p>
                       </div>
-                      <Button size="sm" variant="outline">
-                        Fix
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setActiveTab("bingo")}
+                      >
+                        Monitor
                       </Button>
                     </div>
                   </div>
@@ -291,31 +528,146 @@ export default function StaffPanel() {
                         {currentTime.toLocaleTimeString()}
                       </div>
                       <p className="text-muted-foreground">
-                        Current Time • {currentTime.toLocaleDateString()}
+                        {currentTime.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
                       </p>
                     </div>
                     <div className="bg-secondary p-4 rounded-lg">
-                      <div className="flex justify-between items-center mb-2">
-                        <span>Today's Shift</span>
-                        <span className="font-bold">
-                          {formatShiftTime(shiftStart, currentTime)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span>Hourly Rate</span>
-                        <span className="font-bold text-primary">$18.50</span>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">
+                            Today's Shift
+                          </span>
+                          <p className="font-bold">
+                            {formatShiftTime(shiftStart, currentTime)}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">
+                            Hourly Rate
+                          </span>
+                          <p className="font-bold text-primary">$18.50</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">
+                            Est. Earnings
+                          </span>
+                          <p className="font-bold text-green-500">
+                            $
+                            {(
+                              staffStats.hoursWorked * 18.5 +
+                              ((currentTime.getTime() - shiftStart.getTime()) /
+                                (1000 * 60 * 60)) *
+                                18.5
+                            ).toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">
+                            Performance
+                          </span>
+                          <p className="font-bold text-accent">
+                            {staffStats.satisfaction}/5 ⭐
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button className="flex-1 bg-green-500 hover:bg-green-600">
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button
+                        className="bg-green-500 hover:bg-green-600"
+                        onClick={clockIn}
+                      >
                         Clock In
                       </Button>
-                      <Button className="flex-1" variant="outline">
-                        Break
-                      </Button>
-                      <Button className="flex-1 bg-destructive hover:bg-destructive/90">
+                      <Button variant="outline">Break</Button>
+                      <Button
+                        className="bg-destructive hover:bg-destructive/90"
+                        onClick={clockOut}
+                      >
                         Clock Out
                       </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Award className="w-5 h-5 mr-2 text-primary" />
+                    Performance Metrics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">Response Time</span>
+                        <span className="text-sm font-bold">
+                          {staffStats.responseTime}m (Target: 3m)
+                        </span>
+                      </div>
+                      <Progress
+                        value={Math.max(
+                          0,
+                          100 - (staffStats.responseTime / 3) * 100,
+                        )}
+                        className="h-2"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">Resolution Rate</span>
+                        <span className="text-sm font-bold">
+                          {Math.round(
+                            (staffStats.resolvedToday /
+                              (staffStats.resolvedToday +
+                                staffStats.activeChats)) *
+                              100,
+                          )}
+                          %
+                        </span>
+                      </div>
+                      <Progress
+                        value={Math.round(
+                          (staffStats.resolvedToday /
+                            (staffStats.resolvedToday +
+                              staffStats.activeChats)) *
+                            100,
+                        )}
+                        className="h-2"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">Customer Satisfaction</span>
+                        <span className="text-sm font-bold">
+                          {staffStats.satisfaction}/5.0
+                        </span>
+                      </div>
+                      <Progress
+                        value={(staffStats.satisfaction / 5) * 100}
+                        className="h-2"
+                      />
+                    </div>
+                    <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+                      <p className="text-sm font-semibold text-primary">
+                        🏆 Today's Goals
+                      </p>
+                      <ul className="text-xs mt-2 space-y-1">
+                        <li>
+                          ✅ Resolve 15+ tickets ({staffStats.resolvedToday}/15)
+                        </li>
+                        <li>
+                          ✅ Maintain 95%+ satisfaction (
+                          {((staffStats.satisfaction / 5) * 100).toFixed(0)}%)
+                        </li>
+                        <li>⏳ Review all pending KYC documents</li>
+                      </ul>
                     </div>
                   </div>
                 </CardContent>
@@ -328,9 +680,14 @@ export default function StaffPanel() {
             <div className="grid lg:grid-cols-3 gap-6">
               <Card className="casino-glow lg:col-span-1">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <MessageCircle className="w-5 h-5 mr-2 text-accent" />
-                    Active Chats
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <MessageCircle className="w-5 h-5 mr-2 text-accent" />
+                      Active Chats
+                    </div>
+                    <Badge className="bg-primary text-white">
+                      {activeChatUsers.length}
+                    </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -338,28 +695,46 @@ export default function StaffPanel() {
                     {activeChatUsers.map((user) => (
                       <div
                         key={user.id}
-                        className="p-3 bg-secondary rounded-lg cursor-pointer hover:bg-secondary/80"
+                        className="p-3 bg-secondary rounded-lg cursor-pointer hover:bg-secondary/80 transition-colors"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-semibold">{user.username}</h3>
-                          <Badge
-                            className={`text-xs ${
-                              user.priority === "high"
-                                ? "bg-destructive text-white"
-                                : user.priority === "medium"
-                                  ? "bg-yellow-500 text-white"
-                                  : "bg-green-500 text-white"
-                            }`}
-                          >
-                            {user.priority}
-                          </Badge>
+                          <div className="flex items-center space-x-1">
+                            <Badge
+                              className={`text-xs ${
+                                user.priority === "high"
+                                  ? "bg-destructive text-white"
+                                  : user.priority === "medium"
+                                    ? "bg-yellow-500 text-white"
+                                    : "bg-green-500 text-white"
+                              }`}
+                            >
+                              {user.priority}
+                            </Badge>
+                            <Badge
+                              className={`text-xs ${
+                                user.status === "waiting"
+                                  ? "bg-red-500 text-white"
+                                  : user.status === "responding"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-green-500 text-white"
+                              }`}
+                            >
+                              {user.status}
+                            </Badge>
+                          </div>
                         </div>
                         <p className="text-sm text-muted-foreground truncate">
                           {user.message}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {user.timestamp}
-                        </p>
+                        <div className="flex justify-between items-center mt-2">
+                          <p className="text-xs text-muted-foreground">
+                            {user.timestamp}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.lastResponse}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -373,7 +748,14 @@ export default function StaffPanel() {
                       <MessageCircle className="w-5 h-5 mr-2 text-accent" />
                       Chat with Player123
                     </div>
-                    <Badge className="bg-green-500 text-white">🟢 Online</Badge>
+                    <div className="flex items-center space-x-2">
+                      <Badge className="bg-green-500 text-white">
+                        🟢 Online
+                      </Badge>
+                      <Badge className="bg-destructive text-white">
+                        🔥 High Priority
+                      </Badge>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -383,8 +765,8 @@ export default function StaffPanel() {
                       <div className="space-y-3">
                         <div className="text-right">
                           <div className="inline-block bg-primary text-primary-foreground p-2 rounded-lg max-w-xs">
-                            Hi! I'm staff_mike from CoinKrazy support. How can I
-                            help you today? 😊
+                            Hi! I'm {user.username} from CoinKrazy support. How
+                            can I help you today? 😊
                           </div>
                           <p className="text-xs text-muted-foreground mt-1">
                             14:25
@@ -393,10 +775,20 @@ export default function StaffPanel() {
                         <div className="text-left">
                           <div className="inline-block bg-accent text-accent-foreground p-2 rounded-lg max-w-xs">
                             Hi, I need help with my withdrawal. It's been
-                            pending for 2 days
+                            pending for 2 days and I'm getting worried.
                           </div>
                           <p className="text-xs text-muted-foreground mt-1">
                             14:30
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <div className="inline-block bg-primary text-primary-foreground p-2 rounded-lg max-w-xs">
+                            I understand your concern. Let me check your account
+                            status right now. Can you please provide your email
+                            address?
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            14:31
                           </p>
                         </div>
                       </div>
@@ -405,7 +797,7 @@ export default function StaffPanel() {
                     {/* Chat Input */}
                     <div className="flex space-x-2">
                       <Input
-                        placeholder="Type your message..."
+                        placeholder="Type your response..."
                         className="flex-1"
                       />
                       <Button size="sm">
@@ -427,6 +819,33 @@ export default function StaffPanel() {
                       <Button size="sm" variant="outline">
                         Technical Issues
                       </Button>
+                      <Button size="sm" variant="outline">
+                        Account Verification
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        Escalate to Admin
+                      </Button>
+                    </div>
+
+                    {/* User Info Panel */}
+                    <div className="bg-secondary p-3 rounded-lg">
+                      <h4 className="font-semibold mb-2">User Information</h4>
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">
+                            Balance:
+                          </span>
+                          <p>25,650 GC | 127.5 SC</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Level:</span>
+                          <p>12 (Gold VIP)</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">KYC:</span>
+                          <p className="text-green-500">✅ Verified</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -438,78 +857,130 @@ export default function StaffPanel() {
           <TabsContent value="users">
             <Card className="casino-glow">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-primary" />
-                  Online Users Monitoring
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Users className="w-5 h-5 mr-2 text-primary" />
+                    Online Users Monitoring ({onlineUsers.length} online)
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="relative">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        placeholder="Search users..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10 w-64"
+                      />
+                    </div>
+                    <Button variant="outline" size="sm">
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filter
+                    </Button>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {onlineUsers.map((user) => (
-                    <div
-                      key={user.id}
-                      className="flex items-center justify-between p-4 bg-secondary rounded-lg"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                          <Users className="w-6 h-6 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">{user.username}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Playing: {user.currentGame} ({user.location})
-                          </p>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <Badge
-                              className={`text-xs ${
-                                user.kycStatus === "verified"
-                                  ? "bg-green-500 text-white"
-                                  : "bg-yellow-500 text-white"
-                              }`}
-                            >
-                              {user.kycStatus === "verified" ? "✅" : "⏳"} KYC
-                            </Badge>
-                            <Badge className="bg-accent text-accent-foreground text-xs">
-                              Level {user.level}
-                            </Badge>
-                            {user.notes.length > 0 && (
-                              <Badge className="bg-primary text-primary-foreground text-xs">
-                                📝 {user.notes.length} Notes
+                  {onlineUsers
+                    .filter((user) =>
+                      user.username
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()),
+                    )
+                    .map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex items-center justify-between p-4 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                            <Users className="w-6 h-6 text-primary" />
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <h3 className="font-semibold">{user.username}</h3>
+                              {user.flags.includes("vip") && (
+                                <Badge className="bg-accent text-white">
+                                  👑 VIP
+                                </Badge>
+                              )}
+                              {user.flags.includes("high_roller") && (
+                                <Badge className="bg-primary text-white">
+                                  💎 High Roller
+                                </Badge>
+                              )}
+                              {user.flags.includes("high_activity") && (
+                                <Badge className="bg-green-500 text-white">
+                                  🔥 Active
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Playing: {user.currentGame} ({user.location})
+                            </p>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <Badge
+                                className={`text-xs ${
+                                  user.kycStatus === "verified"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-yellow-500 text-white"
+                                }`}
+                              >
+                                {user.kycStatus === "verified" ? "✅" : "⏳"}{" "}
+                                KYC
                               </Badge>
-                            )}
+                              <Badge className="bg-accent text-accent-foreground text-xs">
+                                Level {user.level}
+                              </Badge>
+                              {user.notes.length > 0 && (
+                                <Badge className="bg-primary text-primary-foreground text-xs">
+                                  📝 {user.notes.length} Notes
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm">
+                            <span className="font-semibold">
+                              {user.gcBalance.toLocaleString()} GC
+                            </span>{" "}
+                            |{" "}
+                            <span className="font-semibold text-accent">
+                              {user.scBalance} SC
+                            </span>
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Online since: {user.loginTime}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.lastActivity}
+                          </p>
+                          <div className="flex space-x-2 mt-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setActiveTab("chat")}
+                            >
+                              <MessageCircle className="w-3 h-3 mr-1" />
+                              Chat
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Pin className="w-3 h-3 mr-1" />
+                              Note
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Eye className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Mail className="w-3 h-3 mr-1" />
+                              Email
+                            </Button>
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm">
-                          <span className="font-semibold">
-                            {user.gcBalance.toLocaleString()} GC
-                          </span>{" "}
-                          |{" "}
-                          <span className="font-semibold text-accent">
-                            {user.scBalance} SC
-                          </span>
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Online since: {user.loginTime}
-                        </p>
-                        <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="outline">
-                            <MessageCircle className="w-3 h-3 mr-1" />
-                            Chat
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            <Pin className="w-3 h-3 mr-1" />
-                            Note
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-3 h-3 mr-1" />
-                            View
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -519,9 +990,21 @@ export default function StaffPanel() {
           <TabsContent value="kyc">
             <Card className="casino-glow">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-primary" />
-                  KYC Document Review
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Shield className="w-5 h-5 mr-2 text-primary" />
+                    KYC Document Review ({pendingKYC.length} pending)
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button variant="outline" size="sm">
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filter by Priority
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Eye className="w-4 h-4 mr-2" />
+                      Bulk Review
+                    </Button>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -531,20 +1014,44 @@ export default function StaffPanel() {
                       key={kyc.id}
                       className="flex items-center justify-between p-4 bg-secondary rounded-lg"
                     >
-                      <div>
-                        <h3 className="font-semibold">{kyc.username}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Submitted: {kyc.submittedDate}
-                        </p>
-                        <div className="flex items-center space-x-2 mt-2">
-                          {kyc.documents.map((doc, index) => (
+                      <div className="flex items-center space-x-4">
+                        <div
+                          className={`w-4 h-4 rounded-full ${
+                            kyc.priority === "high"
+                              ? "bg-red-500"
+                              : "bg-green-500"
+                          }`}
+                        />
+                        <div>
+                          <h3 className="font-semibold">{kyc.username}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Submitted: {kyc.submittedDate}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Waiting for: {kyc.reviewTime}
+                          </p>
+                          <div className="flex items-center space-x-2 mt-2">
+                            {kyc.documents.map((doc, index) => (
+                              <Badge
+                                key={index}
+                                className="bg-accent text-accent-foreground text-xs"
+                              >
+                                📄 {doc}
+                              </Badge>
+                            ))}
                             <Badge
-                              key={index}
-                              className="bg-accent text-accent-foreground text-xs"
+                              className={`text-xs ${
+                                kyc.priority === "high"
+                                  ? "bg-red-500 text-white"
+                                  : "bg-green-500 text-white"
+                              }`}
                             >
-                              📄 {doc}
+                              {kyc.priority === "high"
+                                ? "🔥 High"
+                                : "📋 Normal"}{" "}
+                              Priority
                             </Badge>
-                          ))}
+                          </div>
                         </div>
                       </div>
                       <div className="flex space-x-2">
@@ -555,13 +1062,22 @@ export default function StaffPanel() {
                         <Button
                           size="sm"
                           className="bg-green-500 hover:bg-green-600"
+                          onClick={() => handleKYCAction(kyc.id, "approve")}
                         >
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Approve
                         </Button>
-                        <Button size="sm" variant="destructive">
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleKYCAction(kyc.id, "reject")}
+                        >
                           <XCircle className="w-3 h-3 mr-1" />
                           Reject
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Mail className="w-3 h-3 mr-1" />
+                          Contact
                         </Button>
                       </div>
                     </div>
@@ -575,9 +1091,15 @@ export default function StaffPanel() {
           <TabsContent value="bingo">
             <Card className="casino-glow">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Star className="w-5 h-5 mr-2 text-primary" />
-                  Bingo Caller System
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Star className="w-5 h-5 mr-2 text-primary" />
+                    Bingo Room Management
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Start New Session
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -595,6 +1117,9 @@ export default function StaffPanel() {
                           <p className="text-sm text-muted-foreground">
                             {session.players} players • Jackpot:{" "}
                             {session.jackpot}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Time: {session.timeRemaining}
                           </p>
                         </div>
                         <Badge
@@ -630,22 +1155,139 @@ export default function StaffPanel() {
                       <div className="flex space-x-2">
                         {session.status === "waiting" ? (
                           <Button className="bg-green-500 hover:bg-green-600">
+                            <Play className="w-4 h-4 mr-2" />
                             Start Game
                           </Button>
                         ) : (
                           <>
-                            <Button>Call Next Number</Button>
-                            <Button variant="outline">Pause Game</Button>
+                            <Button>
+                              <Target className="w-4 h-4 mr-2" />
+                              Call Next Number
+                            </Button>
+                            <Button variant="outline">
+                              <Timer className="w-4 h-4 mr-2" />
+                              Pause Game
+                            </Button>
                           </>
                         )}
-                        <Button variant="outline">View Players</Button>
-                        <Button variant="outline">Settings</Button>
+                        <Button variant="outline">
+                          <Users className="w-4 h-4 mr-2" />
+                          View Players
+                        </Button>
+                        <Button variant="outline">
+                          <Settings className="w-4 h-4 mr-2" />
+                          Settings
+                        </Button>
+                        <Button variant="outline">
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          Chat
+                        </Button>
                       </div>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <BarChart className="w-5 h-5 mr-2 text-primary" />
+                    Staff Performance Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-3 bg-secondary rounded-lg">
+                        <p className="text-2xl font-bold text-primary">
+                          {staffStats.resolvedToday}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Tickets Resolved Today
+                        </p>
+                      </div>
+                      <div className="text-center p-3 bg-secondary rounded-lg">
+                        <p className="text-2xl font-bold text-accent">
+                          {staffStats.responseTime}m
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Average Response Time
+                        </p>
+                      </div>
+                      <div className="text-center p-3 bg-secondary rounded-lg">
+                        <p className="text-2xl font-bold text-green-500">
+                          {staffStats.satisfaction}/5
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Customer Satisfaction
+                        </p>
+                      </div>
+                      <div className="text-center p-3 bg-secondary rounded-lg">
+                        <p className="text-2xl font-bold text-primary">
+                          {staffStats.kycReviewed}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          KYC Documents Reviewed
+                        </p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Button className="w-full" variant="outline">
+                        📊 Generate Daily Report
+                      </Button>
+                      <Button className="w-full" variant="outline">
+                        📈 Weekly Performance Summary
+                      </Button>
+                      <Button className="w-full" variant="outline">
+                        💼 Export Timesheet
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Activity className="w-5 h-5 mr-2 text-accent" />
+                    Today's Activity Log
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center p-2 bg-secondary rounded">
+                      <span>Resolved Player123's withdrawal issue</span>
+                      <span className="text-muted-foreground">14:35</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-secondary rounded">
+                      <span>Approved KYC for NewPlayer99</span>
+                      <span className="text-muted-foreground">14:15</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-secondary rounded">
+                      <span>Started bingo session in Golden Hall</span>
+                      <span className="text-muted-foreground">13:45</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-secondary rounded">
+                      <span>Handled technical support for LuckyGamer</span>
+                      <span className="text-muted-foreground">13:20</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-secondary rounded">
+                      <span>Reviewed and rejected fraudulent KYC</span>
+                      <span className="text-muted-foreground">12:50</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-secondary rounded">
+                      <span>Clock in - Shift started</span>
+                      <span className="text-muted-foreground">08:00</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
