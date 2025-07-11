@@ -119,7 +119,7 @@ router.get("/stats", async (req, res) => {
   } catch (error) {
     console.error("Public stats error:", error);
 
-    // Return enhanced fallback stats if database fails
+    // Return enhanced fallback stats if database fails (always return 200 status)
     const timeOfDay = new Date().getHours();
     const peakMultiplier = timeOfDay >= 18 && timeOfDay <= 23 ? 1.5 : 1.0;
     const baseUsers = 1247;
@@ -136,7 +136,7 @@ router.get("/stats", async (req, res) => {
       125000 + dayProgressRatio * 50000 + Math.random() * 25000,
     );
 
-    res.json({
+    res.status(200).json({
       stats: {
         usersOnline: Math.floor((baseUsers + randomVariation) * peakMultiplier),
         totalPayout: estimatedTodaysPayouts,
