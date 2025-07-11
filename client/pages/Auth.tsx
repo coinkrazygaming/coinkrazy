@@ -173,16 +173,16 @@ export default function Auth() {
   const loadDemoCredentials = (type: "admin" | "staff" | "user") => {
     if (type === "admin") {
       setLoginData({
-        email: "admin@coinkriazy.com",
-        password: "admin123",
+        email: "coinkrazy00@gmail.com",
+        password: "Woot6969!",
       });
-      toast.success("Demo admin credentials loaded!");
+      toast.success("Admin credentials loaded!");
     } else if (type === "staff") {
       setLoginData({
-        email: "staff@coinkriazy.com",
-        password: "staff123",
+        email: "coinkrazy00@gmail.com",
+        password: "Woot6969!",
       });
-      toast.success("Demo staff credentials loaded!");
+      toast.success("Staff credentials loaded!");
     } else {
       setLoginData({
         email: "demo1@coinkriazy.com",
