@@ -7,6 +7,7 @@ import CasinoHeader from "@/components/CasinoHeader";
 import GooglePayButton, {
   FallbackPaymentButton,
 } from "@/components/GooglePayButton";
+import PayPalButton from "@/components/PayPalButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
@@ -97,7 +98,7 @@ export default function GoldStore() {
     },
     {
       id: "5",
-      name: "🚀 Mega Pack",
+      name: "���� Mega Pack",
       goldCoins: 100000,
       price: 49.99,
       bonusSC: 125,
