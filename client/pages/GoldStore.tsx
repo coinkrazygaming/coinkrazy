@@ -333,7 +333,7 @@ export default function GoldStore() {
 
         {/* Package Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {goldCoinPackages.map((pkg) => (
+          {storePackages.map((pkg) => (
             <Card
               key={pkg.id}
               className={`casino-glow transition-all duration-300 hover:scale-105 relative ${
