@@ -111,4 +111,49 @@ router.get("/test-database", async (req, res) => {
   }
 });
 
+// Fix user passwords with proper hashes
+router.post("/fix-passwords", async (req, res) => {
+  try {
+    const bcrypt = await import("bcryptjs");
+
+    // Generate proper hashes
+    const adminHash = await bcrypt.hash("Woot6969!", 10);
+    const demoHash = await bcrypt.hash("demo123", 10);
+
+    // Update admin user
+    await executeQuery("UPDATE users SET password_hash = ? WHERE email = ?", [
+      adminHash,
+      "coinkrazy00@gmail.com",
+    ]);
+
+    // Update demo user
+    await executeQuery("UPDATE users SET password_hash = ? WHERE email = ?", [
+      demoHash,
+      "demo1@coinkriazy.com",
+    ]);
+
+    // Update other demo users with demo123 password
+    await executeQuery(
+      "UPDATE users SET password_hash = ? WHERE email LIKE 'demo%@coinkriazy.com'",
+      [demoHash],
+    );
+
+    res.json({
+      success: true,
+      message: "User passwords updated successfully",
+      hashes: {
+        admin: adminHash.substring(0, 20) + "...",
+        demo: demoHash.substring(0, 20) + "...",
+      },
+    });
+  } catch (error) {
+    console.error("Password fix failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "Password fix failed",
+      error: error.message,
+    });
+  }
+});
+
 export default router;
