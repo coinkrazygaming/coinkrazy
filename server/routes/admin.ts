@@ -156,4 +156,49 @@ router.post("/fix-passwords", async (req, res) => {
   }
 });
 
+// Add email verification fields to existing users table
+router.post("/add-email-verification", async (req, res) => {
+  try {
+    console.log("Adding email verification fields to users table...");
+
+    // Add email verification columns if they don't exist
+    const alterQueries = [
+      "ALTER TABLE users ADD COLUMN email_verified_at DATETIME",
+      "ALTER TABLE users ADD COLUMN email_verification_token TEXT",
+      "ALTER TABLE users ADD COLUMN email_verification_expires DATETIME",
+    ];
+
+    for (const query of alterQueries) {
+      try {
+        await executeQuery(query);
+        console.log("Added column:", query);
+      } catch (error) {
+        if (error.message.includes("duplicate column name")) {
+          console.log("Column already exists:", query);
+        } else {
+          console.warn("Migration warning:", error.message);
+        }
+      }
+    }
+
+    // Set existing users as verified (grandfather them in)
+    await executeQuery(
+      "UPDATE users SET email_verified_at = datetime('now') WHERE email_verified_at IS NULL",
+    );
+
+    res.json({
+      success: true,
+      message:
+        "Email verification fields added successfully! Existing users grandfathered as verified. New users will need to verify email to get welcome bonus.",
+    });
+  } catch (error) {
+    console.error("Email verification migration failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "Email verification migration failed",
+      error: error.message,
+    });
+  }
+});
+
 export default router;
