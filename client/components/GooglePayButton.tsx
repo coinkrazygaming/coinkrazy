@@ -1,0 +1,210 @@
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, CreditCard, AlertCircle } from "lucide-react";
+import { googlePayService } from "@/services/googlePay";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+
+interface GooglePayButtonProps {
+  packageId: string;
+  packageName: string;
+  amount: number;
+  goldCoins: number;
+  bonusSC: number;
+  onSuccess?: (result: any) => void;
+  onError?: (error: string) => void;
+  disabled?: boolean;
+  className?: string;
+}
+
+export const GooglePayButton: React.FC<GooglePayButtonProps> = ({
+  packageId,
+  packageName,
+  amount,
+  goldCoins,
+  bonusSC,
+  onSuccess,
+  onError,
+  disabled = false,
+  className = "",
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [googlePayAvailable, setGooglePayAvailable] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const googlePayButtonRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    initializeGooglePay();
+  }, []);
+
+  const initializeGooglePay = async () => {
+    try {
+      setIsLoading(true);
+      const initialized = await googlePayService.initialize();
+
+      if (initialized) {
+        setIsInitialized(true);
+        setGooglePayAvailable(true);
+        await createGooglePayButton();
+      } else {
+        setGooglePayAvailable(false);
+        setError("Google Pay is not available on this device");
+      }
+    } catch (error) {
+      console.error("Google Pay initialization failed:", error);
+      setError("Failed to initialize Google Pay");
+      setGooglePayAvailable(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createGooglePayButton = async () => {
+    if (!googlePayButtonRef.current || !isInitialized) return;
+
+    try {
+      const button = await googlePayService.createButton(handleGooglePayClick, {
+        buttonColor: "default",
+        buttonType: "long",
+        buttonSizeMode: "fill",
+      });
+
+      if (button && googlePayButtonRef.current) {
+        // Clear any existing content
+        googlePayButtonRef.current.innerHTML = "";
+        googlePayButtonRef.current.appendChild(button);
+      }
+    } catch (error) {
+      console.error("Failed to create Google Pay button:", error);
+      setError("Failed to create payment button");
+    }
+  };
+
+  const handleGooglePayClick = async () => {
+    if (!user) {
+      toast.error("Please log in to make a purchase");
+      return;
+    }
+
+    if (disabled || isLoading) return;
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Request payment from Google Pay
+      const paymentData = await googlePayService.requestPayment(
+        amount,
+        `${packageName} - ${goldCoins.toLocaleString()} GC + ${bonusSC} SC`,
+      );
+
+      if (!paymentData) {
+        throw new Error("Payment was cancelled");
+      }
+
+      // Process the payment with our backend
+      const result = await googlePayService.processPayment(
+        packageId,
+        paymentData,
+      );
+
+      if (result.success) {
+        toast.success(
+          `🎉 Purchase successful! You received ${goldCoins.toLocaleString()} GC + ${bonusSC} SC!`,
+        );
+        onSuccess?.(result.data);
+      } else {
+        throw new Error(result.error || "Payment processing failed");
+      }
+    } catch (error: any) {
+      console.error("Payment failed:", error);
+      const errorMessage = error.message || "Payment failed. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      onError?.(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFallbackClick = () => {
+    toast.info(
+      "Google Pay is not available. Please use an alternative payment method.",
+    );
+  };
+
+  // Show loading state
+  if (isLoading && !isInitialized) {
+    return (
+      <Button disabled className={`w-full ${className}`}>
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        Initializing Payment...
+      </Button>
+    );
+  }
+
+  // Show error state with fallback
+  if (!googlePayAvailable || error) {
+    return (
+      <Button
+        onClick={handleFallbackClick}
+        variant="outline"
+        className={`w-full ${className}`}
+        disabled={disabled}
+      >
+        <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
+        Google Pay Unavailable
+      </Button>
+    );
+  }
+
+  // Show processing state
+  if (isLoading) {
+    return (
+      <Button disabled className={`w-full ${className}`}>
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        Processing Payment...
+      </Button>
+    );
+  }
+
+  // Show Google Pay button
+  return (
+    <div className={`w-full ${className}`}>
+      <div
+        ref={googlePayButtonRef}
+        className="w-full min-h-[48px] flex items-center justify-center"
+        style={{
+          minHeight: "48px",
+        }}
+      />
+      {error && (
+        <p className="text-xs text-red-500 mt-2 text-center">{error}</p>
+      )}
+    </div>
+  );
+};
+
+// Fallback button for when Google Pay is not available
+export const FallbackPaymentButton: React.FC<{
+  packageName: string;
+  amount: number;
+  onClick: () => void;
+  disabled?: boolean;
+  className?: string;
+}> = ({ packageName, amount, onClick, disabled = false, className = "" }) => {
+  return (
+    <Button
+      onClick={onClick}
+      className={`w-full bg-primary hover:bg-primary/90 ${className}`}
+      disabled={disabled}
+    >
+      <CreditCard className="w-4 h-4 mr-2" />
+      Purchase ${amount} - {packageName}
+    </Button>
+  );
+};
+
+export default GooglePayButton;
