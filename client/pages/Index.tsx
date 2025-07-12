@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CasinoHeader from "@/components/CasinoHeader";
 import GameCard from "@/components/GameCard";
+import MiniGameLauncher from "@/components/MiniGames/MiniGameLauncher";
 import { useLiveData } from "@/contexts/LiveDataContext";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -22,6 +23,7 @@ import {
 export default function Index() {
   const { stats } = useLiveData();
   const { user } = useAuth();
+  const [selectedMiniGame, setSelectedMiniGame] = useState<string | null>(null);
 
   // Mock data for games
   const miniGames = [
@@ -313,7 +315,13 @@ export default function Index() {
                 category={game.category}
                 emoji={game.emoji}
                 cooldown={game.cooldown}
-                onClick={() => console.log(`Playing ${game.title}`)}
+                onClick={() => {
+                  const slug = game.title
+                    .toLowerCase()
+                    .replace(/['']/g, "")
+                    .replace(/\s+/g, "-");
+                  setSelectedMiniGame(slug);
+                }}
               />
             ))}
           </div>
@@ -473,6 +481,14 @@ export default function Index() {
           </p>
         </div>
       </footer>
+
+      {/* Mini Game Launcher */}
+      {selectedMiniGame && (
+        <MiniGameLauncher
+          gameSlug={selectedMiniGame}
+          onClose={() => setSelectedMiniGame(null)}
+        />
+      )}
     </div>
   );
 }
