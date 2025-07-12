@@ -170,12 +170,12 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
         wsRef.current.onclose = () => {
           setIsConnected(false);
-          // Attempt to reconnect after 3 seconds
-          setTimeout(connectWebSocket, 3000);
+          console.log("Chat WebSocket disconnected, using HTTP fallback");
+          // Don't attempt to reconnect, just use HTTP polling
         };
 
         wsRef.current.onerror = (error) => {
-          console.error("WebSocket error:", error);
+          console.log("Chat WebSocket unavailable, using HTTP fallback");
           setIsConnected(false);
         };
       } catch (error) {
