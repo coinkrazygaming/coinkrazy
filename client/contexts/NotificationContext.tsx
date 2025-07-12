@@ -180,30 +180,31 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     }
 
     const loadNotifications = async () => {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      // Use a simple approach to avoid fetch errors
+      setNotifications([]);
 
+      if (!token || token === "undefined" || token === "null") {
+        return;
+      }
+
+      try {
         const response = await fetch("/api/notifications", {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          signal: controller.signal,
         });
-
-        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
-          setNotifications(Array.isArray(data) ? data : []);
-        } else {
-          // Silently use empty notifications on error
-          setNotifications([]);
+          if (Array.isArray(data)) {
+            setNotifications(data);
+          }
         }
       } catch (error) {
-        // Silently use empty notifications on any error (network, timeout, etc.)
-        setNotifications([]);
+        // Completely ignore any fetch errors
+        // This ensures no console errors are shown to user
       }
     };
 
