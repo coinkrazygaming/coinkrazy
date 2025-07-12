@@ -63,13 +63,18 @@ router.post("/register", async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-    // Insert new user with welcome bonus
+    // Generate email verification token
+    const crypto = await import("crypto");
+    const emailVerificationToken = crypto.randomBytes(32).toString("hex");
+    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Insert new user without welcome bonus (will be added on email verification)
     const result = await executeQuery(
       `INSERT INTO users (
         username, email, password_hash, first_name, last_name,
         date_of_birth, country, state, zip_code, phone,
-        gold_coins, sweeps_coins, registration_ip
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 10000.00, 10.00, ?)`,
+        gold_coins, sweeps_coins, registration_ip, email_verification_token, email_verification_expires
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0.00, 0.00, ?, ?, ?)`,
       [
         validatedData.username,
         validatedData.email,
@@ -82,6 +87,8 @@ router.post("/register", async (req, res) => {
         validatedData.zipCode || null,
         validatedData.phone || null,
         req.ip,
+        emailVerificationToken,
+        emailVerificationExpires.toISOString(),
       ],
     );
 
@@ -91,23 +98,27 @@ router.post("/register", async (req, res) => {
       [result.insertId],
     );
 
-    // Create welcome bonus transaction
-    await executeQuery(
-      `INSERT INTO transactions (
-        user_id, transaction_type, coin_type, amount,
-        previous_balance, new_balance, description, status
-      ) VALUES
-      (?, 'bonus', 'gold', 10000.00, 0.00, 10000.00, 'Welcome Bonus - Gold Coins', 'completed'),
-      (?, 'bonus', 'sweeps', 10.00, 0.00, 10.00, 'Welcome Bonus - Sweeps Coins', 'completed')`,
-      [result.insertId, result.insertId],
+    // Welcome bonus will be awarded when email is verified
+    console.log(
+      `Email verification required for user ${result.insertId}. Token: ${emailVerificationToken}`,
     );
+
+    // TODO: Send verification email here
+    // For now, we'll log the verification link
+    const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${emailVerificationToken}`;
+    console.log(`Verification URL: ${verificationUrl}`);
+
+    // In production, you would send this via email service like SendGrid, AWS SES, etc.
 
     const token = generateToken(user[0]);
 
     res.status(201).json({
-      message: "Registration successful",
+      message:
+        "Registration successful! Please check your email to verify your account and claim your 10,000 GC + 10 SC welcome bonus.",
       user: user[0],
       token,
+      emailVerificationRequired: true,
+      verificationUrl, // TODO: Remove this in production, only for testing
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
