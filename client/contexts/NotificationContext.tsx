@@ -138,38 +138,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     };
   }, [user, token]);
 
-  // Fallback polling mechanism
+  // Fallback polling mechanism (disabled to prevent fetch errors)
   const setupPolling = () => {
-    const pollInterval = setInterval(async () => {
-      if (!user || !token) return;
-
-      try {
-        const response = await fetch(
-          `/api/notifications/recent?since=${lastNotificationCheck.current.toISOString()}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          },
-        );
-
-        if (response.ok) {
-          const newNotifications = await response.json();
-          if (newNotifications.length > 0) {
-            setNotifications((prev) => [
-              ...newNotifications.reverse(),
-              ...prev,
-            ]);
-            lastNotificationCheck.current = new Date();
-          }
-        }
-      } catch (error) {
-        console.error("Failed to poll notifications:", error);
-      }
-    }, 10000); // Poll every 10 seconds
-
-    return () => clearInterval(pollInterval);
+    // Disable polling to prevent fetch errors
+    // Return a no-op cleanup function
+    return () => {};
   };
 
   // Load initial notifications
