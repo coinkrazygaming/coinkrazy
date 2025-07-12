@@ -137,12 +137,64 @@ export default function GoldStore() {
     },
   ];
 
-  // Load user's purchase history
+  // Load store packages and user's purchase history
   useEffect(() => {
+    loadStorePackages();
     if (user) {
       loadPurchaseHistory();
     }
   }, [user]);
+
+  const loadStorePackages = async () => {
+    try {
+      const response = await fetch("/api/store/packages");
+      if (response.ok) {
+        const data = await response.json();
+        const packages = data.packages.map((pkg: any) => ({
+          id: pkg.id.toString(),
+          name: pkg.name,
+          goldCoins: pkg.gold_coins,
+          price: pkg.price,
+          bonusSC: pkg.bonus_sweeps_coins,
+          popular: pkg.package_type === "standard" || pkg.is_featured,
+          savings:
+            pkg.package_type === "premium"
+              ? 25
+              : pkg.package_type === "vip"
+                ? 35
+                : pkg.package_type === "mega"
+                  ? 45
+                  : pkg.package_type === "ultimate"
+                    ? 55
+                    : 0,
+          description: pkg.description,
+          features: [
+            `${pkg.gold_coins.toLocaleString()} Gold Coins`,
+            `${pkg.bonus_sweeps_coins} SC Bonus`,
+            pkg.package_type === "vip" ||
+            pkg.package_type === "mega" ||
+            pkg.package_type === "ultimate"
+              ? "VIP Support Priority"
+              : "Standard Support",
+            pkg.package_type === "ultimate"
+              ? "Platinum VIP Status"
+              : pkg.package_type === "vip" || pkg.package_type === "mega"
+                ? "VIP Status"
+                : "Regular Member",
+            "Instant Delivery",
+          ].filter(Boolean),
+        }));
+        setStorePackages(packages);
+      } else {
+        // Fallback to hardcoded packages if API fails
+        setStorePackages(goldCoinPackages);
+      }
+    } catch (error) {
+      console.error("Failed to load store packages:", error);
+      // Fallback to hardcoded packages
+      setStorePackages(goldCoinPackages);
+    }
+  };
 
   const loadPurchaseHistory = async () => {
     try {
