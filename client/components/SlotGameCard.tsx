@@ -49,6 +49,11 @@ export default function SlotGameCard({
   };
 
   const handlePlaySweeps = () => {
+    // Always show terms modal first for SweepsCoins
+    setShowSweepstakesModal(true);
+  };
+
+  const handleAcceptTermsAndPlay = () => {
     if (gameSymbol) {
       setSelectedCurrency("SC");
       setShowLauncher(true);
