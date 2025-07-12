@@ -42,7 +42,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   });
   const [loading, setLoading] = useState(false);
 
-  // API call helper
+  // API call helper with improved error handling
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
     const config: RequestInit = {
@@ -57,22 +57,21 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       const response = await fetch(url, config);
 
       if (!response.ok) {
-        // Try to get error message from response if possible
-        let errorMessage = "API call failed";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          // If we can't parse the error response, use status text
-          errorMessage = response.statusText || errorMessage;
-        }
-        throw new Error(errorMessage);
+        // Silently return null for failed API calls to avoid console spam
+        // The app will fall back to simulated data
+        return null;
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("API call error:", error);
+      // Only log errors in development mode to avoid production console spam
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          "LiveData API unavailable, using fallback data:",
+          error.message,
+        );
+      }
       // Return null if API fails - fetchStats will handle this gracefully
       return null;
     }
