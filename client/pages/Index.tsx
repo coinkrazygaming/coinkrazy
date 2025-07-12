@@ -356,6 +356,12 @@ export default function Index() {
                 isNew={game.isNew}
                 jackpot={game.jackpot}
                 onClick={() => console.log(`Playing ${game.title}`)}
+                onPlayGold={() =>
+                  console.log(`Playing ${game.title} with Gold Coins`)
+                }
+                onPlaySweeps={() =>
+                  console.log(`Playing ${game.title} with Sweeps Coins`)
+                }
               />
             ))}
           </div>
@@ -479,7 +485,7 @@ export default function Index() {
             </a>
           </div>
           <p className="text-xs text-muted-foreground mt-4">
-            © 2024 CoinKrazy.com • 18+ Only • Play Responsibly 🎲
+            © 2024 CoinKrazy.com • 18+ Only �� Play Responsibly 🎲
           </p>
         </div>
       </footer>
