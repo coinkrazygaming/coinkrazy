@@ -153,9 +153,12 @@ export class GooglePayService {
   private config: GooglePayConfig;
 
   constructor() {
+    // Determine environment - use TEST for development and staging
+    const isProduction =
+      import.meta.env.MODE === "production" && import.meta.env.PROD;
+
     this.config = {
-      environment:
-        import.meta.env.MODE === "production" ? "PRODUCTION" : "TEST",
+      environment: isProduction ? "PRODUCTION" : "TEST",
       merchantId:
         import.meta.env.VITE_GOOGLE_PAY_MERCHANT_ID || "BCR2DN4T2ZOYRS3O", // Test merchant ID
       merchantName: "CoinKrazy Casino",
