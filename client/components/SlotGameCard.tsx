@@ -160,6 +160,14 @@ export default function SlotGameCard({
           onClose={() => setShowLauncher(false)}
         />
       )}
+
+      {/* Sweepstakes Terms Modal */}
+      <SweepstakesTermsModal
+        isOpen={showSweepstakesModal}
+        onClose={() => setShowSweepstakesModal(false)}
+        onAccept={handleAcceptTermsAndPlay}
+        gameName={title}
+      />
     </Card>
   );
 }
