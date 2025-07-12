@@ -124,20 +124,20 @@ export default function SlotGameCard({
             {/* Dual Play Buttons */}
             <div className="space-y-2">
               <Button
-                className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold"
                 size="sm"
                 onClick={handlePlayGold}
               >
                 <Coins className="w-3 h-3 mr-1" />
-                Play with Gold Coins
+                Play for FUN with GoldCoins!
               </Button>
               <Button
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold"
                 size="sm"
                 onClick={handlePlaySweeps}
               >
                 <Crown className="w-3 h-3 mr-1" />
-                Play with Sweeps Coins
+                Play For Real with SweepsCoins!
               </Button>
             </div>
           </div>
