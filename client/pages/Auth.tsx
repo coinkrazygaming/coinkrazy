@@ -128,7 +128,7 @@ export default function Auth() {
           "📧 Please check your email to verify your account and claim your 10,000 GC + 10 SC welcome bonus!",
         );
         // Don't navigate immediately - user needs to verify email first
-        setTabValue("login"); // Switch to login tab for better UX
+        setActiveTab("login"); // Switch to login tab for better UX
       } else {
         toast.error(
           "Registration failed. Email or username may already exist.",
