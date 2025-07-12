@@ -6,15 +6,36 @@ const router = express.Router();
 // Get public stats for homepage (no auth required)
 router.get("/stats", async (req, res) => {
   try {
-    // Get REAL users online (last login within 30 minutes) plus simulated activity
-    const userStats = await executeQuery(
-      `SELECT
-        COUNT(CASE WHEN last_login >= DATE_SUB(NOW(), INTERVAL 30 MINUTE) THEN 1 END) as users_online,
-        COUNT(CASE WHEN DATE(registration_date) = CURDATE() THEN 1 END) as new_users_today,
-        COUNT(*) as total_users
-      FROM users
-      WHERE is_active = TRUE`,
-    );
+    // Initialize default values
+    let userStats = [{ users_online: 0, new_users_today: 0, total_users: 0 }];
+    let financialStats = [
+      {
+        todays_payouts: 0,
+        total_payouts: 0,
+        pending_withdrawals: 0,
+        todays_withdrawals: 0,
+        total_withdrawals_all_time: 0,
+      },
+    ];
+    let gameStats = [
+      { total_games: 700, active_games: 700, total_plays: 50000 },
+    ];
+    let activeSessionsResult = [{ games_playing: 0 }];
+    let jackpotResult = [{ max_jackpot: 100000 }];
+
+    // Try to get REAL users online (last login within 30 minutes) plus simulated activity
+    try {
+      userStats = await executeQuery(
+        `SELECT
+          COUNT(CASE WHEN last_login >= datetime('now', '-30 minutes') THEN 1 END) as users_online,
+          COUNT(CASE WHEN date(registration_date) = date('now') THEN 1 END) as new_users_today,
+          COUNT(*) as total_users
+        FROM users
+        WHERE is_active = TRUE`,
+      );
+    } catch (dbError) {
+      console.log("Could not get user stats from database, using defaults");
+    }
 
     // Get REAL financial statistics for today's payouts
     const financialStats = await executeQuery(
