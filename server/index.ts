@@ -27,7 +27,7 @@ export function createServer() {
   const app = express();
 
   // Trust proxy for rate limiting in cloud environments
-  app.set("trust proxy", true);
+  app.set("trust proxy", 1);
 
   // Security middleware
   app.use(
@@ -42,6 +42,7 @@ export function createServer() {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 1000 requests per windowMs
     message: "Too many requests from this IP, please try again later.",
+    trustProxy: true,
   });
   app.use("/api", limiter);
 
