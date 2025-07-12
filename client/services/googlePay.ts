@@ -202,8 +202,13 @@ export class GooglePayService {
         await this.loadGooglePayScript();
       }
 
+      // Double-check that the API is available
+      if (!window.google?.payments?.api) {
+        throw new Error("Google Pay API not available after script loading");
+      }
+
       // Initialize payments client
-      this.paymentsClient = new window.google!.payments.api.PaymentsClient({
+      this.paymentsClient = new window.google.payments.api.PaymentsClient({
         environment: this.config.environment,
         paymentDataCallbacks: {
           onPaymentAuthorized: this.onPaymentAuthorized.bind(this),
@@ -225,11 +230,14 @@ export class GooglePayService {
         console.log("Google Pay initialized successfully");
         return true;
       } else {
-        console.warn("Google Pay not available");
+        console.warn("Google Pay not available on this device/browser");
         return false;
       }
     } catch (error) {
-      console.error("Failed to initialize Google Pay:", error);
+      console.warn(
+        "Google Pay initialization failed (this is normal if not supported):",
+        error,
+      );
       return false;
     }
   }
