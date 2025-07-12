@@ -22,6 +22,38 @@ function verifyToken(req: any, res: any, next: any) {
   }
 }
 
+// Get recent transactions for dashboard
+router.get("/recent", verifyToken, async (req: any, res) => {
+  try {
+    const transactions = await executeQuery(
+      `SELECT
+        id, transaction_type, coin_type, amount, previous_balance,
+        new_balance, description, status, created_at
+      FROM transactions
+      WHERE user_id = ?
+      ORDER BY created_at DESC
+      LIMIT 10`,
+      [req.user.id],
+    );
+
+    // Format transactions for dashboard display
+    const formattedTransactions = transactions.map((tx: any) => ({
+      id: tx.id.toString(),
+      type: tx.transaction_type,
+      amount: tx.amount,
+      currency: tx.coin_type.toUpperCase(),
+      description: tx.description,
+      status: tx.status,
+      created_at: tx.created_at,
+    }));
+
+    res.json(formattedTransactions);
+  } catch (error) {
+    console.error("Recent transactions error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Get user transaction history
 router.get("/history", verifyToken, async (req: any, res) => {
   try {
