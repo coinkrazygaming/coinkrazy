@@ -138,7 +138,7 @@ export const GooglePayButton: React.FC<GooglePayButtonProps> = ({
 
   const handleFallbackClick = () => {
     toast.info(
-      "Google Pay is not available. Please use an alternative payment method.",
+      "💳 Google Pay not available. Try PayPal below or contact support for help.",
     );
   };
 
