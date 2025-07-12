@@ -86,10 +86,17 @@ export async function executeQuery(
         .replace(/`/g, '"') // Replace backticks with double quotes
         .replace(/CURDATE\(\)/g, "date('now')")
         .replace(/NOW\(\)/g, "datetime('now')")
+        // Fix DATE_SUB patterns more comprehensively
         .replace(
-          /DATE_SUB\(NOW\(\), INTERVAL (\d+) (\w+)\)/g,
-          "datetime('now', '-$1 $2')",
+          /DATE_SUB\(NOW\(\), INTERVAL (\d+) (MINUTE|HOUR|DAY|MONTH|YEAR)\)/gi,
+          "datetime('now', '-$1 $2s')",
         )
+        .replace(
+          /DATE_SUB\(datetime\('now'\), INTERVAL (\d+) (MINUTE|HOUR|DAY|MONTH|YEAR)\)/gi,
+          "datetime('now', '-$1 $2s')",
+        )
+        // Fix DATE() function
+        .replace(/DATE\(([^)]+)\)/g, "date($1)")
         .replace(/AUTO_INCREMENT/gi, "AUTOINCREMENT")
         .replace(/BOOLEAN/gi, "INTEGER")
         .replace(/TEXT COLLATE utf8mb4_unicode_ci/gi, "TEXT")
