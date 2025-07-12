@@ -85,7 +85,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       clearTimeout(timeoutId);
 
       // Only log specific errors in development mode to avoid production console spam
-      if (process.env.NODE_ENV === "development") {
+      if (import.meta.env.MODE === "development") {
         if (error.name === "AbortError") {
           console.warn("LiveData API timeout, using fallback data");
         } else if (error.message.includes("fetch")) {
