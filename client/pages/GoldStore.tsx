@@ -434,9 +434,13 @@ export default function GoldStore() {
 
                     {/* Fallback payment button */}
                     <FallbackPaymentButton
+                      packageId={pkg.id}
                       packageName={pkg.name}
                       amount={pkg.price}
-                      onClick={() => handleFallbackPurchase(pkg)}
+                      goldCoins={pkg.goldCoins}
+                      bonusSC={pkg.bonusSC}
+                      onSuccess={handlePurchaseSuccess}
+                      onError={handlePurchaseError}
                       disabled={isProcessing}
                       className="text-sm py-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground"
                     />
