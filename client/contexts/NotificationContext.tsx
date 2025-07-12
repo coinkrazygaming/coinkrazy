@@ -188,9 +188,15 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
         if (response.ok) {
           const data = await response.json();
           setNotifications(data);
+        } else {
+          console.log("Notifications API not available, using fallback");
+          // Set empty notifications array as fallback
+          setNotifications([]);
         }
       } catch (error) {
-        console.error("Failed to load notifications:", error);
+        console.log("Notifications service unavailable, using fallback");
+        // Set empty notifications array as fallback
+        setNotifications([]);
       }
     };
 
