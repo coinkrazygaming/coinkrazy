@@ -167,7 +167,7 @@ router.get("/history", verifyToken, async (req: any, res) => {
         gs.id, gs.coin_type, gs.bet_amount, gs.total_wagered, gs.total_won,
         gs.spins_played, gs.session_start, gs.session_end, gs.status,
         g.name as game_name, g.game_type,
-        TIMESTAMPDIFF(MINUTE, gs.session_start, COALESCE(gs.session_end, NOW())) as duration_minutes
+        ROUND((julianday(COALESCE(gs.session_end, datetime('now'))) - julianday(gs.session_start)) * 24 * 60) as duration_minutes
       FROM game_sessions gs
       JOIN games g ON gs.game_id = g.id
       WHERE gs.user_id = ?
