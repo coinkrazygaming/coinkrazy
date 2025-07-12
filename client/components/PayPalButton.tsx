@@ -57,17 +57,21 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
         await loadPayPalScript();
       }
 
+      // Double-check that PayPal is available
       if (window.paypal && paypalButtonRef.current) {
         setIsInitialized(true);
         setPaypalAvailable(true);
         await createPayPalButton();
       } else {
         setPaypalAvailable(false);
-        setError("PayPal is not available");
+        setError("PayPal is not available on this device");
       }
-    } catch (error) {
-      console.error("PayPal initialization failed:", error);
-      setError("Failed to initialize PayPal");
+    } catch (error: any) {
+      console.warn(
+        "PayPal initialization failed (this is normal if not supported):",
+        error,
+      );
+      setError(error.message || "Failed to initialize PayPal");
       setPaypalAvailable(false);
     } finally {
       setIsLoading(false);
