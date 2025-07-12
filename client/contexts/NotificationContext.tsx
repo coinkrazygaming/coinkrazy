@@ -104,7 +104,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
     setNotifications(mockNotifications);
 
-    return () => clearTimeout(timeoutId);
+    // No cleanup needed since we're using local data only
   }, [user, token]);
 
   const toggleNotifications = () => {
