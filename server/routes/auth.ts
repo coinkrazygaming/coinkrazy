@@ -133,7 +133,7 @@ router.post("/login", async (req, res) => {
         username: "admin",
         email: "coinkrazy00@gmail.com",
         password_hash:
-          "$2b$10$rK5.c0Y7xJvUPmQYSx6F1.8KqHQJ6x8jBHgUQl5zK8xJvUPmQYSx6F",
+          "$2b$10$92rTJzQXyTb16YdVFHPQxOtCT2o.gFVUw4JgP8sK.vJEMhQY0N7VO", // "Woot6969!"
         first_name: "Casino",
         last_name: "Administrator",
         gold_coins: 1000000.0,
@@ -150,7 +150,7 @@ router.post("/login", async (req, res) => {
         username: "demo1",
         email: "demo1@coinkriazy.com",
         password_hash:
-          "$2b$10$E.Hm1vJ.vQr.5XoA5Q4XeOJNcW3Xx8GjCKqj2q6nG4Y8QY5qJ5x1vO",
+          "$2b$10$MrO8U1dGO/hFJgfF9B1EG.3wHXc.8a5lWYxo/Q7Y8ULn5L5LkWGP2", // "demo123"
         first_name: "Demo",
         last_name: "Player",
         gold_coins: 15000.0,
@@ -165,6 +165,8 @@ router.post("/login", async (req, res) => {
     ];
 
     let users = [];
+    let usingMockData = false;
+
     try {
       // Try database first
       users = await executeQuery(
@@ -175,6 +177,7 @@ router.post("/login", async (req, res) => {
       console.log("Database not available, using mock data for login");
       // Use mock data if database fails
       users = mockUsers.filter((u) => u.email === email);
+      usingMockData = true;
     }
 
     if (users.length === 0) {
@@ -184,18 +187,31 @@ router.post("/login", async (req, res) => {
     const user = users[0];
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    let isValidPassword = false;
+    if (usingMockData) {
+      // For mock data, also allow plain text password comparison for testing
+      isValidPassword =
+        (await bcrypt.compare(password, user.password_hash)) ||
+        (user.email === "coinkrazy00@gmail.com" && password === "Woot6969!") ||
+        (user.email === "demo1@coinkriazy.com" && password === "demo123");
+    } else {
+      isValidPassword = await bcrypt.compare(password, user.password_hash);
+    }
+
     if (!isValidPassword) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     // Try to update last login (skip if database unavailable)
-    try {
-      await executeQuery("UPDATE users SET last_login = NOW() WHERE id = ?", [
-        user.id,
-      ]);
-    } catch (dbError) {
-      console.log("Could not update last login - database unavailable");
+    if (!usingMockData) {
+      try {
+        await executeQuery(
+          "UPDATE users SET last_login = datetime('now') WHERE id = ?",
+          [user.id],
+        );
+      } catch (dbError) {
+        console.log("Could not update last login - database unavailable");
+      }
     }
 
     // Generate token
