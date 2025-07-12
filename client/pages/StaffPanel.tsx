@@ -39,6 +39,17 @@ import {
   Activity,
   Award,
   Target,
+  Settings,
+  PriorityHigh,
+  Clock3,
+  UserPlus,
+  Ticket,
+  Archive,
+  Tag,
+  ArrowRight,
+  RotateCcw,
+  Paperclip,
+  Play,
 } from "lucide-react";
 
 export default function StaffPanel() {
@@ -207,6 +218,153 @@ export default function StaffPanel() {
       timeRemaining: "8:42",
     },
   ]);
+
+  const [supportTickets, setSupportTickets] = useState([
+    {
+      id: "TIC001",
+      title: "Withdrawal Issue - Funds Not Received",
+      description:
+        "Player reports withdrawal approved 48 hours ago but funds not received in bank account",
+      customer: {
+        username: "Player123",
+        email: "player123@example.com",
+        level: 12,
+        vipTier: "Gold",
+      },
+      priority: "high",
+      status: "open",
+      category: "withdrawal",
+      createdAt: "2024-12-19 14:30",
+      updatedAt: "2024-12-19 14:30",
+      assignedTo: null,
+      tags: ["urgent", "financial"],
+      timeToResolve: "24 hours",
+      escalationLevel: 0,
+      messages: [
+        {
+          id: 1,
+          author: "Player123",
+          message:
+            "Hi, I requested a withdrawal 2 days ago and it was approved but I still haven't received the money. Can you please help?",
+          timestamp: "2024-12-19 14:30",
+          isStaff: false,
+        },
+      ],
+    },
+    {
+      id: "TIC002",
+      title: "Unable to Access Mini Games",
+      description:
+        "Customer experiencing technical difficulties accessing mini games section",
+      customer: {
+        username: "LuckyGamer",
+        email: "lucky@example.com",
+        level: 8,
+        vipTier: "Silver",
+      },
+      priority: "medium",
+      status: "in_progress",
+      category: "technical",
+      createdAt: "2024-12-19 13:45",
+      updatedAt: "2024-12-19 14:20",
+      assignedTo: "staff_mike",
+      tags: ["technical", "games"],
+      timeToResolve: "4 hours",
+      escalationLevel: 0,
+      messages: [
+        {
+          id: 1,
+          author: "LuckyGamer",
+          message:
+            "I can't access the mini games. Every time I click it just loads forever.",
+          timestamp: "2024-12-19 13:45",
+          isStaff: false,
+        },
+        {
+          id: 2,
+          author: "staff_mike",
+          message:
+            "Hi! I'm looking into this issue for you. Can you please try clearing your browser cache and let me know if that helps?",
+          timestamp: "2024-12-19 14:20",
+          isStaff: true,
+        },
+      ],
+    },
+    {
+      id: "TIC003",
+      title: "KYC Document Verification Question",
+      description:
+        "New player needs guidance on KYC document submission process",
+      customer: {
+        username: "NewPlayer99",
+        email: "newplayer@example.com",
+        level: 1,
+        vipTier: "Bronze",
+      },
+      priority: "low",
+      status: "open",
+      category: "kyc",
+      createdAt: "2024-12-19 12:15",
+      updatedAt: "2024-12-19 12:15",
+      assignedTo: null,
+      tags: ["kyc", "new-player"],
+      timeToResolve: "8 hours",
+      escalationLevel: 0,
+      messages: [
+        {
+          id: 1,
+          author: "NewPlayer99",
+          message:
+            "Hi, I'm new here and I want to verify my account. What documents do I need to submit for KYC?",
+          timestamp: "2024-12-19 12:15",
+          isStaff: false,
+        },
+      ],
+    },
+    {
+      id: "TIC004",
+      title: "Bonus Not Applied to Account",
+      description:
+        "VIP customer reports promotional bonus not credited despite meeting requirements",
+      customer: {
+        username: "VIPPlayer",
+        email: "vip@example.com",
+        level: 25,
+        vipTier: "Diamond",
+      },
+      priority: "high",
+      status: "escalated",
+      category: "promotion",
+      createdAt: "2024-12-19 11:30",
+      updatedAt: "2024-12-19 13:45",
+      assignedTo: "staff_mike",
+      tags: ["vip", "bonus", "escalated"],
+      timeToResolve: "2 hours",
+      escalationLevel: 1,
+      messages: [
+        {
+          id: 1,
+          author: "VIPPlayer",
+          message:
+            "I completed the weekly challenge but didn't receive my 500 SC bonus. I'm a Diamond VIP member.",
+          timestamp: "2024-12-19 11:30",
+          isStaff: false,
+        },
+        {
+          id: 2,
+          author: "staff_mike",
+          message:
+            "I understand your concern. Let me check your account and the promotion requirements. I'll escalate this to our VIP team.",
+          timestamp: "2024-12-19 13:45",
+          isStaff: true,
+        },
+      ],
+    },
+  ]);
+
+  const [selectedTicket, setSelectedTicket] = useState(supportTickets[0]);
+  const [ticketFilter, setTicketFilter] = useState("all");
+  const [newMessage, setNewMessage] = useState("");
 
   // Redirect if not staff
   useEffect(() => {
@@ -438,8 +596,9 @@ export default function StaffPanel() {
 
         {/* Staff Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full mb-6">
+          <TabsList className="grid grid-cols-3 md:grid-cols-7 w-full mb-6">
             <TabsTrigger value="dashboard">📊 Dashboard</TabsTrigger>
+            <TabsTrigger value="tickets">🎫 Tickets</TabsTrigger>
             <TabsTrigger value="chat">💬 Live Chat</TabsTrigger>
             <TabsTrigger value="users">👥 Users</TabsTrigger>
             <TabsTrigger value="kyc">🛡️ KYC</TabsTrigger>
@@ -668,6 +827,343 @@ export default function StaffPanel() {
                         </li>
                         <li>⏳ Review all pending KYC documents</li>
                       </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Support Tickets Tab */}
+          <TabsContent value="tickets">
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Ticket List */}
+              <Card className="casino-glow lg:col-span-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Ticket className="w-5 h-5 mr-2 text-primary" />
+                      Support Tickets
+                    </div>
+                    <Badge className="bg-destructive text-white">
+                      {
+                        supportTickets.filter((t) => t.status !== "resolved")
+                          .length
+                      }
+                    </Badge>
+                  </CardTitle>
+                  <div className="flex space-x-2">
+                    <select
+                      value={ticketFilter}
+                      onChange={(e) => setTicketFilter(e.target.value)}
+                      className="text-sm bg-secondary border rounded px-2 py-1"
+                    >
+                      <option value="all">All Tickets</option>
+                      <option value="open">Open</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="escalated">Escalated</option>
+                      <option value="high">High Priority</option>
+                    </select>
+                    <Button size="sm" variant="outline">
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {supportTickets
+                      .filter((ticket) => {
+                        if (ticketFilter === "all") return true;
+                        if (ticketFilter === "high")
+                          return ticket.priority === "high";
+                        return ticket.status === ticketFilter;
+                      })
+                      .map((ticket) => (
+                        <div
+                          key={ticket.id}
+                          className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                            selectedTicket?.id === ticket.id
+                              ? "bg-primary/20 border border-primary"
+                              : "bg-secondary hover:bg-secondary/80"
+                          }`}
+                          onClick={() => setSelectedTicket(ticket)}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center space-x-2">
+                              <Badge
+                                className={`text-xs ${
+                                  ticket.priority === "high"
+                                    ? "bg-destructive text-white"
+                                    : ticket.priority === "medium"
+                                      ? "bg-yellow-500 text-white"
+                                      : "bg-green-500 text-white"
+                                }`}
+                              >
+                                {ticket.priority}
+                              </Badge>
+                              <Badge
+                                className={`text-xs ${
+                                  ticket.status === "open"
+                                    ? "bg-blue-500 text-white"
+                                    : ticket.status === "in_progress"
+                                      ? "bg-yellow-500 text-white"
+                                      : ticket.status === "escalated"
+                                        ? "bg-destructive text-white"
+                                        : "bg-green-500 text-white"
+                                }`}
+                              >
+                                {ticket.status.replace("_", " ")}
+                              </Badge>
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                              {ticket.id}
+                            </span>
+                          </div>
+                          <h3 className="font-semibold text-sm truncate mb-1">
+                            {ticket.title}
+                          </h3>
+                          <p className="text-xs text-muted-foreground truncate mb-2">
+                            {ticket.customer.username} • {ticket.category}
+                          </p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">
+                              {ticket.createdAt}
+                            </span>
+                            {ticket.escalationLevel > 0 && (
+                              <Badge className="bg-destructive text-white text-xs">
+                                ⚠️ Level {ticket.escalationLevel}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Ticket Details */}
+              <Card className="casino-glow lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <MessageCircle className="w-5 h-5 mr-2 text-accent" />
+                      Ticket #{selectedTicket.id}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge
+                        className={`${
+                          selectedTicket.priority === "high"
+                            ? "bg-destructive text-white"
+                            : selectedTicket.priority === "medium"
+                              ? "bg-yellow-500 text-white"
+                              : "bg-green-500 text-white"
+                        }`}
+                      >
+                        {selectedTicket.priority} priority
+                      </Badge>
+                      <Badge
+                        className={`${
+                          selectedTicket.status === "open"
+                            ? "bg-blue-500 text-white"
+                            : selectedTicket.status === "in_progress"
+                              ? "bg-yellow-500 text-white"
+                              : selectedTicket.status === "escalated"
+                                ? "bg-destructive text-white"
+                                : "bg-green-500 text-white"
+                        }`}
+                      >
+                        {selectedTicket.status.replace("_", " ")}
+                      </Badge>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Ticket Info */}
+                    <div className="bg-secondary p-4 rounded-lg">
+                      <h3 className="font-semibold mb-2">
+                        {selectedTicket.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {selectedTicket.description}
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">
+                            Customer:
+                          </span>
+                          <p className="font-bold">
+                            {selectedTicket.customer.username}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Level {selectedTicket.customer.level} •{" "}
+                            {selectedTicket.customer.vipTier} VIP
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">
+                            Category:
+                          </span>
+                          <p className="font-bold capitalize">
+                            {selectedTicket.category}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Target Resolution: {selectedTicket.timeToResolve}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2 mt-3">
+                        {selectedTicket.tags.map((tag, index) => (
+                          <Badge
+                            key={index}
+                            className="bg-accent text-accent-foreground text-xs"
+                          >
+                            #{tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Messages */}
+                    <div className="h-64 bg-secondary p-4 rounded-lg overflow-y-auto">
+                      <div className="space-y-3">
+                        {selectedTicket.messages.map((message) => (
+                          <div
+                            key={message.id}
+                            className={`${message.isStaff ? "text-right" : "text-left"}`}
+                          >
+                            <div
+                              className={`inline-block p-3 rounded-lg max-w-xs ${
+                                message.isStaff
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-accent text-accent-foreground"
+                              }`}
+                            >
+                              {message.message}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {message.author} • {message.timestamp}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Reply */}
+                    <div className="space-y-3">
+                      <div className="flex space-x-2">
+                        <Textarea
+                          placeholder="Type your response..."
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          className="flex-1"
+                          rows={3}
+                        />
+                        <div className="flex flex-col space-y-2">
+                          <Button size="sm">
+                            <Send className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Paperclip className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Quick Actions */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        {selectedTicket.status === "open" && (
+                          <Button
+                            size="sm"
+                            className="bg-blue-500 hover:bg-blue-600"
+                          >
+                            <Play className="w-3 h-3 mr-1" />
+                            Take Ticket
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline">
+                          <ArrowRight className="w-3 h-3 mr-1" />
+                          Escalate
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <RotateCcw className="w-3 h-3 mr-1" />
+                          Transfer
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="bg-green-500 hover:bg-green-600"
+                        >
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Resolve
+                        </Button>
+                      </div>
+
+                      {/* Status Update */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <select className="text-sm bg-secondary border rounded px-2 py-1">
+                          <option>Change Status</option>
+                          <option value="open">Open</option>
+                          <option value="in_progress">In Progress</option>
+                          <option value="waiting_customer">
+                            Waiting Customer
+                          </option>
+                          <option value="resolved">Resolved</option>
+                        </select>
+                        <select className="text-sm bg-secondary border rounded px-2 py-1">
+                          <option>Change Priority</option>
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
+                        </select>
+                        <select className="text-sm bg-secondary border rounded px-2 py-1">
+                          <option>Assign To</option>
+                          <option value="staff_mike">staff_mike</option>
+                          <option value="staff_sarah">staff_sarah</option>
+                          <option value="admin_team">Admin Team</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Customer Info Panel */}
+                    <div className="bg-secondary p-3 rounded-lg">
+                      <h4 className="font-semibold mb-2">
+                        Customer Information
+                      </h4>
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Email:</span>
+                          <p className="font-bold">
+                            {selectedTicket.customer.email}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">
+                            VIP Tier:
+                          </span>
+                          <p className="font-bold">
+                            {selectedTicket.customer.vipTier}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Level:</span>
+                          <p className="font-bold">
+                            {selectedTicket.customer.level}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2 mt-3">
+                        <Button size="sm" variant="outline">
+                          <Eye className="w-3 h-3 mr-1" />
+                          View Profile
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Mail className="w-3 h-3 mr-1" />
+                          Email Customer
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Phone className="w-3 h-3 mr-1" />
+                          Call Customer
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
