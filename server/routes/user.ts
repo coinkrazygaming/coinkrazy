@@ -303,6 +303,61 @@ router.get("/stats", verifyToken, async (req: any, res) => {
   }
 });
 
+// Claim daily bonus
+router.post("/claim-daily-bonus", verifyToken, async (req: any, res) => {
+  try {
+    // Check if already claimed today
+    const todayClaim = await executeQuery(
+      `SELECT id FROM transactions
+      WHERE user_id = ?
+      AND transaction_type = 'bonus'
+      AND description LIKE '%Daily Login%'
+      AND date(created_at) = date('now')`,
+      [req.user.id],
+    );
+
+    if (todayClaim.length > 0) {
+      return res.status(400).json({
+        message: "Daily bonus already claimed today",
+      });
+    }
+
+    // Get user balance
+    const user = await executeQuery(
+      "SELECT gold_coins FROM users WHERE id = ?",
+      [req.user.id],
+    );
+
+    const bonusAmount = 1000; // Daily bonus amount
+    const newBalance = user[0].gold_coins + bonusAmount;
+
+    // Update user balance
+    await executeQuery(
+      "UPDATE users SET gold_coins = ?, experience_points = experience_points + 25 WHERE id = ?",
+      [newBalance, req.user.id],
+    );
+
+    // Create bonus transaction
+    await executeQuery(
+      `INSERT INTO transactions (
+        user_id, transaction_type, coin_type, amount,
+        previous_balance, new_balance, description, status
+      ) VALUES (?, 'bonus', 'gold', ?, ?, ?, 'Daily Login Bonus', 'completed')`,
+      [req.user.id, bonusAmount, user[0].gold_coins, newBalance],
+    );
+
+    res.json({
+      message: "Daily bonus claimed successfully",
+      amount: bonusAmount,
+      currency: "GC",
+      newBalance,
+    });
+  } catch (error) {
+    console.error("Daily bonus claim error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Submit KYC documents
 router.post("/kyc", verifyToken, async (req: any, res) => {
   try {
