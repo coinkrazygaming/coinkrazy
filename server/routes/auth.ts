@@ -300,6 +300,126 @@ router.get("/verify", async (req, res) => {
   }
 });
 
+// Email verification endpoint
+router.post("/verify-email", async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res
+        .status(400)
+        .json({ message: "Verification token is required" });
+    }
+
+    // Find user with this verification token
+    const users = await executeQuery(
+      "SELECT * FROM users WHERE email_verification_token = ? AND email_verification_expires > datetime('now') AND email_verified_at IS NULL",
+      [token],
+    );
+
+    if (users.length === 0) {
+      return res.status(400).json({
+        message: "Invalid or expired verification token",
+      });
+    }
+
+    const user = users[0];
+
+    // Mark email as verified and clear verification token
+    await executeQuery(
+      `UPDATE users SET
+        email_verified_at = datetime('now'),
+        email_verification_token = NULL,
+        email_verification_expires = NULL,
+        gold_coins = 10000.00,
+        sweeps_coins = 10.00
+      WHERE id = ?`,
+      [user.id],
+    );
+
+    // Create welcome bonus transactions
+    await executeQuery(
+      `INSERT INTO transactions (
+        user_id, transaction_type, coin_type, amount,
+        previous_balance, new_balance, description, status
+      ) VALUES
+      (?, 'bonus', 'gold', 10000.00, 0.00, 10000.00, 'Welcome Bonus - Gold Coins', 'completed'),
+      (?, 'bonus', 'sweeps', 10.00, 0.00, 10.00, 'Welcome Bonus - Sweeps Coins', 'completed')`,
+      [user.id, user.id],
+    );
+
+    // Get updated user data
+    const updatedUser = await executeQuery(
+      "SELECT id, username, email, first_name, last_name, gold_coins, sweeps_coins, level, is_admin, is_staff FROM users WHERE id = ?",
+      [user.id],
+    );
+
+    res.json({
+      message:
+        "Email verified successfully! You've received your welcome bonus of 10,000 GC + 10 SC!",
+      user: updatedUser[0],
+      bonusAwarded: {
+        goldCoins: 10000,
+        sweepsCoins: 10,
+      },
+    });
+  } catch (error) {
+    console.error("Email verification error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Resend verification email endpoint
+router.post("/resend-verification", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Find unverified user
+    const users = await executeQuery(
+      "SELECT * FROM users WHERE email = ? AND email_verified_at IS NULL",
+      [email],
+    );
+
+    if (users.length === 0) {
+      return res.status(400).json({
+        message: "No unverified account found with this email",
+      });
+    }
+
+    const user = users[0];
+
+    // Generate new verification token
+    const crypto = await import("crypto");
+    const emailVerificationToken = crypto.randomBytes(32).toString("hex");
+    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Update verification token
+    await executeQuery(
+      `UPDATE users SET
+        email_verification_token = ?,
+        email_verification_expires = ?
+      WHERE id = ?`,
+      [emailVerificationToken, emailVerificationExpires.toISOString(), user.id],
+    );
+
+    // TODO: Send verification email here
+    const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${emailVerificationToken}`;
+    console.log(`New verification URL for ${email}: ${verificationUrl}`);
+
+    res.json({
+      message: "Verification email resent! Please check your email.",
+      verificationUrl, // TODO: Remove this in production
+    });
+  } catch (error) {
+    console.error("Resend verification error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Logout endpoint (client-side token removal)
 router.post("/logout", (req, res) => {
   res.json({ message: "Logout successful" });
