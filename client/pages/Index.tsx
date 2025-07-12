@@ -60,7 +60,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: null,
       provider: "CoinKrazy",
-      image: "/images/mini-games/lucky-wheel-spin.webp",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800",
     },
     {
       title: "Number Guess Master",
@@ -68,7 +69,8 @@ export default function Index() {
       category: "Mini Game",
       cooldown: "23:15:42",
       provider: "CoinKrazy",
-      image: "/images/mini-games/number-guess-master.webp",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F158ad80714ee4ada8f8c644f5204f766?format=webp&width=800",
     },
   ];
 
