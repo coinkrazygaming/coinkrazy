@@ -196,20 +196,56 @@ export const GooglePayButton: React.FC<GooglePayButtonProps> = ({
 
 // Fallback button for when Google Pay is not available
 export const FallbackPaymentButton: React.FC<{
+  packageId: string;
   packageName: string;
   amount: number;
-  onClick: () => void;
+  goldCoins: number;
+  bonusSC: number;
+  onSuccess?: (result: any) => void;
+  onError?: (error: string) => void;
   disabled?: boolean;
   className?: string;
-}> = ({ packageName, amount, onClick, disabled = false, className = "" }) => {
+}> = ({
+  packageId,
+  packageName,
+  amount,
+  goldCoins,
+  bonusSC,
+  onSuccess,
+  onError,
+  disabled = false,
+  className = "",
+}) => {
+  const [showForm, setShowForm] = useState(false);
+
+  if (showForm) {
+    return (
+      <CreditCardForm
+        packageId={packageId}
+        packageName={packageName}
+        amount={amount}
+        goldCoins={goldCoins}
+        bonusSC={bonusSC}
+        onSuccess={(result) => {
+          setShowForm(false);
+          onSuccess?.(result);
+        }}
+        onError={(error) => {
+          onError?.(error);
+        }}
+        onCancel={() => setShowForm(false)}
+      />
+    );
+  }
+
   return (
     <Button
-      onClick={onClick}
+      onClick={() => setShowForm(true)}
       className={`w-full bg-primary hover:bg-primary/90 ${className}`}
       disabled={disabled}
     >
       <CreditCard className="w-4 h-4 mr-2" />
-      Purchase ${amount} - {packageName}
+      💳 Pay with Credit Card
     </Button>
   );
 };
