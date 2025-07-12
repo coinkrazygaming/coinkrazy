@@ -53,22 +53,20 @@ export default function Index() {
         "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center",
     },
     {
-      title: "Haylie's Coins",
-      emoji: "���",
+      title: "Lucky Wheel Spin",
+      emoji: "🎡",
       category: "Mini Game",
       cooldown: null,
       provider: "CoinKrazy",
-      image:
-        "https://images.unsplash.com/photo-1543699565-003b8adda5fc?w=400&h=600&fit=crop&crop=center",
+      image: "/images/mini-games/lucky-wheel-spin.webp",
     },
     {
-      title: "Beth's Darts",
-      emoji: "🎪",
+      title: "Number Guess Master",
+      emoji: "🔢",
       category: "Mini Game",
       cooldown: "23:15:42",
       provider: "CoinKrazy",
-      image:
-        "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=400&h=600&fit=crop&crop=center",
+      image: "/images/mini-games/number-guess-master.webp",
     },
   ];
 
