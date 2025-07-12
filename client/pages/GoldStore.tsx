@@ -420,6 +420,18 @@ export default function GoldStore() {
                       className={pkg.popular ? "casino-pulse" : ""}
                     />
 
+                    {/* PayPal Button */}
+                    <PayPalButton
+                      packageId={pkg.id}
+                      packageName={pkg.name}
+                      amount={pkg.price}
+                      goldCoins={pkg.goldCoins}
+                      bonusSC={pkg.bonusSC}
+                      onSuccess={handlePurchaseSuccess}
+                      onError={handlePurchaseError}
+                      disabled={isProcessing && selectedPackage === pkg.id}
+                    />
+
                     {/* Fallback payment button */}
                     <FallbackPaymentButton
                       packageName={pkg.name}
