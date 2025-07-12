@@ -37,56 +37,76 @@ router.get("/stats", async (req, res) => {
       console.log("Could not get user stats from database, using defaults");
     }
 
-    // Get REAL financial statistics for today's payouts
-    const financialStats = await executeQuery(
-      `SELECT
-        COALESCE(SUM(CASE
-          WHEN (transaction_type = 'game_win' OR transaction_type = 'win' OR transaction_type = 'bonus')
-          AND DATE(created_at) = CURDATE()
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as todays_payouts,
-        COALESCE(SUM(CASE
-          WHEN transaction_type = 'game_win' OR transaction_type = 'win'
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as total_payouts,
-        COUNT(CASE WHEN transaction_type = 'withdrawal' AND status = 'pending' THEN 1 END) as pending_withdrawals,
-        COALESCE(SUM(CASE
-          WHEN transaction_type = 'withdrawal' AND status = 'completed'
-          AND DATE(created_at) = CURDATE()
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as todays_withdrawals,
-        COALESCE(SUM(CASE
-          WHEN transaction_type = 'withdrawal' AND status = 'completed'
-          THEN ABS(amount)
-          ELSE 0
-        END), 0) as total_withdrawals_all_time
-      FROM transactions`,
-    );
+    // Try to get REAL financial statistics for today's payouts
+    try {
+      financialStats = await executeQuery(
+        `SELECT
+          COALESCE(SUM(CASE
+            WHEN (transaction_type = 'game_win' OR transaction_type = 'win' OR transaction_type = 'bonus')
+            AND date(created_at) = date('now')
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as todays_payouts,
+          COALESCE(SUM(CASE
+            WHEN transaction_type = 'game_win' OR transaction_type = 'win'
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as total_payouts,
+          COUNT(CASE WHEN transaction_type = 'withdrawal' AND status = 'pending' THEN 1 END) as pending_withdrawals,
+          COALESCE(SUM(CASE
+            WHEN transaction_type = 'withdrawal' AND status = 'completed'
+            AND date(created_at) = date('now')
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as todays_withdrawals,
+          COALESCE(SUM(CASE
+            WHEN transaction_type = 'withdrawal' AND status = 'completed'
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as total_withdrawals_all_time
+        FROM transactions`,
+      );
+    } catch (dbError) {
+      console.log(
+        "Could not get financial stats from database, using defaults",
+      );
+    }
 
-    // Get game statistics
-    const gameStats = await executeQuery(
-      `SELECT
-        COUNT(*) as total_games,
-        COUNT(CASE WHEN is_active = TRUE THEN 1 END) as active_games,
-        COALESCE(SUM(play_count), 0) as total_plays
-      FROM games`,
-    );
+    // Try to get game statistics
+    try {
+      gameStats = await executeQuery(
+        `SELECT
+          COUNT(*) as total_games,
+          COUNT(CASE WHEN is_active = TRUE THEN 1 END) as active_games,
+          COALESCE(SUM(play_count), 0) as total_plays
+        FROM games`,
+      );
+    } catch (dbError) {
+      console.log("Could not get game stats from database, using defaults");
+    }
 
-    // Get active game sessions (players currently playing)
-    const activeSessionsResult = await executeQuery(
-      `SELECT COUNT(DISTINCT user_id) as games_playing
-      FROM game_sessions
-      WHERE status = 'active'
-      AND session_start >= DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
-    );
+    // Try to get active game sessions (players currently playing)
+    try {
+      activeSessionsResult = await executeQuery(
+        `SELECT COUNT(DISTINCT user_id) as games_playing
+        FROM game_sessions
+        WHERE status = 'active'
+        AND session_start >= datetime('now', '-1 hour')`,
+      );
+    } catch (dbError) {
+      console.log(
+        "Could not get active sessions from database, using defaults",
+      );
+    }
 
-    // Get progressive jackpot info
-    const jackpotResult = await executeQuery(
-      `SELECT COALESCE(MAX(max_win), 100000) as max_jackpot FROM games WHERE is_active = TRUE`,
-    );
+    // Try to get progressive jackpot info
+    try {
+      jackpotResult = await executeQuery(
+        `SELECT COALESCE(MAX(max_win), 100000) as max_jackpot FROM games WHERE is_active = TRUE`,
+      );
+    } catch (dbError) {
+      console.log("Could not get jackpot info from database, using defaults");
+    }
 
     // Calculate real-time numbers
     const realUsersOnline = userStats[0]?.users_online || 0;
