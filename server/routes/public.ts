@@ -33,9 +33,15 @@ router.get("/stats", async (req, res) => {
         COUNT(CASE WHEN transaction_type = 'withdrawal' AND status = 'pending' THEN 1 END) as pending_withdrawals,
         COALESCE(SUM(CASE
           WHEN transaction_type = 'withdrawal' AND status = 'completed'
+          AND DATE(created_at) = CURDATE()
           THEN ABS(amount)
           ELSE 0
-        END), 0) as total_withdrawals
+        END), 0) as todays_withdrawals,
+        COALESCE(SUM(CASE
+          WHEN transaction_type = 'withdrawal' AND status = 'completed'
+          THEN ABS(amount)
+          ELSE 0
+        END), 0) as total_withdrawals_all_time
       FROM transactions`,
     );
 
@@ -64,6 +70,7 @@ router.get("/stats", async (req, res) => {
     // Calculate real-time numbers
     const realUsersOnline = userStats[0]?.users_online || 0;
     const todaysRealPayouts = financialStats[0]?.todays_payouts || 0;
+    const todaysRealWithdrawals = financialStats[0]?.todays_withdrawals || 0;
 
     // Add some realistic simulation to make numbers look active
     const simulatedUsersOnline = Math.floor(Math.random() * 200) + 800; // 800-999 simulated users
@@ -94,7 +101,10 @@ router.get("/stats", async (req, res) => {
         activeSessionsResult[0]?.games_playing || 0,
         Math.floor(totalUsersOnline * 0.3),
       ),
-      totalWithdrawals: financialStats[0]?.total_withdrawals || 0,
+      totalWithdrawals: Math.max(
+        todaysRealWithdrawals,
+        Math.floor(Math.random() * 25000) + 15000,
+      ), // Today's withdrawals with minimum display
       pendingWithdrawals: financialStats[0]?.pending_withdrawals || 0,
       newUsersToday: Math.max(
         userStats[0]?.new_users_today || 0,
@@ -110,7 +120,9 @@ router.get("/stats", async (req, res) => {
       simulatedUsersOnline,
       totalUsersOnline: stats.usersOnline,
       todaysRealPayouts,
+      todaysRealWithdrawals,
       totalTodaysPayouts: stats.totalPayout,
+      todaysWithdrawalsDisplay: stats.totalWithdrawals,
       timeOfDay,
       peakHoursMultiplier,
     });
@@ -142,7 +154,7 @@ router.get("/stats", async (req, res) => {
         totalPayout: estimatedTodaysPayouts,
         jackpotAmount: 245678.89 + (Math.floor(Date.now() / 1000) % 1000),
         gamesPlaying: Math.floor((baseUsers + randomVariation) * 0.35),
-        totalWithdrawals: 45621.32,
+        totalWithdrawals: Math.floor(Math.random() * 25000) + 15000, // Today's withdrawals fallback
         pendingWithdrawals: Math.floor(Math.random() * 20) + 5,
         newUsersToday: Math.floor(Math.random() * 100) + 75,
         activeGames: 700 + Math.floor(Math.random() * 50),
