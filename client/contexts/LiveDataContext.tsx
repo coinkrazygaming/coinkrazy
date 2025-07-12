@@ -77,7 +77,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Fetch live stats from API
+  // Fetch live stats from API with graceful fallback
   const fetchStats = async () => {
     try {
       setLoading(true);
@@ -95,7 +95,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
           activeGames: data.stats.activeGames,
         });
       } else {
-        // Simulate live data with small random changes if API fails
+        // Silently simulate live data with small random changes if API fails
         setStats((prev) => ({
           ...prev,
           usersOnline: Math.max(
@@ -111,7 +111,10 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
         }));
       }
     } catch (error) {
-      console.error("Failed to fetch live stats:", error);
+      // Only log in development mode to reduce production console spam
+      if (process.env.NODE_ENV === "development") {
+        console.warn("LiveData fallback mode active");
+      }
       // Simulate live data with small random changes
       setStats((prev) => ({
         ...prev,
