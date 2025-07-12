@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /database/
+Disallow: *.sql
+Disallow: *.env
+
+Sitemap: https://coinkrazy.com/sitemap.xml

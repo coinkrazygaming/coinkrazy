@@ -1,0 +1,12 @@
+{
+  "name": "coinkrazy-platform",
+  "version": "1.0.0",
+  "description": "CoinKrazy.com - Social Casino Platform",
+  "scripts": {
+    "build": "echo 'No build step required for PHP application'",
+    "start": "php -S localhost:8000",
+    "dev": "php -S localhost:8000"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

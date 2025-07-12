@@ -1,0 +1,16 @@
+{
+  "name": "coinkrazy/platform",
+  "description": "CoinKrazy.com Social Casino Platform",
+  "type": "project",
+  "require": {
+    "php": ">=8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "CoinKrazy\\": "src/"
+    }
+  },
+  "scripts": {
+    "post-install-cmd": ["php -r \"copy('.env.example', '.env');\""]
+  }
+}
