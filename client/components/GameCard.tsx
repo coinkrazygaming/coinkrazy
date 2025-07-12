@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Star, Coins, Clock } from "lucide-react";
+import { Play, Star, Coins, Clock, Crown } from "lucide-react";
 
 interface GameCardProps {
   title: string;
