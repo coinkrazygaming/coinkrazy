@@ -78,10 +78,14 @@ export const GooglePayButton: React.FC<GooglePayButtonProps> = ({
         // Clear any existing content
         googlePayButtonRef.current.innerHTML = "";
         googlePayButtonRef.current.appendChild(button);
+      } else {
+        setError("Unable to create Google Pay button");
+        setGooglePayAvailable(false);
       }
-    } catch (error) {
-      console.error("Failed to create Google Pay button:", error);
-      setError("Failed to create payment button");
+    } catch (error: any) {
+      console.warn("Failed to create Google Pay button:", error);
+      setError("Google Pay button unavailable");
+      setGooglePayAvailable(false);
     }
   };
 
