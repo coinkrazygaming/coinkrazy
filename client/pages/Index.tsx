@@ -76,56 +76,58 @@ export default function Index() {
 
   const slotGames = [
     {
-      title: "Gold Rush Deluxe",
+      title: "Sweet Bonanza",
       emoji: "💰",
       category: "Slots",
       isPopular: true,
-      jackpot: "$12,456",
+      jackpot: "$21,100",
       provider: "Pragmatic Play",
       image:
-        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/gold-rush-deluxe.png",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25sweetbonanza.png",
     },
     {
-      title: "Diamond Dreams",
+      title: "The Dog House",
       emoji: "💎",
       category: "Slots",
       isNew: true,
-      provider: "NetEnt",
+      provider: "Pragmatic Play",
       image:
-        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/diamond-dreams.png",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20doghouse.png",
     },
     {
-      title: "Lucky 777",
+      title: "Gate of Olympus",
       emoji: "🍀",
       category: "Slots",
       isPopular: true,
-      provider: "Play'n GO",
-      image: "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/lucky-7s.png",
-    },
-    {
-      title: "Wild Safari",
-      emoji: "🦁",
-      category: "Slots",
-      provider: "Microgaming",
-      image: "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/wild-safari.png",
-    },
-    {
-      title: "Ocean Treasure",
-      emoji: "🌊",
-      category: "Slots",
-      jackpot: "$8,923",
       provider: "Pragmatic Play",
       image:
-        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/ocean-treasure.png",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20gatotoro.png",
     },
     {
-      title: "Space Adventure",
+      title: "Fruit Party",
+      emoji: "🦁",
+      category: "Slots",
+      provider: "Pragmatic Play",
+      image:
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20fruitparty.png",
+    },
+    {
+      title: "Gold Party",
+      emoji: "🌊",
+      category: "Slots",
+      jackpot: "$15,234",
+      provider: "Pragmatic Play",
+      image:
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25goldparty.png",
+    },
+    {
+      title: "Great Rhino",
       emoji: "🚀",
       category: "Slots",
       isNew: true,
-      provider: "NetEnt",
+      provider: "Pragmatic Play",
       image:
-        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/space-adventure.png",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20greatrhino.png",
     },
   ];
 
