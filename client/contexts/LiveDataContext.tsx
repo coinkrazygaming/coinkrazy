@@ -165,9 +165,9 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     await fetchStats();
   };
 
-  // Auto-refresh stats every 10 seconds
+  // Auto-refresh stats every 30 seconds to reduce load and potential errors
   useEffect(() => {
-    const interval = setInterval(fetchStats, 10000);
+    const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
   }, []);
 
