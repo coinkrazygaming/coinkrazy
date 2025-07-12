@@ -138,7 +138,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       // Only log in development mode to reduce production console spam
-      if (process.env.NODE_ENV === "development") {
+      if (import.meta.env.MODE === "development") {
         console.warn("LiveData fallback mode active");
       }
       // Simulate live data with small random changes
