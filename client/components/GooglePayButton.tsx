@@ -50,11 +50,14 @@ export const GooglePayButton: React.FC<GooglePayButtonProps> = ({
         await createGooglePayButton();
       } else {
         setGooglePayAvailable(false);
-        setError("Google Pay is not available on this device");
+        setError("Google Pay not supported");
       }
-    } catch (error) {
-      console.error("Google Pay initialization failed:", error);
-      setError("Failed to initialize Google Pay");
+    } catch (error: any) {
+      console.warn(
+        "Google Pay initialization failed (this is normal if not supported):",
+        error,
+      );
+      setError("Google Pay unavailable");
       setGooglePayAvailable(false);
     } finally {
       setIsLoading(false);
