@@ -254,21 +254,22 @@ export default function Slots() {
       description: "Uncover ancient Egyptian treasures with Tutankhamun!",
     },
     {
-      id: "candy-crush-saga",
-      title: "Sweet Bonanza",
+      id: "candyblitz",
+      title: "Candy Blitz",
+      gameSymbol: "vs20candyblitz",
       provider: "Pragmatic Play",
       category: "sweet",
       thumbnail:
-        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25sweetbonanza.png",
-      rtp: "96.9%",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20candyblitz.png",
+      rtp: "96.5%",
       volatility: "High",
       paylines: "Cluster Pay",
       minBet: 0.2,
-      maxBet: 125,
+      maxBet: 100,
       jackpot: null,
       isNew: true,
       isPopular: true,
-      description: "Sweet treats and multiplier treats!",
+      description: "Sweet candy blitz with explosive wins!",
     },
   ];
 
