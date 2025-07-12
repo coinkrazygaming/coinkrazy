@@ -247,7 +247,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
 
   const handleFallbackClick = () => {
     toast.info(
-      "PayPal is not available. Please try Google Pay or contact support.",
+      "💳 PayPal not available. Try Google Pay above or contact support for help.",
     );
   };
 
