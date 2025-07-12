@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import CasinoHeader from "@/components/CasinoHeader";
+import GooglePayButton, {
+  FallbackPaymentButton,
+} from "@/components/GooglePayButton";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import {
   Coins,
   CreditCard,
@@ -16,11 +21,16 @@ import {
   Sparkles,
   TrendingUp,
   Clock,
+  RefreshCw,
 } from "lucide-react";
 
 export default function GoldStore() {
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [storePackages, setStorePackages] = useState(goldCoinPackages);
+  const [userPurchases, setUserPurchases] = useState<any[]>([]);
+  const [isLoadingPurchases, setIsLoadingPurchases] = useState(false);
+  const { user } = useAuth();
 
   const goldCoinPackages = [
     {
@@ -127,34 +137,70 @@ export default function GoldStore() {
     },
   ];
 
-  const handlePurchase = async (packageId: string) => {
-    setSelectedPackage(packageId);
-    setIsProcessing(true);
+  // Load user's purchase history
+  useEffect(() => {
+    if (user) {
+      loadPurchaseHistory();
+    }
+  }, [user]);
 
-    // Simulate Google Pay processing
-    setTimeout(() => {
-      setIsProcessing(false);
-      // Show success message or redirect
-      alert("Purchase successful! Coins have been added to your account.");
-    }, 3000);
+  const loadPurchaseHistory = async () => {
+    try {
+      setIsLoadingPurchases(true);
+      const response = await fetch("/api/store/purchases", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserPurchases(data.purchases || []);
+      }
+    } catch (error) {
+      console.error("Failed to load purchase history:", error);
+    } finally {
+      setIsLoadingPurchases(false);
+    }
   };
 
-  const recentPurchases = [
-    {
-      package: "Popular Pack",
-      date: "2024-12-19 14:30",
-      amount: "$9.99",
-      goldCoins: 15000,
-      bonusSC: 15,
-    },
-    {
-      package: "VIP Pack",
-      date: "2024-12-15 09:15",
-      amount: "$29.99",
-      goldCoins: 50000,
-      bonusSC: 60,
-    },
-  ];
+  const handlePurchaseSuccess = async (result: any) => {
+    // Refresh user's balance and purchase history
+    await loadPurchaseHistory();
+
+    // You might want to refresh the user's coin balance here
+    toast.success(
+      `🎉 Purchase completed! ${result.goldCoinsReceived?.toLocaleString()} GC + ${result.sweepsCoinsReceived} SC added to your account!`,
+    );
+  };
+
+  const handlePurchaseError = (error: string) => {
+    toast.error(`Payment failed: ${error}`);
+  };
+
+  const handleFallbackPurchase = async (pkg: any) => {
+    setSelectedPackage(pkg.id);
+    setIsProcessing(true);
+
+    try {
+      // This would integrate with other payment methods
+      toast.info("Alternative payment methods coming soon!");
+    } catch (error) {
+      toast.error("Payment processing failed");
+    } finally {
+      setIsProcessing(false);
+      setSelectedPackage(null);
+    }
+  };
+
+  // Format user purchases for display
+  const recentPurchases = userPurchases.slice(0, 5).map((purchase) => ({
+    package: purchase.package_name,
+    date: new Date(purchase.created_at).toLocaleString(),
+    amount: `$${purchase.amount}`,
+    goldCoins: purchase.gold_coins_received,
+    bonusSC: purchase.sweeps_coins_received,
+  }));
 
   const specialOffers = [
     {
@@ -307,28 +353,29 @@ export default function GoldStore() {
                     ))}
                   </ul>
 
-                  {/* Purchase Button */}
-                  <Button
-                    className={`w-full text-lg py-3 ${
-                      pkg.popular
-                        ? "bg-primary hover:bg-primary/90 casino-pulse"
-                        : "bg-accent hover:bg-accent/90"
-                    }`}
-                    onClick={() => handlePurchase(pkg.id)}
-                    disabled={isProcessing && selectedPackage === pkg.id}
-                  >
-                    {isProcessing && selectedPackage === pkg.id ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="w-5 h-5 mr-2" />
-                        💳 Buy with Google Pay
-                      </>
-                    )}
-                  </Button>
+                  {/* Google Pay Button */}
+                  <div className="space-y-2">
+                    <GooglePayButton
+                      packageId={pkg.id}
+                      packageName={pkg.name}
+                      amount={pkg.price}
+                      goldCoins={pkg.goldCoins}
+                      bonusSC={pkg.bonusSC}
+                      onSuccess={handlePurchaseSuccess}
+                      onError={handlePurchaseError}
+                      disabled={isProcessing && selectedPackage === pkg.id}
+                      className={pkg.popular ? "casino-pulse" : ""}
+                    />
+
+                    {/* Fallback payment button */}
+                    <FallbackPaymentButton
+                      packageName={pkg.name}
+                      amount={pkg.price}
+                      onClick={() => handleFallbackPurchase(pkg)}
+                      disabled={isProcessing}
+                      className="text-sm py-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                    />
+                  </div>
 
                   <p className="text-xs text-center text-muted-foreground">
                     🔒 Secure payment • Instant delivery • 24/7 support
@@ -391,39 +438,61 @@ export default function GoldStore() {
           {/* Recent Purchases */}
           <Card className="casino-glow">
             <CardHeader>
-              <CardTitle className="flex items-center text-accent">
-                <Clock className="w-5 h-5 mr-2" />
-                Purchase History
+              <CardTitle className="flex items-center justify-between text-accent">
+                <div className="flex items-center">
+                  <Clock className="w-5 h-5 mr-2" />
+                  Purchase History
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={loadPurchaseHistory}
+                  disabled={isLoadingPurchases}
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${isLoadingPurchases ? "animate-spin" : ""}`}
+                  />
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {recentPurchases.map((purchase, index) => (
-                  <div
-                    key={index}
-                    className="p-3 bg-secondary rounded-lg space-y-1"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-sm">
-                        {purchase.package}
-                      </h3>
-                      <span className="text-sm font-bold text-primary">
-                        {purchase.amount}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {purchase.date}
+                {isLoadingPurchases ? (
+                  <div className="text-center py-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      Loading purchases...
                     </p>
-                    <div className="text-xs">
-                      <span className="text-primary">
-                        {purchase.goldCoins.toLocaleString()} GC
-                      </span>{" "}
-                      +{" "}
-                      <span className="text-accent">{purchase.bonusSC} SC</span>
-                    </div>
                   </div>
-                ))}
-                {recentPurchases.length === 0 && (
+                ) : recentPurchases.length > 0 ? (
+                  recentPurchases.map((purchase, index) => (
+                    <div
+                      key={index}
+                      className="p-3 bg-secondary rounded-lg space-y-1"
+                    >
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-sm">
+                          {purchase.package}
+                        </h3>
+                        <span className="text-sm font-bold text-primary">
+                          {purchase.amount}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {purchase.date}
+                      </p>
+                      <div className="text-xs">
+                        <span className="text-primary">
+                          {purchase.goldCoins?.toLocaleString()} GC
+                        </span>{" "}
+                        +{" "}
+                        <span className="text-accent">
+                          {purchase.bonusSC} SC
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
                   <p className="text-sm text-muted-foreground text-center py-4">
                     No purchases yet. Start playing! 🎮
                   </p>
