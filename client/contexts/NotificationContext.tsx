@@ -68,74 +68,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   // Calculate unread count
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  // WebSocket connection for real-time notifications
+  // WebSocket connection disabled to prevent fetch errors
   useEffect(() => {
-    if (!user || !token) return;
-
-    const connectWebSocket = () => {
-      try {
-        const wsUrl = `ws://localhost:3001/notifications?token=${token}`;
-        wsRef.current = new WebSocket(wsUrl);
-
-        wsRef.current.onopen = () => {
-          console.log("Notifications WebSocket connected");
-        };
-
-        wsRef.current.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-
-            if (data.type === "notification") {
-              const notification: Notification = {
-                ...data.notification,
-                id: data.notification.id || Date.now().toString(),
-                timestamp:
-                  data.notification.timestamp || new Date().toISOString(),
-                read: false,
-              };
-
-              addNotification(notification);
-
-              // Show toast for high priority notifications
-              if (notification.priority === "high") {
-                toast({
-                  title: notification.title,
-                  description: notification.message,
-                  duration: 5000,
-                });
-              }
-            }
-          } catch (error) {
-            console.error("Error parsing notification:", error);
-          }
-        };
-
-        wsRef.current.onclose = () => {
-          console.log(
-            "Notifications WebSocket disconnected, using HTTP polling fallback",
-          );
-          // Don't attempt to reconnect, just use HTTP polling
-        };
-
-        wsRef.current.onerror = (error) => {
-          console.log(
-            "Notifications WebSocket unavailable, using HTTP polling fallback",
-          );
-        };
-      } catch (error) {
-        console.error("Failed to connect to notifications:", error);
-        // Fallback to polling
-        setupPolling();
-      }
-    };
-
-    connectWebSocket();
-
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
+    // Completely disabled to prevent any network errors
+    return () => {};
   }, [user, token]);
 
   // Fallback polling mechanism (disabled to prevent fetch errors)
