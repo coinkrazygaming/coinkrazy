@@ -236,18 +236,72 @@ export class GooglePayService {
 
   private async loadGooglePayScript(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (document.querySelector('script[src*="pay.google.com"]')) {
+      // Check if Google Pay is already loaded
+      if (window.google?.payments?.api) {
         resolve();
+        return;
+      }
+
+      // Check if script is already in DOM
+      const existingScript = document.querySelector(
+        'script[src*="pay.google.com"]',
+      );
+      if (existingScript) {
+        // Script exists but may not be loaded yet, wait for it
+        const checkLoaded = () => {
+          if (window.google?.payments?.api) {
+            resolve();
+          } else {
+            setTimeout(checkLoaded, 100);
+          }
+        };
+        setTimeout(checkLoaded, 100);
         return;
       }
 
       const script = document.createElement("script");
       script.src = "https://pay.google.com/gp/p/js/pay.js";
       script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () =>
-        reject(new Error("Failed to load Google Pay script"));
+      script.crossOrigin = "anonymous";
+
+      script.onload = () => {
+        // Wait a bit for the Google Pay API to be available
+        const checkAPI = () => {
+          if (window.google?.payments?.api) {
+            resolve();
+          } else {
+            // Retry a few times
+            setTimeout(() => {
+              if (window.google?.payments?.api) {
+                resolve();
+              } else {
+                reject(
+                  new Error("Google Pay API not available after script load"),
+                );
+              }
+            }, 500);
+          }
+        };
+        setTimeout(checkAPI, 100);
+      };
+
+      script.onerror = (error) => {
+        console.warn("Google Pay script failed to load:", error);
+        reject(
+          new Error(
+            "Failed to load Google Pay script - script may be blocked or unavailable",
+          ),
+        );
+      };
+
       document.head.appendChild(script);
+
+      // Timeout after 10 seconds
+      setTimeout(() => {
+        if (!window.google?.payments?.api) {
+          reject(new Error("Google Pay script loading timeout"));
+        }
+      }, 10000);
     });
   }
 
