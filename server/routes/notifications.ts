@@ -23,7 +23,7 @@ function verifyToken(req: any, res: any, next: any) {
 }
 
 // Get user's notifications
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     // Mock notifications for demo
     const notifications = [
