@@ -76,17 +76,77 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
 
   const loadPayPalScript = (): Promise<void> => {
     return new Promise((resolve, reject) => {
-      if (document.querySelector('script[src*="paypal.com"]')) {
+      // Check if PayPal is already loaded
+      if (window.paypal) {
         resolve();
         return;
       }
 
+      // Check if script is already in DOM
+      const existingScript = document.querySelector(
+        'script[src*="paypal.com"]',
+      );
+      if (existingScript) {
+        // Script exists but may not be loaded yet, wait for it
+        const checkLoaded = () => {
+          if (window.paypal) {
+            resolve();
+          } else {
+            setTimeout(checkLoaded, 100);
+          }
+        };
+        setTimeout(checkLoaded, 100);
+        return;
+      }
+
+      const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
+
+      // If no client ID is provided, reject immediately
+      if (!clientId || clientId === "test") {
+        reject(new Error("PayPal client ID not configured"));
+        return;
+      }
+
       const script = document.createElement("script");
-      script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_CLIENT_ID || "test"}&currency=USD`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
       script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Failed to load PayPal script"));
+      script.crossOrigin = "anonymous";
+
+      script.onload = () => {
+        // Wait a bit for PayPal to be available
+        const checkAPI = () => {
+          if (window.paypal) {
+            resolve();
+          } else {
+            setTimeout(() => {
+              if (window.paypal) {
+                resolve();
+              } else {
+                reject(new Error("PayPal API not available after script load"));
+              }
+            }, 500);
+          }
+        };
+        setTimeout(checkAPI, 100);
+      };
+
+      script.onerror = (error) => {
+        console.warn("PayPal script failed to load:", error);
+        reject(
+          new Error(
+            "Failed to load PayPal script - script may be blocked or client ID invalid",
+          ),
+        );
+      };
+
       document.head.appendChild(script);
+
+      // Timeout after 10 seconds
+      setTimeout(() => {
+        if (!window.paypal) {
+          reject(new Error("PayPal script loading timeout"));
+        }
+      }, 10000);
     });
   };
 
