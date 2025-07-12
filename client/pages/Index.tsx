@@ -83,7 +83,7 @@ export default function Index() {
       jackpot: "$12,456",
       provider: "Pragmatic Play",
       image:
-        "https://images.unsplash.com/photo-1541278107931-e006523892df?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/gold-rush-deluxe.png",
     },
     {
       title: "Diamond Dreams",
@@ -92,7 +92,7 @@ export default function Index() {
       isNew: true,
       provider: "NetEnt",
       image:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/diamond-dreams.png",
     },
     {
       title: "Lucky 777",
@@ -100,16 +100,14 @@ export default function Index() {
       category: "Slots",
       isPopular: true,
       provider: "Play'n GO",
-      image:
-        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
+      image: "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/lucky-7s.png",
     },
     {
       title: "Wild Safari",
       emoji: "🦁",
       category: "Slots",
       provider: "Microgaming",
-      image:
-        "https://images.unsplash.com/photo-1549366021-9f761d040a94?w=400&h=600&fit=crop&crop=center",
+      image: "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/wild-safari.png",
     },
     {
       title: "Ocean Treasure",
@@ -118,7 +116,7 @@ export default function Index() {
       jackpot: "$8,923",
       provider: "Pragmatic Play",
       image:
-        "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/ocean-treasure.png",
     },
     {
       title: "Space Adventure",
@@ -127,7 +125,7 @@ export default function Index() {
       isNew: true,
       provider: "NetEnt",
       image:
-        "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/space-adventure.png",
     },
   ];
 
