@@ -174,28 +174,35 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
   // Load initial notifications
   useEffect(() => {
-    if (!user || !token) return;
+    if (!user || !token) {
+      setNotifications([]);
+      return;
+    }
 
     const loadNotifications = async () => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
         const response = await fetch("/api/notifications", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
-          setNotifications(data);
+          setNotifications(Array.isArray(data) ? data : []);
         } else {
-          console.log("Notifications API not available, using fallback");
-          // Set empty notifications array as fallback
+          // Silently use empty notifications on error
           setNotifications([]);
         }
       } catch (error) {
-        console.log("Notifications service unavailable, using fallback");
-        // Set empty notifications array as fallback
+        // Silently use empty notifications on any error (network, timeout, etc.)
         setNotifications([]);
       }
     };
