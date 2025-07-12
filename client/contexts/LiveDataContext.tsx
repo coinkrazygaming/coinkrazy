@@ -52,19 +52,26 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   });
   const [loading, setLoading] = useState(false);
 
-  // API call helper with improved error handling
+  // API call helper with timeout and improved error handling
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
+
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
     const config: RequestInit = {
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
       },
+      signal: controller.signal,
       ...options,
     };
 
     try {
       const response = await fetch(url, config);
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         // Silently return null for failed API calls to avoid console spam
@@ -75,13 +82,22 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
       return data;
     } catch (error) {
-      // Only log errors in development mode to avoid production console spam
+      clearTimeout(timeoutId);
+
+      // Only log specific errors in development mode to avoid production console spam
       if (process.env.NODE_ENV === "development") {
-        console.warn(
-          "LiveData API unavailable, using fallback data:",
-          error.message,
-        );
+        if (error.name === "AbortError") {
+          console.warn("LiveData API timeout, using fallback data");
+        } else if (error.message.includes("fetch")) {
+          console.warn("LiveData API fetch failed, using fallback data");
+        } else {
+          console.warn(
+            "LiveData API error, using fallback data:",
+            error.message,
+          );
+        }
       }
+
       // Return null if API fails - fetchStats will handle this gracefully
       return null;
     }
