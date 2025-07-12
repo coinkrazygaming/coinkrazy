@@ -111,12 +111,16 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
         };
 
         wsRef.current.onclose = () => {
-          // Attempt to reconnect after 5 seconds
-          setTimeout(connectWebSocket, 5000);
+          console.log(
+            "Notifications WebSocket disconnected, using HTTP polling fallback",
+          );
+          // Don't attempt to reconnect, just use HTTP polling
         };
 
         wsRef.current.onerror = (error) => {
-          console.error("Notifications WebSocket error:", error);
+          console.log(
+            "Notifications WebSocket unavailable, using HTTP polling fallback",
+          );
         };
       } catch (error) {
         console.error("Failed to connect to notifications:", error);
