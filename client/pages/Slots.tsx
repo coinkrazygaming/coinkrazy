@@ -251,7 +251,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "sweet",
       thumbnail:
-        "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&h=600&fit=crop&crop=center",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25sweetbonanza.png",
       rtp: "96.9%",
       volatility: "High",
       paylines: "Cluster Pay",
@@ -283,7 +283,7 @@ export default function Slots() {
     },
     {
       id: "classic",
-      name: "���� Classic",
+      name: "🎰 Classic",
       count: slotGames.filter((g) => g.category === "classic").length,
     },
     {
