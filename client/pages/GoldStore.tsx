@@ -27,7 +27,7 @@ import {
 export default function GoldStore() {
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [storePackages, setStorePackages] = useState(goldCoinPackages);
+  const [storePackages, setStorePackages] = useState<any[]>([]);
   const [userPurchases, setUserPurchases] = useState<any[]>([]);
   const [isLoadingPurchases, setIsLoadingPurchases] = useState(false);
   const { user } = useAuth();
