@@ -155,8 +155,9 @@ export class GooglePayService {
   constructor() {
     this.config = {
       environment:
-        process.env.NODE_ENV === "production" ? "PRODUCTION" : "TEST",
-      merchantId: process.env.VITE_GOOGLE_PAY_MERCHANT_ID || "BCR2DN4T2ZOYRS3O", // Test merchant ID
+        import.meta.env.MODE === "production" ? "PRODUCTION" : "TEST",
+      merchantId:
+        import.meta.env.VITE_GOOGLE_PAY_MERCHANT_ID || "BCR2DN4T2ZOYRS3O", // Test merchant ID
       merchantName: "CoinKrazy Casino",
       baseCardPaymentMethod: {
         type: "CARD",
@@ -181,7 +182,7 @@ export class GooglePayService {
         parameters: {
           gateway: "stripe",
           gatewayMerchantId:
-            process.env.VITE_STRIPE_MERCHANT_ID || "acct_test_123456789",
+            import.meta.env.VITE_STRIPE_MERCHANT_ID || "acct_test_123456789",
         },
       },
     };
