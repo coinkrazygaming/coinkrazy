@@ -4,6 +4,7 @@ import { Loader2, CreditCard, AlertCircle } from "lucide-react";
 import { googlePayService } from "@/services/googlePay";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import CreditCardForm from "./CreditCardForm";
 
 interface GooglePayButtonProps {
   packageId: string;
