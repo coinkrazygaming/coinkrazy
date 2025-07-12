@@ -65,7 +65,12 @@ router.post("/purchase", verifyToken, async (req: any, res) => {
   try {
     const purchaseSchema = z.object({
       packageId: z.number(),
-      paymentMethod: z.enum(["google_pay", "apple_pay", "credit_card"]),
+      paymentMethod: z.enum([
+        "google_pay",
+        "apple_pay",
+        "credit_card",
+        "paypal",
+      ]),
       paymentData: z.object({
         paymentMethodId: z.string().optional(),
         billingDetails: z.object({
