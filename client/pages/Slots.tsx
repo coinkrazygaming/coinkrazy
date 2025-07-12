@@ -113,7 +113,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "adventure",
       thumbnail:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20gatotoro.png",
       rtp: "96.5%",
       volatility: "High",
       paylines: "Pays Anywhere",
@@ -130,7 +130,7 @@ export default function Slots() {
       provider: "NetEnt",
       category: "scifi",
       thumbnail:
-        "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/space-adventure.png",
       rtp: "97.5%",
       volatility: "Medium",
       paylines: 40,
@@ -148,7 +148,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "classic",
       thumbnail:
-        "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=600&fit=crop",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20fruitparty.png",
       rtp: "96.5%",
       volatility: "High",
       paylines: "Cluster Pays",
@@ -166,7 +166,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "magic",
       thumbnail:
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=600&fit=crop",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25goldparty.png",
       rtp: "96.5%",
       volatility: "Medium",
       paylines: 25,
@@ -398,7 +398,7 @@ export default function Slots() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4 flex items-center justify-center">
             <Crown className="w-10 h-10 mr-3 text-primary" />
-            🎰 Slot Games
+            �� Slot Games
           </h1>
           <p className="text-xl text-muted-foreground mb-4">
             Over 700+ premium slot games from top providers! 🎮
