@@ -37,6 +37,7 @@ export default function SlotGameCard({
 }: SlotGameCardProps) {
   const [showLauncher, setShowLauncher] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<"GC" | "SC">("GC");
+  const [showSweepstakesModal, setShowSweepstakesModal] = useState(false);
 
   const handlePlayGold = () => {
     if (gameSymbol) {
