@@ -82,7 +82,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
       }
 
       const script = document.createElement("script");
-      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.VITE_PAYPAL_CLIENT_ID || "test"}&currency=USD`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_CLIENT_ID || "test"}&currency=USD`;
       script.async = true;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error("Failed to load PayPal script"));
