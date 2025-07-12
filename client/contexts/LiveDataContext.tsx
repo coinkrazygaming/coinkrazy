@@ -27,7 +27,17 @@ const LiveDataContext = createContext<LiveDataContextType | undefined>(
   undefined,
 );
 
-const API_BASE_URL = window.location.origin + "/api";
+// Construct API base URL with fallback handling
+const getApiBaseUrl = () => {
+  try {
+    return window.location.origin + "/api";
+  } catch (error) {
+    // Fallback for environments where window.location might not be available
+    return "/api";
+  }
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export function LiveDataProvider({ children }: { children: ReactNode }) {
   const [stats, setStats] = useState<LiveStats>({
