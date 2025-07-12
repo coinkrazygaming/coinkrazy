@@ -161,8 +161,8 @@ export const GooglePayButton: React.FC<GooglePayButtonProps> = ({
         className={`w-full ${className}`}
         disabled={disabled}
       >
-        <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
-        Google Pay Unavailable
+        <CreditCard className="w-4 h-4 mr-2" />
+        💳 Alternative Payment
       </Button>
     );
   }
