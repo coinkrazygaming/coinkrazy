@@ -14,6 +14,8 @@ interface GameCardProps {
   emoji: string;
   cooldown?: string;
   onClick?: () => void;
+  onPlayGold?: () => void;
+  onPlaySweeps?: () => void;
 }
 
 export default function GameCard({
