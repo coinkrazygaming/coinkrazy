@@ -240,7 +240,7 @@ export default function Auth() {
               Join CoinKrazy! 🎰
             </h1>
             <p className="text-muted-foreground">
-              Get 10,000 GC + 10 SC FREE when you register! 🎊
+              Get 10,000 GC + 10 SC FREE when you verify your email! 🎊
             </p>
           </div>
 
