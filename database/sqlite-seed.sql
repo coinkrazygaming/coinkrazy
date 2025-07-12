@@ -75,13 +75,13 @@ INSERT OR REPLACE INTO games (name, slug, category_id, provider_id, game_type, t
 ('Coin Flip Challenge', 'coin-flip-challenge', 6, 8, 'mini_game', '/images/mini-games/coin-flip-challenge.webp', 97.80, 5.00, 200.00, 1000.00, 1, 1);
 
 -- Store packages
-INSERT OR REPLACE INTO store_packages (name, description, price, gold_coins, bonus_sweeps_coins, package_type, is_featured, sort_order) VALUES
-('Starter Pack', 'Perfect for new players! Get started with bonus coins.', 4.99, 50000, 5.00, 'starter', 0, 1),
-('Value Pack', 'Great value for regular players with extra bonus coins.', 9.99, 120000, 12.00, 'standard', 1, 2),
-('Popular Pack', 'Our most popular package with excellent value.', 19.99, 275000, 28.00, 'premium', 1, 3),
-('VIP Pack', 'VIP treatment with massive coin bonus and perks.', 49.99, 750000, 75.00, 'vip', 1, 4),
-('Mega Pack', 'Mega coins for serious players with huge bonuses.', 79.99, 1300000, 130.00, 'mega', 0, 5),
-('Ultimate Pack', 'The ultimate package for high rollers and VIP players.', 99.99, 1750000, 175.00, 'ultimate', 1, 6);
+INSERT OR REPLACE INTO store_packages (id, name, description, price, gold_coins, bonus_sweeps_coins, package_type, is_featured, sort_order) VALUES
+(1, '🌟 Starter Pack', 'Perfect for new players!', 4.99, 5000, 5.00, 'starter', 0, 1),
+(2, '🔥 Popular Pack', 'Most chosen by players!', 9.99, 15000, 15.00, 'standard', 1, 2),
+(3, '💎 Value Pack', 'Great value for money!', 19.99, 30000, 35.00, 'premium', 0, 3),
+(4, '👑 VIP Pack', 'Maximum value package!', 29.99, 50000, 60.00, 'vip', 0, 4),
+(5, '🚀 Mega Pack', 'For serious players!', 49.99, 100000, 125.00, 'mega', 0, 5),
+(6, '💫 Ultimate Pack', 'The ultimate experience!', 99.99, 250000, 300.00, 'ultimate', 1, 6);
 
 -- Promotions
 INSERT OR REPLACE INTO promotions (name, description, promo_type, coin_type, bonus_amount, wagering_requirement, max_redemptions, start_date, end_date, terms_conditions) VALUES
