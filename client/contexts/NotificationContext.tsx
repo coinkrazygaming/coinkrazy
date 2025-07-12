@@ -208,7 +208,12 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       }
     };
 
-    loadNotifications();
+    // Debounce the loading to prevent rapid successive calls
+    const timeoutId = setTimeout(() => {
+      loadNotifications();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, [user, token]);
 
   const toggleNotifications = () => {
