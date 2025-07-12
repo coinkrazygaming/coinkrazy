@@ -238,19 +238,18 @@ router.get("/stats", verifyToken, async (req: any, res) => {
     );
 
     const totalWagered = await executeQuery(
-      "SELECT SUM(total_wagered) as total FROM game_sessions WHERE user_id = ?",
+      "SELECT COALESCE(SUM(total_wagered), 0) as total FROM game_sessions WHERE user_id = ?",
       [req.user.id],
     );
 
     const totalWon = await executeQuery(
-      "SELECT SUM(total_won) as total FROM game_sessions WHERE user_id = ?",
+      "SELECT COALESCE(SUM(total_won), 0) as total FROM game_sessions WHERE user_id = ?",
       [req.user.id],
     );
 
     const biggestWin = await executeQuery(
-      `SELECT MAX(win_amount) as biggest_win, g.name as game_name
+      `SELECT COALESCE(MAX(win_amount), 0) as biggest_win
       FROM game_results gr
-      JOIN games g ON gr.game_id = g.id
       WHERE gr.user_id = ?`,
       [req.user.id],
     );
@@ -266,17 +265,41 @@ router.get("/stats", verifyToken, async (req: any, res) => {
       [req.user.id],
     );
 
+    // Calculate win rate
+    const winResults = await executeQuery(
+      `SELECT
+        COUNT(*) as total_games,
+        COUNT(CASE WHEN win_amount > 0 THEN 1 END) as winning_games
+      FROM game_results
+      WHERE user_id = ?`,
+      [req.user.id],
+    );
+
+    const totalGames = winResults[0]?.total_games || 0;
+    const winningGames = winResults[0]?.winning_games || 0;
+    const winRate = totalGames > 0 ? winningGames / totalGames : 0;
+
     res.json({
-      totalSessions: totalSessions[0].count,
-      totalWagered: totalWagered[0].total || 0,
-      totalWon: totalWon[0].total || 0,
-      biggestWin: biggestWin[0].biggest_win || 0,
-      biggestWinGame: biggestWin[0].game_name || null,
-      favoriteGame: favoriteGame[0] || null,
+      total_wagered: totalWagered[0].total,
+      total_won: totalWon[0].total,
+      games_played: totalSessions[0].count,
+      favorite_game: favoriteGame[0]?.name || "None yet",
+      win_rate: winRate,
+      biggest_win: biggestWin[0].biggest_win,
+      current_streak: 0, // TODO: Calculate actual streak
     });
   } catch (error) {
     console.error("Stats fetch error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    // Return default stats on error to prevent dashboard crashes
+    res.json({
+      total_wagered: 0,
+      total_won: 0,
+      games_played: 0,
+      favorite_game: "None yet",
+      win_rate: 0,
+      biggest_win: 0,
+      current_streak: 0,
+    });
   }
 });
 
