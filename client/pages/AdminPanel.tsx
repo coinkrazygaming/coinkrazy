@@ -43,6 +43,21 @@ import {
   Database,
   Server,
   Activity,
+  TrendingDown,
+  Calendar,
+  PieChart,
+  LineChart,
+  Calculator,
+  Target,
+  Zap,
+  Bell,
+  ShieldAlert,
+  UserX,
+  Banknote,
+  Receipt,
+  Percent,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 
 export default function AdminPanel() {
@@ -227,6 +242,89 @@ export default function AdminPanel() {
     bingoEnabled: true,
     sportsEnabled: true,
     maintenanceMode: false,
+  });
+
+  const [financialData, setFinancialData] = useState({
+    dailyRevenue: 45678.92,
+    weeklyRevenue: 312456.78,
+    monthlyRevenue: 1234567.89,
+    profitMargin: 23.4,
+    operatingCosts: 8943.21,
+    netProfit: 36735.71,
+    transactionVolume: 15678,
+    averageTransactionValue: 89.32,
+    topRevenueGames: [
+      { name: "Gold Rush Deluxe", revenue: 12345.67, players: 234, rtp: 94.5 },
+      { name: "Diamond Dreams", revenue: 9876.54, players: 189, rtp: 93.8 },
+      { name: "Lucky Sevens", revenue: 8765.43, players: 156, rtp: 95.2 },
+      { name: "Treasure Hunt", revenue: 7654.32, players: 145, rtp: 94.1 },
+      { name: "Mega Fortune", revenue: 6543.21, players: 123, rtp: 93.9 },
+    ],
+    revenueByHour: [
+      { hour: "00:00", revenue: 1234.56 },
+      { hour: "04:00", revenue: 890.12 },
+      { hour: "08:00", revenue: 2345.67 },
+      { hour: "12:00", revenue: 4567.89 },
+      { hour: "16:00", revenue: 5678.9 },
+      { hour: "20:00", revenue: 6789.01 },
+    ],
+    paymentMethods: [
+      {
+        method: "Credit Card",
+        transactions: 456,
+        revenue: 23456.78,
+        fees: 234.56,
+      },
+      { method: "PayPal", transactions: 234, revenue: 12345.67, fees: 123.45 },
+      {
+        method: "Bank Transfer",
+        transactions: 123,
+        revenue: 6789.01,
+        fees: 67.89,
+      },
+      { method: "Crypto", transactions: 89, revenue: 4567.89, fees: 22.84 },
+    ],
+  });
+
+  const [securityAlerts, setSecurityAlerts] = useState([
+    {
+      id: "SEC001",
+      type: "fraud_detection",
+      severity: "high",
+      title: "Suspicious Activity Detected",
+      description: "Multiple failed login attempts from IP 192.168.1.100",
+      timestamp: "2024-12-19 14:45",
+      resolved: false,
+    },
+    {
+      id: "SEC002",
+      type: "unusual_spending",
+      severity: "medium",
+      title: "Unusual Spending Pattern",
+      description: "Player BigWinner99 has spent $5000+ in last hour",
+      timestamp: "2024-12-19 14:30",
+      resolved: false,
+    },
+    {
+      id: "SEC003",
+      type: "kyc_fraud",
+      severity: "high",
+      title: "Potential KYC Fraud",
+      description: "Duplicate documents detected for different accounts",
+      timestamp: "2024-12-19 13:15",
+      resolved: true,
+    },
+  ]);
+
+  const [systemHealth, setSystemHealth] = useState({
+    cpuUsage: 45.3,
+    memoryUsage: 67.8,
+    diskUsage: 23.1,
+    databaseConnections: 78,
+    activeUsers: 1247,
+    responseTime: 145,
+    uptime: "15 days, 7 hours",
+    lastBackup: "2024-12-19 02:00",
   });
 
   // Redirect if not admin
@@ -488,8 +586,10 @@ export default function AdminPanel() {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-3 md:grid-cols-7 w-full mb-6">
+          <TabsList className="grid grid-cols-4 md:grid-cols-9 w-full mb-6">
             <TabsTrigger value="dashboard">📊 Dashboard</TabsTrigger>
+            <TabsTrigger value="analytics">📈 Analytics</TabsTrigger>
+            <TabsTrigger value="security">🛡️ Security</TabsTrigger>
             <TabsTrigger value="users">👥 Users</TabsTrigger>
             <TabsTrigger value="withdrawals">💸 Withdrawals</TabsTrigger>
             <TabsTrigger value="store">🛒 Store</TabsTrigger>
@@ -626,6 +726,559 @@ export default function AdminPanel() {
                     <div className="flex items-center justify-between">
                       <span>System backup completed</span>
                       <span className="text-muted-foreground">1h ago</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <div className="space-y-6">
+              {/* Financial Overview Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <DollarSign className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                    <p className="text-2xl font-bold text-green-500">
+                      ${financialData.dailyRevenue.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      💰 Daily Revenue
+                    </p>
+                    <div className="flex items-center justify-center mt-1">
+                      <ArrowUpRight className="w-3 h-3 text-green-500 mr-1" />
+                      <span className="text-xs text-green-500">+12.3%</span>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-2xl font-bold text-primary">
+                      ${financialData.netProfit.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      📈 Net Profit
+                    </p>
+                    <div className="flex items-center justify-center mt-1">
+                      <ArrowUpRight className="w-3 h-3 text-green-500 mr-1" />
+                      <span className="text-xs text-green-500">+8.7%</span>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <Percent className="w-8 h-8 mx-auto mb-2 text-accent" />
+                    <p className="text-2xl font-bold text-accent">
+                      {financialData.profitMargin}%
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      📊 Profit Margin
+                    </p>
+                    <div className="flex items-center justify-center mt-1">
+                      <ArrowDownRight className="w-3 h-3 text-red-500 mr-1" />
+                      <span className="text-xs text-red-500">-2.1%</span>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <Receipt className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-2xl font-bold text-primary">
+                      {financialData.transactionVolume.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      🧾 Transactions
+                    </p>
+                    <div className="flex items-center justify-center mt-1">
+                      <ArrowUpRight className="w-3 h-3 text-green-500 mr-1" />
+                      <span className="text-xs text-green-500">+15.2%</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Revenue Chart */}
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <LineChart className="w-5 h-5 mr-2 text-primary" />
+                      Revenue by Hour (Last 24h)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {financialData.revenueByHour.map((data, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="text-sm font-medium">
+                            {data.hour}
+                          </span>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-32 bg-secondary rounded-full h-2">
+                              <div
+                                className="bg-primary h-2 rounded-full"
+                                style={{
+                                  width: `${(data.revenue / 7000) * 100}%`,
+                                }}
+                              />
+                            </div>
+                            <span className="text-sm font-bold">
+                              ${data.revenue.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Top Revenue Games */}
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Target className="w-5 h-5 mr-2 text-accent" />
+                      Top Revenue Games
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {financialData.topRevenueGames.map((game, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-secondary rounded-lg"
+                        >
+                          <div>
+                            <h3 className="font-semibold">{game.name}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {game.players} players • RTP: {game.rtp}%
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-green-500">
+                              ${game.revenue.toLocaleString()}
+                            </p>
+                            <div className="flex items-center">
+                              <div className="w-4 h-4 bg-primary rounded-full mr-2 flex items-center justify-center">
+                                <span className="text-xs text-white">
+                                  {index + 1}
+                                </span>
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                #{index + 1}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Payment Methods Analysis */}
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <CreditCard className="w-5 h-5 mr-2 text-primary" />
+                    Payment Methods Performance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {financialData.paymentMethods.map((method, index) => (
+                      <div key={index} className="p-4 bg-secondary rounded-lg">
+                        <h3 className="font-semibold mb-2">{method.method}</h3>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">
+                              Transactions:
+                            </span>
+                            <span className="font-bold">
+                              {method.transactions}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">
+                              Revenue:
+                            </span>
+                            <span className="font-bold text-green-500">
+                              ${method.revenue.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Fees:</span>
+                            <span className="font-bold text-red-500">
+                              -${method.fees.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between border-t pt-1">
+                            <span className="text-muted-foreground">Net:</span>
+                            <span className="font-bold">
+                              ${(method.revenue - method.fees).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Financial KPIs */}
+              <div className="grid lg:grid-cols-3 gap-6">
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Calculator className="w-5 h-5 mr-2 text-primary" />
+                      Key Financial Metrics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          Average Transaction:
+                        </span>
+                        <span className="font-bold">
+                          ${financialData.averageTransactionValue}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          Operating Costs:
+                        </span>
+                        <span className="font-bold text-red-500">
+                          -${financialData.operatingCosts.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          Revenue Per User:
+                        </span>
+                        <span className="font-bold">
+                          $
+                          {(
+                            financialData.dailyRevenue /
+                            realTimeStats.usersOnline
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-t pt-2">
+                        <span className="text-muted-foreground">
+                          Profit Margin:
+                        </span>
+                        <span className="font-bold text-primary">
+                          {financialData.profitMargin}%
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Calendar className="w-5 h-5 mr-2 text-accent" />
+                      Revenue Breakdown
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Today:</span>
+                        <span className="font-bold">
+                          ${financialData.dailyRevenue.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          This Week:
+                        </span>
+                        <span className="font-bold">
+                          ${financialData.weeklyRevenue.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">
+                          This Month:
+                        </span>
+                        <span className="font-bold">
+                          ${financialData.monthlyRevenue.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-t pt-2">
+                        <span className="text-muted-foreground">
+                          Projected Monthly:
+                        </span>
+                        <span className="font-bold text-primary">
+                          ${(financialData.dailyRevenue * 30).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <PieChart className="w-5 h-5 mr-2 text-primary" />
+                      Quick Actions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <Button className="w-full" variant="outline">
+                        <Download className="w-4 h-4 mr-2" />
+                        Financial Report
+                      </Button>
+                      <Button className="w-full" variant="outline">
+                        <BarChart className="w-4 h-4 mr-2" />
+                        Revenue Analysis
+                      </Button>
+                      <Button className="w-full" variant="outline">
+                        <Calculator className="w-4 h-4 mr-2" />
+                        Profit Calculator
+                      </Button>
+                      <Button className="w-full" variant="outline">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Schedule Report
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Security Tab */}
+          <TabsContent value="security">
+            <div className="space-y-6">
+              {/* Security Overview */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <ShieldAlert className="w-8 h-8 mx-auto mb-2 text-destructive" />
+                    <p className="text-2xl font-bold text-destructive">
+                      {securityAlerts.filter((alert) => !alert.resolved).length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      🚨 Active Alerts
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <UserX className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
+                    <p className="text-2xl font-bold text-yellow-500">23</p>
+                    <p className="text-sm text-muted-foreground">
+                      🔒 Blocked IPs
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <Eye className="w-8 h-8 mx-auto mb-2 text-accent" />
+                    <p className="text-2xl font-bold text-accent">1,247</p>
+                    <p className="text-sm text-muted-foreground">
+                      👁️ Active Sessions
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <Zap className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                    <p className="text-2xl font-bold text-green-500">99.8%</p>
+                    <p className="text-sm text-muted-foreground">✅ Uptime</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Security Alerts */}
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Bell className="w-5 h-5 mr-2 text-destructive" />
+                      Security Alerts & Threats
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Alert Settings
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {securityAlerts.map((alert) => (
+                      <div
+                        key={alert.id}
+                        className={`p-4 rounded-lg border ${
+                          alert.severity === "high"
+                            ? "bg-destructive/10 border-destructive"
+                            : alert.severity === "medium"
+                              ? "bg-yellow-500/10 border-yellow-500"
+                              : "bg-green-500/10 border-green-500"
+                        } ${alert.resolved ? "opacity-50" : ""}`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center space-x-2">
+                            <h3 className="font-semibold">{alert.title}</h3>
+                            <Badge
+                              className={`text-xs ${
+                                alert.severity === "high"
+                                  ? "bg-destructive text-white"
+                                  : alert.severity === "medium"
+                                    ? "bg-yellow-500 text-white"
+                                    : "bg-green-500 text-white"
+                              }`}
+                            >
+                              {alert.severity.toUpperCase()}
+                            </Badge>
+                            {alert.resolved && (
+                              <Badge className="bg-green-500 text-white text-xs">
+                                ✅ RESOLVED
+                              </Badge>
+                            )}
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {alert.timestamp}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {alert.description}
+                        </p>
+                        {!alert.resolved && (
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline">
+                              <Eye className="w-3 h-3 mr-1" />
+                              Investigate
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="bg-green-500 hover:bg-green-600"
+                            >
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Resolve
+                            </Button>
+                            <Button size="sm" variant="destructive">
+                              <Ban className="w-3 h-3 mr-1" />
+                              Block
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* System Health */}
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Activity className="w-5 h-5 mr-2 text-primary" />
+                    System Health & Performance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">CPU Usage</span>
+                        <span className="text-sm font-bold">
+                          {systemHealth.cpuUsage}%
+                        </span>
+                      </div>
+                      <Progress value={systemHealth.cpuUsage} className="h-2" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Memory Usage</span>
+                        <span className="text-sm font-bold">
+                          {systemHealth.memoryUsage}%
+                        </span>
+                      </div>
+                      <Progress
+                        value={systemHealth.memoryUsage}
+                        className="h-2"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Disk Usage</span>
+                        <span className="text-sm font-bold">
+                          {systemHealth.diskUsage}%
+                        </span>
+                      </div>
+                      <Progress
+                        value={systemHealth.diskUsage}
+                        className="h-2"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">DB Connections</span>
+                        <span className="text-sm font-bold">
+                          {systemHealth.databaseConnections}/100
+                        </span>
+                      </div>
+                      <Progress
+                        value={systemHealth.databaseConnections}
+                        className="h-2"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4 mt-6">
+                    <div className="space-y-3">
+                      <h4 className="font-semibold">Server Status</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Uptime:</span>
+                          <span className="font-bold">
+                            {systemHealth.uptime}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">
+                            Response Time:
+                          </span>
+                          <span className="font-bold">
+                            {systemHealth.responseTime}ms
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">
+                            Last Backup:
+                          </span>
+                          <span className="font-bold">
+                            {systemHealth.lastBackup}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="font-semibold">Security Actions</h4>
+                      <div className="space-y-2">
+                        <Button className="w-full" size="sm" variant="outline">
+                          <Shield className="w-3 h-3 mr-2" />
+                          Security Scan
+                        </Button>
+                        <Button className="w-full" size="sm" variant="outline">
+                          <Download className="w-3 h-3 mr-2" />
+                          Export Logs
+                        </Button>
+                        <Button className="w-full" size="sm" variant="outline">
+                          <Database className="w-3 h-3 mr-2" />
+                          Backup Now
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
