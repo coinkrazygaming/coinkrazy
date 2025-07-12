@@ -44,7 +44,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "popular",
       thumbnail:
-        "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=600&fit=crop",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20doghouse.png",
       rtp: "96.51%",
       volatility: "High",
       paylines: 20,
@@ -62,7 +62,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "new",
       thumbnail:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25sweetbonanza.png",
       rtp: "96.51%",
       volatility: "High",
       paylines: "Pays Anywhere",
@@ -78,8 +78,7 @@ export default function Slots() {
       title: "Lucky 777",
       provider: "Play'n GO",
       category: "classic",
-      thumbnail:
-        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
+      thumbnail: "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/lucky-7s.png",
       rtp: "95.8%",
       volatility: "Low",
       paylines: 5,
@@ -96,7 +95,7 @@ export default function Slots() {
       provider: "Microgaming",
       category: "adventure",
       thumbnail:
-        "https://images.unsplash.com/photo-1549366021-9f761d040a94?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/wild-safari.png",
       rtp: "96.1%",
       volatility: "Medium",
       paylines: 243,
