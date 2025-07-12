@@ -26,6 +26,9 @@ dotenv.config();
 export function createServer() {
   const app = express();
 
+  // Trust proxy for rate limiting in cloud environments
+  app.set("trust proxy", true);
+
   // Security middleware
   app.use(
     helmet({
