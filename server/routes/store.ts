@@ -393,6 +393,33 @@ async function processPayment(
           error: "Credit card declined. Please check your card details.",
         };
       }
+    } else if (method === "paypal") {
+      // Handle PayPal payments
+      if (!paymentData?.paymentMethodId) {
+        return {
+          success: false,
+          error: "Invalid PayPal payment data",
+        };
+      }
+
+      // In a real implementation, you would:
+      // 1. Validate the PayPal order ID
+      // 2. Capture the payment through PayPal API
+      // 3. Verify the payment status
+
+      // For now, simulate a successful payment with 97% success rate
+      if (Math.random() < 0.97) {
+        return {
+          success: true,
+          transactionId: `pp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        };
+      } else {
+        return {
+          success: false,
+          error:
+            "PayPal payment was declined. Please try again or use another payment method.",
+        };
+      }
     } else {
       return {
         success: false,
