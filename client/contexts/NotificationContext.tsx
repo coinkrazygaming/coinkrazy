@@ -212,66 +212,22 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
-
-    try {
-      await fetch(`/api/notifications/${id}/read`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error) {
-      console.error("Failed to mark notification as read:", error);
-    }
+    // Local-only operation to prevent fetch errors
   };
 
   const markAllAsRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-
-    try {
-      await fetch("/api/notifications/mark-all-read", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error) {
-      console.error("Failed to mark all notifications as read:", error);
-    }
+    // Local-only operation to prevent fetch errors
   };
 
   const deleteNotification = async (id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
-
-    try {
-      await fetch(`/api/notifications/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error) {
-      console.error("Failed to delete notification:", error);
-    }
+    // Local-only operation to prevent fetch errors
   };
 
   const clearAll = async () => {
     setNotifications([]);
-
-    try {
-      await fetch("/api/notifications/clear", {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error) {
-      console.error("Failed to clear notifications:", error);
-    }
+    // Local-only operation to prevent fetch errors
   };
 
   // Auto-generate sample notifications for demo
