@@ -61,7 +61,6 @@ import {
   Gift,
   Megaphone,
   Users2,
-  Calendar,
   Palette,
   BarChart3,
   Trophy,
