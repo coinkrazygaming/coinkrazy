@@ -183,7 +183,7 @@ export default function Slots() {
       provider: "Yggdrasil",
       category: "classic",
       thumbnail:
-        "https://images.unsplash.com/photo-1615478503562-ec2d8aa0e24e?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/fruit-blast.png",
       rtp: "95.5%",
       volatility: "Low",
       paylines: 10,
@@ -200,7 +200,7 @@ export default function Slots() {
       provider: "Pragmatic Play",
       category: "adventure",
       thumbnail:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/pirates-gold.png",
       rtp: "96.7%",
       volatility: "High",
       paylines: 25,
@@ -217,7 +217,7 @@ export default function Slots() {
       provider: "Evolution",
       category: "jackpot",
       thumbnail:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/mega-millions.png",
       rtp: "94.2%",
       volatility: "Very High",
       paylines: 1024,
@@ -234,7 +234,7 @@ export default function Slots() {
       provider: "Play'n GO",
       category: "ancient",
       thumbnail:
-        "https://images.unsplash.com/photo-1539650116574-75c0c6d0598c?w=400&h=600&fit=crop&crop=center",
+        "https://d2norla3tyc4cn.cloudfront.net/i/s3/pngs/egyptian-secrets.png",
       rtp: "96.4%",
       volatility: "Medium",
       paylines: 20,
@@ -283,7 +283,7 @@ export default function Slots() {
     },
     {
       id: "classic",
-      name: "🎰 Classic",
+      name: "���� Classic",
       count: slotGames.filter((g) => g.category === "classic").length,
     },
     {
@@ -398,7 +398,7 @@ export default function Slots() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4 flex items-center justify-center">
             <Crown className="w-10 h-10 mr-3 text-primary" />
-            �� Slot Games
+            🎰 Slot Games
           </h1>
           <p className="text-xl text-muted-foreground mb-4">
             Over 700+ premium slot games from top providers! 🎮
