@@ -58,6 +58,21 @@ import {
   Percent,
   ArrowUpRight,
   ArrowDownRight,
+  Gift,
+  Megaphone,
+  Users2,
+  Calendar,
+  Palette,
+  BarChart3,
+  Trophy,
+  Sparkles,
+  Timer,
+  Copy,
+  Send,
+  RotateCcw,
+  Pause,
+  Play,
+  Stop,
 } from "lucide-react";
 
 export default function AdminPanel() {
@@ -327,6 +342,165 @@ export default function AdminPanel() {
     lastBackup: "2024-12-19 02:00",
   });
 
+  const [promotions, setPromotions] = useState([
+    {
+      id: "PROMO001",
+      name: "Weekend Gold Rush",
+      type: "deposit_bonus",
+      status: "active",
+      description: "Double your gold coins on weekend deposits",
+      startDate: "2024-12-21 00:00",
+      endDate: "2024-12-22 23:59",
+      targetAudience: "all_users",
+      conditions: {
+        minDeposit: 25,
+        maxBonus: 50000,
+        multiplier: 2,
+      },
+      budget: 100000,
+      spent: 23450,
+      participantsCount: 234,
+      conversions: 189,
+      revenue: 45678,
+      tags: ["weekend", "deposit", "popular"],
+      createdBy: "admin_sarah",
+      approved: true,
+    },
+    {
+      id: "PROMO002",
+      name: "New Player Welcome Bonus",
+      type: "welcome_package",
+      status: "active",
+      description:
+        "Special welcome package for new players with 5000 GC + 10 SC",
+      startDate: "2024-12-01 00:00",
+      endDate: "2024-12-31 23:59",
+      targetAudience: "new_players",
+      conditions: {
+        goldCoins: 5000,
+        sweepsCoins: 10,
+        maxClaims: 1,
+      },
+      budget: 500000,
+      spent: 234567,
+      participantsCount: 1247,
+      conversions: 892,
+      revenue: 123456,
+      tags: ["welcome", "new-player", "onboarding"],
+      createdBy: "admin_sarah",
+      approved: true,
+    },
+    {
+      id: "PROMO003",
+      name: "VIP Exclusive Holiday Bonus",
+      type: "vip_reward",
+      status: "scheduled",
+      description:
+        "Exclusive holiday bonus for Diamond and Platinum VIP members",
+      startDate: "2024-12-24 00:00",
+      endDate: "2024-12-26 23:59",
+      targetAudience: "vip_only",
+      conditions: {
+        vipTiers: ["Diamond", "Platinum"],
+        sweepsCoins: 100,
+        goldCoins: 25000,
+      },
+      budget: 50000,
+      spent: 0,
+      participantsCount: 0,
+      conversions: 0,
+      revenue: 0,
+      tags: ["vip", "holiday", "exclusive"],
+      createdBy: "admin_sarah",
+      approved: true,
+    },
+    {
+      id: "PROMO004",
+      name: "Daily Login Streak Reward",
+      type: "loyalty_program",
+      status: "active",
+      description: "Progressive rewards for consecutive daily logins",
+      startDate: "2024-12-01 00:00",
+      endDate: "2024-12-31 23:59",
+      targetAudience: "active_players",
+      conditions: {
+        streakDays: [3, 7, 14, 30],
+        rewards: [
+          "500 GC",
+          "1000 GC + 2 SC",
+          "2500 GC + 5 SC",
+          "5000 GC + 15 SC",
+        ],
+      },
+      budget: 200000,
+      spent: 67890,
+      participantsCount: 543,
+      conversions: 432,
+      revenue: 34567,
+      tags: ["daily", "loyalty", "retention"],
+      createdBy: "admin_sarah",
+      approved: true,
+    },
+  ]);
+
+  const [campaigns, setCampaigns] = useState([
+    {
+      id: "CAMP001",
+      name: "Christmas Casino Spectacular",
+      type: "seasonal_event",
+      status: "active",
+      description:
+        "Month-long Christmas celebration with daily surprises and mega prizes",
+      startDate: "2024-12-01",
+      endDate: "2024-12-31",
+      channels: ["email", "push", "in-app", "social"],
+      targetSegments: ["all_users", "high_value", "at_risk"],
+      metrics: {
+        impressions: 125000,
+        clicks: 8750,
+        conversions: 2100,
+        revenue: 87650,
+        ctr: 7.0,
+        conversionRate: 24.0,
+        roas: 3.8,
+      },
+      budget: 25000,
+      spent: 18750,
+      creatives: [
+        { type: "banner", name: "Christmas Header Banner", status: "active" },
+        { type: "email", name: "Christmas Welcome Email", status: "active" },
+        { type: "popup", name: "Christmas Bonus Popup", status: "active" },
+      ],
+    },
+    {
+      id: "CAMP002",
+      name: "Win Back Inactive Players",
+      type: "retention_campaign",
+      status: "active",
+      description:
+        "Targeted campaign to re-engage players who haven't logged in for 7+ days",
+      startDate: "2024-12-15",
+      endDate: "2024-12-30",
+      channels: ["email", "push"],
+      targetSegments: ["inactive_7days", "inactive_14days"],
+      metrics: {
+        impressions: 15000,
+        clicks: 1200,
+        conversions: 180,
+        revenue: 5670,
+        ctr: 8.0,
+        conversionRate: 15.0,
+        roas: 2.1,
+      },
+      budget: 3000,
+      spent: 1890,
+      creatives: [
+        { type: "email", name: "Come Back Bonus Email", status: "active" },
+        { type: "push", name: "Miss You Push Notification", status: "active" },
+      ],
+    },
+  ]);
+
   // Redirect if not admin
   useEffect(() => {
     if (user && !user.is_admin) {
@@ -594,6 +768,7 @@ export default function AdminPanel() {
             <TabsTrigger value="withdrawals">💸 Withdrawals</TabsTrigger>
             <TabsTrigger value="store">🛒 Store</TabsTrigger>
             <TabsTrigger value="staff">👮 Staff</TabsTrigger>
+            <TabsTrigger value="promotions">🎁 Promotions</TabsTrigger>
             <TabsTrigger value="games">🎮 Games</TabsTrigger>
             <TabsTrigger value="system">⚙️ System</TabsTrigger>
           </TabsList>
@@ -1277,6 +1452,399 @@ export default function AdminPanel() {
                         <Button className="w-full" size="sm" variant="outline">
                           <Database className="w-3 h-3 mr-2" />
                           Backup Now
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Promotions Tab */}
+          <TabsContent value="promotions">
+            <div className="space-y-6">
+              {/* Promotion Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <Gift className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-2xl font-bold text-primary">
+                      {promotions.filter((p) => p.status === "active").length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      🎨 Active Promos
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <Users2 className="w-8 h-8 mx-auto mb-2 text-accent" />
+                    <p className="text-2xl font-bold text-accent">
+                      {promotions
+                        .reduce((sum, p) => sum + p.participantsCount, 0)
+                        .toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      👥 Participants
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <DollarSign className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                    <p className="text-2xl font-bold text-green-500">
+                      $
+                      {promotions
+                        .reduce((sum, p) => sum + p.revenue, 0)
+                        .toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      💰 Promo Revenue
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="casino-glow">
+                  <CardContent className="p-4 text-center">
+                    <BarChart3 className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-2xl font-bold text-primary">
+                      {Math.round(
+                        (promotions.reduce((sum, p) => sum + p.conversions, 0) /
+                          promotions.reduce(
+                            (sum, p) => sum + p.participantsCount,
+                            1,
+                          )) *
+                          100,
+                      )}
+                      %
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      📈 Conversion Rate
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Active Promotions */}
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Sparkles className="w-5 h-5 mr-2 text-primary" />
+                        Active Promotions
+                      </div>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Promo
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {promotions
+                        .filter((promo) => promo.status === "active")
+                        .map((promo) => (
+                          <div
+                            key={promo.id}
+                            className="p-4 bg-secondary rounded-lg"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="font-semibold">{promo.name}</h3>
+                              <div className="flex items-center space-x-2">
+                                <Badge className="bg-green-500 text-white text-xs">
+                                  🟢 {promo.status}
+                                </Badge>
+                                <Badge className="bg-accent text-accent-foreground text-xs">
+                                  {promo.type.replace("_", " ")}
+                                </Badge>
+                              </div>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              {promo.description}
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Participants:
+                                </span>
+                                <p className="font-bold">
+                                  {promo.participantsCount.toLocaleString()}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Revenue:
+                                </span>
+                                <p className="font-bold text-green-500">
+                                  ${promo.revenue.toLocaleString()}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Budget Used:
+                                </span>
+                                <p className="font-bold">
+                                  ${promo.spent.toLocaleString()} / $
+                                  {promo.budget.toLocaleString()}
+                                </p>
+                                <Progress
+                                  value={(promo.spent / promo.budget) * 100}
+                                  className="h-1 mt-1"
+                                />
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Conversion:
+                                </span>
+                                <p className="font-bold">
+                                  {Math.round(
+                                    (promo.conversions /
+                                      promo.participantsCount) *
+                                      100,
+                                  )}
+                                  %
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center space-x-1 mt-3">
+                              {promo.tags.map((tag, index) => (
+                                <Badge
+                                  key={index}
+                                  className="bg-primary/20 text-primary text-xs"
+                                >
+                                  #{tag}
+                                </Badge>
+                              ))}
+                            </div>
+
+                            <div className="flex space-x-2 mt-3">
+                              <Button size="sm" variant="outline">
+                                <Eye className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Edit className="w-3 h-3 mr-1" />
+                                Edit
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Copy className="w-3 h-3 mr-1" />
+                                Clone
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Pause className="w-3 h-3 mr-1" />
+                                Pause
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Marketing Campaigns */}
+                <Card className="casino-glow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Megaphone className="w-5 h-5 mr-2 text-accent" />
+                        Marketing Campaigns
+                      </div>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        New Campaign
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {campaigns.map((campaign) => (
+                        <div
+                          key={campaign.id}
+                          className="p-4 bg-secondary rounded-lg"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-semibold">{campaign.name}</h3>
+                            <Badge className="bg-green-500 text-white text-xs">
+                              🟢 {campaign.status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            {campaign.description}
+                          </p>
+
+                          <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                            <div>
+                              <span className="text-muted-foreground">
+                                Impressions:
+                              </span>
+                              <p className="font-bold">
+                                {campaign.metrics.impressions.toLocaleString()}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">
+                                CTR:
+                              </span>
+                              <p className="font-bold">
+                                {campaign.metrics.ctr}%
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">
+                                Conversions:
+                              </span>
+                              <p className="font-bold">
+                                {campaign.metrics.conversions.toLocaleString()}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">
+                                ROAS:
+                              </span>
+                              <p className="font-bold">
+                                {campaign.metrics.roas}x
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mb-3">
+                            <span className="text-muted-foreground text-sm">
+                              Channels:
+                            </span>
+                            <div className="flex items-center space-x-1 mt-1">
+                              {campaign.channels.map((channel, index) => (
+                                <Badge
+                                  key={index}
+                                  className="bg-accent/20 text-accent text-xs"
+                                >
+                                  {channel}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline">
+                              <BarChart3 className="w-3 h-3 mr-1" />
+                              Analytics
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Edit className="w-3 h-3 mr-1" />
+                              Edit
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Send className="w-3 h-3 mr-1" />
+                              Send
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Promotion Performance */}
+              <Card className="casino-glow">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Trophy className="w-5 h-5 mr-2 text-primary" />
+                    Promotion Performance Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Top Performing Promotions */}
+                    <div>
+                      <h4 className="font-semibold mb-3">
+                        Top Performing Promotions
+                      </h4>
+                      <div className="space-y-2">
+                        {promotions
+                          .sort(
+                            (a, b) => b.revenue / b.spent - a.revenue / a.spent,
+                          )
+                          .slice(0, 3)
+                          .map((promo, index) => (
+                            <div
+                              key={promo.id}
+                              className="flex items-center justify-between p-3 bg-secondary rounded-lg"
+                            >
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                  <span className="text-white font-bold">
+                                    {index + 1}
+                                  </span>
+                                </div>
+                                <div>
+                                  <h5 className="font-semibold">
+                                    {promo.name}
+                                  </h5>
+                                  <p className="text-sm text-muted-foreground">
+                                    {promo.participantsCount} participants •{" "}
+                                    {Math.round(
+                                      (promo.conversions /
+                                        promo.participantsCount) *
+                                        100,
+                                    )}
+                                    % conversion
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-bold text-green-500">
+                                  ${promo.revenue.toLocaleString()}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  ROI:{" "}
+                                  {(
+                                    (promo.revenue / promo.spent) *
+                                    100
+                                  ).toFixed(0)}
+                                  %
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <h5 className="font-semibold">Quick Actions</h5>
+                        <Button className="w-full" variant="outline">
+                          <Download className="w-4 h-4 mr-2" />
+                          Export Report
+                        </Button>
+                        <Button className="w-full" variant="outline">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Schedule Promo
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        <h5 className="font-semibold">Promotion Templates</h5>
+                        <Button className="w-full" variant="outline">
+                          <Gift className="w-4 h-4 mr-2" />
+                          Welcome Bonus
+                        </Button>
+                        <Button className="w-full" variant="outline">
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Deposit Match
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        <h5 className="font-semibold">Targeting</h5>
+                        <Button className="w-full" variant="outline">
+                          <Users2 className="w-4 h-4 mr-2" />
+                          VIP Segment
+                        </Button>
+                        <Button className="w-full" variant="outline">
+                          <Timer className="w-4 h-4 mr-2" />
+                          At-Risk Players
                         </Button>
                       </div>
                     </div>
