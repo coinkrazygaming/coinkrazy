@@ -34,7 +34,7 @@ export default function GoldStore() {
 
   const goldCoinPackages = [
     {
-      id: "starter",
+      id: "1",
       name: "🌟 Starter Pack",
       goldCoins: 5000,
       price: 4.99,
@@ -45,7 +45,7 @@ export default function GoldStore() {
       features: ["5,000 Gold Coins", "5 SC Bonus", "Instant Delivery"],
     },
     {
-      id: "popular",
+      id: "2",
       name: "🔥 Popular Pack",
       goldCoins: 15000,
       price: 9.99,
@@ -61,7 +61,7 @@ export default function GoldStore() {
       ],
     },
     {
-      id: "value",
+      id: "3",
       name: "💎 Value Pack",
       goldCoins: 30000,
       price: 19.99,
@@ -78,7 +78,7 @@ export default function GoldStore() {
       ],
     },
     {
-      id: "vip",
+      id: "4",
       name: "👑 VIP Pack",
       goldCoins: 50000,
       price: 29.99,
@@ -96,7 +96,7 @@ export default function GoldStore() {
       ],
     },
     {
-      id: "mega",
+      id: "5",
       name: "🚀 Mega Pack",
       goldCoins: 100000,
       price: 49.99,
@@ -115,7 +115,7 @@ export default function GoldStore() {
       ],
     },
     {
-      id: "ultimate",
+      id: "6",
       name: "💫 Ultimate Pack",
       goldCoins: 250000,
       price: 99.99,
