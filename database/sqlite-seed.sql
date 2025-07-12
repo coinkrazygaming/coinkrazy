@@ -67,11 +67,12 @@ INSERT OR REPLACE INTO games (name, slug, category_id, provider_id, game_type, t
 
 -- Mini games (CoinKriazy exclusives)
 INSERT OR REPLACE INTO games (name, slug, category_id, provider_id, game_type, thumbnail_url, rtp, min_bet, max_bet, max_win, is_featured, is_new) VALUES
-('Josey''s Quack Attack', 'joseys-quack-attack', 6, 8, 'mini_game', 'https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=400&h=600&fit=crop&crop=center', 98.00, 10.00, 1000.00, 5000.00, 1, 1),
-('Colin Shots', 'colin-shots', 6, 8, 'mini_game', 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&h=600&fit=crop&crop=center', 97.50, 25.00, 500.00, 2500.00, 1, 1),
-('Flickin'' My Bean', 'flickin-my-bean', 6, 8, 'mini_game', 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center', 96.80, 50.00, 2000.00, 10000.00, 1, 1),
-('Haylie''s Coins', 'haylies-coins', 6, 8, 'mini_game', 'https://images.unsplash.com/photo-1543699565-003b8adda5fc?w=400&h=600&fit=crop&crop=center', 97.20, 20.00, 750.00, 3750.00, 1, 1),
-('Beth''s Darts', 'beths-darts', 6, 8, 'mini_game', 'https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=400&h=600&fit=crop&crop=center', 98.50, 15.00, 300.00, 1500.00, 1, 1);
+('Josey''s Duck Pond', 'joseys-duck-pond', 6, 8, 'mini_game', 'https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800', 98.00, 10.00, 1000.00, 5000.00, 1, 1),
+('Colin Shots', 'colin-shots', 6, 8, 'mini_game', 'https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2Fd814c0ccb6ff4f92a9beb83abec0bcd9?format=webp&width=800', 97.50, 25.00, 500.00, 2500.00, 1, 1),
+('Crack the Vault', 'crack-the-vault', 6, 8, 'mini_game', 'https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F158ad80714ee4ada8f8c644f5204f766?format=webp&width=800', 96.80, 50.00, 2000.00, 10000.00, 1, 1),
+('Lucky Wheel Spin', 'lucky-wheel-spin', 6, 8, 'mini_game', '/images/mini-games/lucky-wheel-spin.webp', 97.20, 20.00, 750.00, 3750.00, 1, 1),
+('Number Guess Master', 'number-guess-master', 6, 8, 'mini_game', '/images/mini-games/number-guess-master.webp', 98.50, 15.00, 300.00, 1500.00, 1, 1),
+('Coin Flip Challenge', 'coin-flip-challenge', 6, 8, 'mini_game', '/images/mini-games/coin-flip-challenge.webp', 97.80, 5.00, 200.00, 1000.00, 1, 1);
 
 -- Store packages
 INSERT OR REPLACE INTO store_packages (name, description, price, gold_coins, bonus_sweeps_coins, package_type, is_featured, sort_order) VALUES
