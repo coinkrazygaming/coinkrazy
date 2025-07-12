@@ -244,7 +244,11 @@ export default function Auth() {
             </p>
           </div>
 
-          <Tabs defaultValue="register" className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="register">Register 🆕</TabsTrigger>
               <TabsTrigger value="login">Login 🔐</TabsTrigger>
