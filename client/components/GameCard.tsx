@@ -29,6 +29,8 @@ export default function GameCard({
   emoji,
   cooldown,
   onClick,
+  onPlayGold,
+  onPlaySweeps,
 }: GameCardProps) {
   const isOnCooldown = !!cooldown;
 
