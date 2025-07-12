@@ -270,8 +270,8 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
         className={`w-full ${className}`}
         disabled={disabled}
       >
-        <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
-        PayPal Unavailable
+        <CreditCard className="w-4 h-4 mr-2" />
+        💳 Alternative Payment
       </Button>
     );
   }
