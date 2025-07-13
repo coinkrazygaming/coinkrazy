@@ -403,7 +403,7 @@ export default function TableGames() {
                             🔴 LIVE
                           </Badge>
                           <Badge className="bg-accent text-accent-foreground">
-                            👩‍💼 {game.dealerName}
+                            👩‍💼 {game.dealerName} @ CoinKrazy.com
                           </Badge>
                         </div>
                       </CardHeader>
