@@ -403,14 +403,45 @@ export default function Sports() {
     },
   ];
 
+  // Fetch real sports statistics
+  const fetchSportsStats = async () => {
+    try {
+      const response = await fetch("/api/sports/stats");
+      if (response.ok) {
+        const data = await response.json();
+        setSportsStats({
+          dailyPayouts: data.dailyStats.dailyPayoutsFormatted,
+          betsToday: data.dailyStats.betsToday,
+          payoutRate: `${data.dailyStats.payoutRate}%`,
+          isRealData: data.isRealData,
+        });
+        setLiveEventsCount(data.liveStats.liveEvents);
+      } else {
+        console.warn("Failed to fetch sports stats, using fallback");
+      }
+    } catch (error) {
+      console.warn("Sports stats API unavailable, using fallback data");
+    }
+  };
+
   useEffect(() => {
-    // Simulate live updates
-    const interval = setInterval(() => {
+    // Fetch initial stats
+    fetchSportsStats();
+
+    // Update stats every 30 seconds
+    const statsInterval = setInterval(fetchSportsStats, 30000);
+
+    // Simulate live updates for events count
+    const liveInterval = setInterval(() => {
       setLiveEventsCount((prev) =>
-        Math.max(30, prev + Math.floor(Math.random() * 6) - 3),
+        Math.max(8, prev + Math.floor(Math.random() * 6) - 3),
       );
-    }, 5000);
-    return () => clearInterval(interval);
+    }, 15000);
+
+    return () => {
+      clearInterval(statsInterval);
+      clearInterval(liveInterval);
+    };
   }, []);
 
   const filteredEvents = sportsEvents.filter((event) => {
