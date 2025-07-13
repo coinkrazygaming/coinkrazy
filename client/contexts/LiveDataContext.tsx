@@ -59,8 +59,11 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
     // Add timeout to prevent hanging requests
     const controller = new AbortController();
+    let isAborted = false;
+
     const timeoutId = setTimeout(() => {
       try {
+        isAborted = true;
         controller.abort();
       } catch (abortError) {
         // Silently handle abort errors
@@ -92,8 +95,13 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       clearTimeout(timeoutId);
 
       // Handle AbortError specifically and silently
-      if (error?.name === "AbortError" || error?.message?.includes("aborted")) {
-        // Silently handle timeout/abort errors
+      if (
+        isAborted ||
+        error?.name === "AbortError" ||
+        error?.message?.includes("aborted") ||
+        error?.message?.includes("signal is aborted")
+      ) {
+        // Silently handle timeout/abort errors - don't log anything
         return null;
       }
 
