@@ -201,4 +201,79 @@ router.post("/add-email-verification", async (req, res) => {
   }
 });
 
+// Seed sports betting data
+router.post("/seed-sports", async (req, res) => {
+  try {
+    console.log("Seeding sports betting data...");
+
+    // Read sports seed file
+    const sportsPath = path.join(__dirname, "../../database/sports-seed.sql");
+
+    try {
+      const sportsData = readFileSync(sportsPath, "utf8");
+
+      // Split into individual statements
+      const statements = sportsData
+        .split(";")
+        .map((stmt) => stmt.trim())
+        .filter((stmt) => stmt.length > 0);
+
+      console.log(`Executing ${statements.length} sports seed statements...`);
+
+      for (const statement of statements) {
+        try {
+          await executeQuery(statement);
+        } catch (error) {
+          // Ignore duplicate entries
+          if (
+            !error.message.includes("UNIQUE constraint") &&
+            !error.message.includes("already exists")
+          ) {
+            console.warn("Sports seed statement warning:", error.message);
+          }
+        }
+      }
+
+      res.json({
+        success: true,
+        message: "Sports betting data seeded successfully!",
+        statements: statements.length,
+      });
+    } catch (fileError) {
+      console.warn("Sports seed file not found, using inline data");
+
+      // Fallback to inline seed data
+      const fallbackStatements = [
+        `INSERT OR REPLACE INTO sports_events (id, sport, league, home_team, away_team, event_date, status, home_score, away_score) VALUES
+         (1, 'NFL', 'NFL', 'Kansas City Chiefs', 'Buffalo Bills', '2024-12-22 20:00:00', 'upcoming', 0, 0)`,
+        `INSERT OR REPLACE INTO sports_odds (id, event_id, bet_type, bet_option, odds) VALUES
+         (1, 1, 'moneyline', 'Kansas City Chiefs', 1.85)`,
+        `INSERT OR REPLACE INTO sports_bets (user_id, event_id, odds_id, bet_amount, potential_win, actual_win, status, placed_at, settled_at) VALUES
+         (3, 1, 1, 50.00, 92.50, 92.50, 'won', datetime('now', '-2 hours'), datetime('now', '-1 hour'))`,
+      ];
+
+      for (const statement of fallbackStatements) {
+        try {
+          await executeQuery(statement);
+        } catch (error) {
+          console.warn("Fallback statement warning:", error.message);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: "Sports betting fallback data seeded successfully!",
+        statements: fallbackStatements.length,
+      });
+    }
+  } catch (error) {
+    console.error("Sports seeding failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "Sports seeding failed",
+      error: error.message,
+    });
+  }
+});
+
 export default router;
