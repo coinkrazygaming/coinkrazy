@@ -602,10 +602,10 @@ export default function TableGames() {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl mb-3">♠️</div>
-                  <h3 className="font-semibold mb-2">Poker</h3>
+                  <h3 className="font-semibold mb-2">CoinKrazy Poker</h3>
                   <p className="text-sm text-muted-foreground">
-                    Various poker games available. Make the best hand to win
-                    against others!
+                    CoinKrazy.com branded poker tables with custom chips, cards
+                    & chairs! Make the best hand to win!
                   </p>
                 </div>
               </div>
