@@ -585,7 +585,10 @@ export default function Sports() {
             </Badge>
             <Badge className="bg-primary text-primary-foreground px-4 py-2">
               <Users className="w-4 h-4 mr-2" />
-              89,432 Bets Today
+              {sportsStats.betsToday.toLocaleString()} Bets Today
+              {sportsStats.isRealData && (
+                <span className="ml-1 text-xs">📊</span>
+              )}
             </Badge>
             <Badge className="bg-accent text-accent-foreground px-4 py-2">
               <Target className="w-4 h-4 mr-2" />
