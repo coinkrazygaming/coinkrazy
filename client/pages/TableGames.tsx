@@ -504,7 +504,7 @@ export default function TableGames() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-1">
                           <Badge className="bg-accent text-accent-foreground text-xs">
-                            👩‍💼 {game.dealerName}
+                            👩‍💼 {game.dealerName} @ CoinKrazy.com
                           </Badge>
                           {game.currencyType && (
                             <Badge
@@ -514,7 +514,9 @@ export default function TableGames() {
                                   : "bg-yellow-500 text-black"
                               }`}
                             >
-                              {game.currencyType === "SC" ? "💎 SC" : "🪙 GC"}
+                              {game.currencyType === "SC"
+                                ? "💎 SC Chips"
+                                : "🪙 GC Chips"}
                             </Badge>
                           )}
                         </div>
