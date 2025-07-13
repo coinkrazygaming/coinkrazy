@@ -130,7 +130,8 @@ export default function TableGames() {
       rtp: "98.2%",
       isLive: true,
       currencyType: "GC",
-      description: "Tournament-style Texas Hold'em poker - Gold Coins only",
+      description:
+        "Tournament-style Texas Hold'em poker - Gold Coins only • CoinKrazy.com branded chips & cards",
     },
     {
       id: "texas-holdem-sc",
