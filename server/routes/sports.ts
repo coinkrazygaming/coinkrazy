@@ -21,7 +21,7 @@ router.get("/stats", async (req, res) => {
       const betsStatsQuery = `
         SELECT 
           COUNT(*) as total_bets,
-          SUM(CASE WHEN status = 'won' THEN actual_win ELSE 0 END) as total_payouts,
+                    SUM(CASE WHEN status = 'won' AND settled_at IS NOT NULL THEN actual_win ELSE 0 END) as total_payouts,
           SUM(bet_amount) as total_wagered,
           COUNT(CASE WHEN status = 'pending' THEN 1 END) as active_bets,
           COUNT(CASE WHEN status IN ('won', 'lost') THEN 1 END) as settled_bets
