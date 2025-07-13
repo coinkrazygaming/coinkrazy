@@ -259,7 +259,7 @@ router.post("/seed-sports", async (req, res) => {
          (5, 3, 'moneyline', 'Real Madrid', 2.30),
          (6, 3, 'moneyline', 'FC Barcelona', 2.80)`,
 
-        // Today's bets with realistic volumes
+        // Today's bets with realistic volumes (mix of pending, won, and lost)
         `INSERT OR REPLACE INTO sports_bets (user_id, event_id, odds_id, bet_amount, potential_win, actual_win, status, placed_at, settled_at) VALUES
          (3, 1, 1, 50.00, 92.50, 92.50, 'won', datetime('now', '-2 hours'), datetime('now', '-1 hour')),
          (4, 2, 3, 75.00, 157.50, 0.00, 'pending', datetime('now', '-1 hour'), NULL),
