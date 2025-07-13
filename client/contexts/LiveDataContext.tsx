@@ -51,6 +51,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     activeGames: 847,
   });
   const [loading, setLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(true);
 
   // API call helper with timeout and improved error handling
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
