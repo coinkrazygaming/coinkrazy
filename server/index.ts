@@ -73,6 +73,7 @@ export function createServer() {
   app.use("/api/store", storeRoutes);
   app.use("/api/chat", chatRoutes);
   app.use("/api/notifications", notificationRoutes);
+  app.use("/api/sports", sportsRoutes);
 
   // Health check
   app.get("/api/health", (req, res) => {
