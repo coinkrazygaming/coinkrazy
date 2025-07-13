@@ -242,14 +242,45 @@ router.post("/seed-sports", async (req, res) => {
     } catch (fileError) {
       console.warn("Sports seed file not found, using inline data");
 
-      // Fallback to inline seed data
+      // Fallback to inline seed data with realistic betting volumes
       const fallbackStatements = [
+        // Sports events
         `INSERT OR REPLACE INTO sports_events (id, sport, league, home_team, away_team, event_date, status, home_score, away_score) VALUES
-         (1, 'NFL', 'NFL', 'Kansas City Chiefs', 'Buffalo Bills', '2024-12-22 20:00:00', 'upcoming', 0, 0)`,
+         (1, 'NFL', 'NFL', 'Kansas City Chiefs', 'Buffalo Bills', '2024-12-22 20:00:00', 'upcoming', 0, 0),
+         (2, 'NBA', 'NBA', 'Los Angeles Lakers', 'Golden State Warriors', '2024-12-20 22:00:00', 'live', 89, 94),
+         (3, 'Soccer', 'La Liga', 'Real Madrid', 'FC Barcelona', '2024-12-21 21:00:00', 'upcoming', 0, 0)`,
+
+        // Sports odds
         `INSERT OR REPLACE INTO sports_odds (id, event_id, bet_type, bet_option, odds) VALUES
-         (1, 1, 'moneyline', 'Kansas City Chiefs', 1.85)`,
+         (1, 1, 'moneyline', 'Kansas City Chiefs', 1.85),
+         (2, 1, 'moneyline', 'Buffalo Bills', 1.95),
+         (3, 2, 'moneyline', 'Los Angeles Lakers', 2.10),
+         (4, 2, 'moneyline', 'Golden State Warriors', 1.75),
+         (5, 3, 'moneyline', 'Real Madrid', 2.30),
+         (6, 3, 'moneyline', 'FC Barcelona', 2.80)`,
+
+        // Today's bets with realistic volumes
         `INSERT OR REPLACE INTO sports_bets (user_id, event_id, odds_id, bet_amount, potential_win, actual_win, status, placed_at, settled_at) VALUES
-         (3, 1, 1, 50.00, 92.50, 92.50, 'won', datetime('now', '-2 hours'), datetime('now', '-1 hour'))`,
+         (3, 1, 1, 50.00, 92.50, 92.50, 'won', datetime('now', '-2 hours'), datetime('now', '-1 hour')),
+         (4, 2, 3, 75.00, 157.50, 0.00, 'pending', datetime('now', '-1 hour'), NULL),
+         (5, 3, 5, 100.00, 230.00, 0.00, 'pending', datetime('now', '-30 minutes'), NULL),
+         (6, 1, 2, 85.00, 165.75, 165.75, 'won', datetime('now', '-3 hours'), datetime('now', '-2 hours')),
+         (7, 2, 4, 60.00, 105.00, 0.00, 'lost', datetime('now', '-4 hours'), datetime('now', '-3 hours')),
+         (8, 3, 6, 120.00, 336.00, 336.00, 'won', datetime('now', '-5 hours'), datetime('now', '-4 hours')),
+         (3, 1, 1, 40.00, 74.00, 74.00, 'won', datetime('now', '-6 hours'), datetime('now', '-5 hours')),
+         (4, 2, 3, 90.00, 189.00, 0.00, 'pending', datetime('now', '-7 hours'), NULL),
+         (5, 3, 5, 65.00, 149.50, 0.00, 'lost', datetime('now', '-8 hours'), datetime('now', '-7 hours')),
+         (6, 1, 2, 110.00, 214.50, 214.50, 'won', datetime('now', '-9 hours'), datetime('now', '-8 hours')),
+         (7, 2, 4, 45.00, 78.75, 0.00, 'pending', datetime('now', '-10 hours'), NULL),
+         (8, 3, 6, 200.00, 560.00, 0.00, 'lost', datetime('now', '-11 hours'), datetime('now', '-10 hours')),
+         (3, 1, 1, 55.00, 101.75, 101.75, 'won', datetime('now', '-12 hours'), datetime('now', '-11 hours')),
+         (4, 2, 3, 80.00, 168.00, 168.00, 'won', datetime('now', '-13 hours'), datetime('now', '-12 hours')),
+         (5, 3, 5, 95.00, 218.50, 0.00, 'pending', datetime('now', '-14 hours'), NULL),
+         (6, 1, 2, 70.00, 136.50, 0.00, 'lost', datetime('now', '-15 hours'), datetime('now', '-14 hours')),
+         (7, 2, 4, 150.00, 262.50, 262.50, 'won', datetime('now', '-16 hours'), datetime('now', '-15 hours')),
+         (8, 3, 6, 35.00, 98.00, 98.00, 'won', datetime('now', '-17 hours'), datetime('now', '-16 hours')),
+         (3, 1, 1, 125.00, 231.25, 0.00, 'pending', datetime('now', '-18 hours'), NULL),
+         (4, 2, 3, 25.00, 52.50, 0.00, 'lost', datetime('now', '-19 hours'), datetime('now', '-18 hours'))`,
       ];
 
       for (const statement of fallbackStatements) {
