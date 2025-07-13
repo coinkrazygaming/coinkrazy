@@ -147,7 +147,8 @@ export default function TableGames() {
       rtp: "98.2%",
       isLive: true,
       currencyType: "SC",
-      description: "Tournament-style Texas Hold'em poker - Sweeps Coins only",
+      description:
+        "Tournament-style Texas Hold'em poker - Sweeps Coins only • CoinKrazy.com branded chips & cards",
     },
     {
       id: "three-card-poker-gc",
@@ -163,7 +164,8 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "GC",
-      description: "Fast-paced poker variant - Gold Coins only",
+      description:
+        "Fast-paced poker variant - Gold Coins only • CoinKrazy.com branded table & chips",
     },
     {
       id: "three-card-poker-sc",
@@ -179,7 +181,8 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "SC",
-      description: "Fast-paced poker variant - Sweeps Coins only",
+      description:
+        "Fast-paced poker variant - Sweeps Coins only • CoinKrazy.com branded table & chips",
     },
     {
       id: "casino-holdem-gc",
@@ -195,7 +198,8 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "GC",
-      description: "Play Texas Hold'em against the house - Gold Coins only",
+      description:
+        "Play Texas Hold'em against the house - Gold Coins only • CoinKrazy.com branded experience",
     },
     {
       id: "casino-holdem-sc",
@@ -211,7 +215,8 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "SC",
-      description: "Play Texas Hold'em against the house - Sweeps Coins only",
+      description:
+        "Play Texas Hold'em against the house - Sweeps Coins only • CoinKrazy.com branded experience",
     },
     {
       id: "dragon-tiger",
