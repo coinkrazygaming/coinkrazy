@@ -608,7 +608,10 @@ export default function Sports() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary casino-pulse">
-                    $2.4M
+                    {sportsStats.dailyPayouts}
+                    {sportsStats.isRealData && (
+                      <span className="text-xs ml-1">📊</span>
+                    )}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     💰 Daily Payouts
