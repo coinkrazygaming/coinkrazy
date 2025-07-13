@@ -304,10 +304,11 @@ export default function TableGames() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4 flex items-center justify-center">
             <Crown className="w-10 h-10 mr-3 text-primary" />
-            🎲 Live Table Games
+            🎲 CoinKrazy Live Table Games
           </h1>
           <p className="text-xl text-muted-foreground mb-4">
-            Professional dealers • Real-time action • Premium tables 🎯
+            Professional CoinKrazy.com dealers • Real-time action • Premium
+            branded tables 🎯
           </p>
           <div className="flex items-center justify-center space-x-4">
             <Badge className="bg-destructive text-white px-4 py-2 animate-pulse">
