@@ -116,9 +116,13 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
   // Fetch live stats from API with graceful fallback
   const fetchStats = async () => {
+    if (!isMounted) return; // Don't fetch if component is unmounted
+
     try {
-      setLoading(true);
+      if (isMounted) setLoading(true);
       const data = await apiCall("/public/stats");
+
+      if (!isMounted) return; // Check again after async operation
 
       if (data && data.stats) {
         setStats({
@@ -148,6 +152,8 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
         }));
       }
     } catch (error) {
+      if (!isMounted) return; // Don't log or update state if unmounted
+
       // Only log in development mode to reduce production console spam
       if (import.meta.env.MODE === "development") {
         console.warn("LiveData fallback mode active");
@@ -167,7 +173,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
         ),
       }));
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
