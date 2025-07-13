@@ -107,6 +107,12 @@ export default function Sports() {
   const [showLiveOnly, setShowLiveOnly] = useState(false);
   const [liveEventsCount, setLiveEventsCount] = useState(47);
   const [betHistory, setBetHistory] = useState<any[]>([]);
+  const [sportsStats, setSportsStats] = useState({
+    dailyPayouts: "$0",
+    betsToday: 0,
+    payoutRate: "95.5%",
+    isRealData: false,
+  });
 
   // Comprehensive sports events data
   const sportsEvents: SportEvent[] = [
