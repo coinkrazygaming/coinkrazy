@@ -632,7 +632,12 @@ export default function Sports() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-accent">98.2%</div>
+                  <div className="text-3xl font-bold text-accent">
+                    {sportsStats.payoutRate}
+                    {sportsStats.isRealData && (
+                      <span className="text-xs ml-1">📊</span>
+                    )}
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     📈 Payout Rate
                   </div>
