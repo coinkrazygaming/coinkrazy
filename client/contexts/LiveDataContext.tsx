@@ -193,6 +193,13 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     fetchStats();
   }, []);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
+
   const value: LiveDataContextType = {
     stats,
     refreshStats,
