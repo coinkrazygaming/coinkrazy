@@ -58,7 +58,13 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
     // Add timeout to prevent hanging requests
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const timeoutId = setTimeout(() => {
+      try {
+        controller.abort();
+      } catch (abortError) {
+        // Silently handle abort errors
+      }
+    }, 5000); // 5 second timeout
 
     const config: RequestInit = {
       headers: {
@@ -81,19 +87,23 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
       return data;
-    } catch (error) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
 
-      // Only log specific errors in development mode to avoid production console spam
+      // Handle AbortError specifically and silently
+      if (error?.name === "AbortError" || error?.message?.includes("aborted")) {
+        // Silently handle timeout/abort errors
+        return null;
+      }
+
+      // Only log other errors in development mode to avoid production console spam
       if (import.meta.env.MODE === "development") {
-        if (error.name === "AbortError") {
-          console.warn("LiveData API timeout, using fallback data");
-        } else if (error.message.includes("fetch")) {
+        if (error?.message?.includes("fetch")) {
           console.warn("LiveData API fetch failed, using fallback data");
         } else {
           console.warn(
             "LiveData API error, using fallback data:",
-            error.message,
+            error?.message || "Unknown error",
           );
         }
       }
