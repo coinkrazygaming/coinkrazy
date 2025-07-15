@@ -44,7 +44,7 @@ export default function CasinoHeader() {
             <div className="relative">
               <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center casino-pulse p-1">
                 <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fcbaa5477f6b142f38d01e67993167a9f%2F7884809e513c4e87b5cca659ca86cf77?format=webp&width=800"
+                  src="https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F94851f32130e47a4b85ad96fa19ed4ec?format=webp&width=800"
                   alt="CoinKrazy Logo"
                   className="w-10 h-10 object-contain"
                 />

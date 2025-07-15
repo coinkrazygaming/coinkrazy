@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard";
 import MiniGames from "./pages/MiniGames";
 import AdminPanel from "./pages/AdminPanel";
@@ -41,6 +42,7 @@ const App = () => (
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/login" element={<Auth />} />
                   <Route path="/register" element={<Auth />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route
                     path="/dashboard"
                     element={

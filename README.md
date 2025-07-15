@@ -1,6 +1,6 @@
 # CoinKrazy.com - Premier Social Casino Platform
 
-![CoinKrazy.com](https://cdn.builder.io/api/v1/image/assets%2Fcbaa5477f6b142f38d01e67993167a9f%2F7884809e513c4e87b5cca659ca86cf77?format=webp&width=800)
+![CoinKrazy.com](https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F94851f32130e47a4b85ad96fa19ed4ec?format=webp&width=800)
 
 A complete social casino platform built with React, TypeScript, Node.js, Express, and MySQL. Features over 700+ slot games, live dealer tables, sports betting, bingo, mini-games, and comprehensive admin/staff management systems.
 

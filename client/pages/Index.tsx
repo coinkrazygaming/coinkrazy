@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CasinoHeader from "@/components/CasinoHeader";
 import GameCard from "@/components/GameCard";
+import MiniGameLauncher from "@/components/MiniGames/MiniGameLauncher";
 import { useLiveData } from "@/contexts/LiveDataContext";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -22,6 +23,7 @@ import {
 export default function Index() {
   const { stats } = useLiveData();
   const { user } = useAuth();
+  const [selectedMiniGame, setSelectedMiniGame] = useState<string | null>(null);
 
   // Mock data for games
   const miniGames = [
@@ -53,79 +55,79 @@ export default function Index() {
         "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&crop=center",
     },
     {
-      title: "Haylie's Coins",
-      emoji: "���",
+      title: "Lucky Wheel Spin",
+      emoji: "🎡",
       category: "Mini Game",
       cooldown: null,
       provider: "CoinKrazy",
       image:
-        "https://images.unsplash.com/photo-1543699565-003b8adda5fc?w=400&h=600&fit=crop&crop=center",
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800",
     },
     {
-      title: "Beth's Darts",
-      emoji: "🎪",
+      title: "Number Guess Master",
+      emoji: "🔢",
       category: "Mini Game",
       cooldown: "23:15:42",
       provider: "CoinKrazy",
       image:
-        "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=400&h=600&fit=crop&crop=center",
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F158ad80714ee4ada8f8c644f5204f766?format=webp&width=800",
     },
   ];
 
   const slotGames = [
     {
-      title: "Gold Rush Deluxe",
+      title: "Sweet Bonanza",
       emoji: "💰",
       category: "Slots",
       isPopular: true,
-      jackpot: "$12,456",
+      jackpot: "$21,100",
       provider: "Pragmatic Play",
       image:
-        "https://images.unsplash.com/photo-1541278107931-e006523892df?w=400&h=600&fit=crop&crop=center",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25sweetbonanza.png",
     },
     {
-      title: "Diamond Dreams",
+      title: "The Dog House",
       emoji: "💎",
       category: "Slots",
       isNew: true,
-      provider: "NetEnt",
+      provider: "Pragmatic Play",
       image:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop&crop=center",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20doghouse.png",
     },
     {
-      title: "Lucky 777",
+      title: "Gate of Olympus",
       emoji: "🍀",
       category: "Slots",
       isPopular: true,
-      provider: "Play'n GO",
-      image:
-        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
-    },
-    {
-      title: "Wild Safari",
-      emoji: "🦁",
-      category: "Slots",
-      provider: "Microgaming",
-      image:
-        "https://images.unsplash.com/photo-1549366021-9f761d040a94?w=400&h=600&fit=crop&crop=center",
-    },
-    {
-      title: "Ocean Treasure",
-      emoji: "🌊",
-      category: "Slots",
-      jackpot: "$8,923",
       provider: "Pragmatic Play",
       image:
-        "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=400&h=600&fit=crop&crop=center",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20gatotoro.png",
     },
     {
-      title: "Space Adventure",
+      title: "Fruit Party",
+      emoji: "🦁",
+      category: "Slots",
+      provider: "Pragmatic Play",
+      image:
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20fruitparty.png",
+    },
+    {
+      title: "Gold Party",
+      emoji: "🌊",
+      category: "Slots",
+      jackpot: "$15,234",
+      provider: "Pragmatic Play",
+      image:
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs25goldparty.png",
+    },
+    {
+      title: "Great Rhino",
       emoji: "🚀",
       category: "Slots",
       isNew: true,
-      provider: "NetEnt",
+      provider: "Pragmatic Play",
       image:
-        "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=600&fit=crop&crop=center",
+        "https://demogamesfree.pragmaticplay.net/gs2c/common/images/games/200x200/vs20greatrhino.png",
     },
   ];
 
@@ -261,7 +263,7 @@ export default function Index() {
               <div className="flex items-center justify-center space-x-1 text-accent">
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-2xl font-bold">
-                  ${stats.totalPayout.toLocaleString()}
+                  ${stats.totalWithdrawals.toLocaleString()}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">
@@ -315,7 +317,13 @@ export default function Index() {
                 category={game.category}
                 emoji={game.emoji}
                 cooldown={game.cooldown}
-                onClick={() => console.log(`Playing ${game.title}`)}
+                onClick={() => {
+                  const slug = game.title
+                    .toLowerCase()
+                    .replace(/['']/g, "")
+                    .replace(/\s+/g, "-");
+                  setSelectedMiniGame(slug);
+                }}
               />
             ))}
           </div>
@@ -348,6 +356,12 @@ export default function Index() {
                 isNew={game.isNew}
                 jackpot={game.jackpot}
                 onClick={() => console.log(`Playing ${game.title}`)}
+                onPlayGold={() =>
+                  console.log(`Playing ${game.title} with Gold Coins`)
+                }
+                onPlaySweeps={() =>
+                  console.log(`Playing ${game.title} with Sweeps Coins`)
+                }
               />
             ))}
           </div>
@@ -471,10 +485,18 @@ export default function Index() {
             </a>
           </div>
           <p className="text-xs text-muted-foreground mt-4">
-            © 2024 CoinKrazy.com • 18+ Only • Play Responsibly 🎲
+            © 2024 CoinKrazy.com • 18+ Only �� Play Responsibly 🎲
           </p>
         </div>
       </footer>
+
+      {/* Mini Game Launcher */}
+      {selectedMiniGame && (
+        <MiniGameLauncher
+          gameSlug={selectedMiniGame}
+          onClose={() => setSelectedMiniGame(null)}
+        />
+      )}
     </div>
   );
 }

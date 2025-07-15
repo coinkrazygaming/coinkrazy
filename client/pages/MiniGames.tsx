@@ -1,714 +1,114 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CasinoHeader from "@/components/CasinoHeader";
-import MiniGameCard from "@/components/MiniGameCard";
+import GameCard from "@/components/GameCard";
+import MiniGameLauncher from "@/components/MiniGames/MiniGameLauncher";
+import { useAuth } from "@/contexts/AuthContext";
 import {
-  Play,
-  Trophy,
-  Clock,
-  Target,
-  Coins,
+  Crown,
+  Gift,
   Star,
-  Home,
-  RotateCcw,
+  Timer,
+  Trophy,
+  Zap,
+  ArrowLeft,
+  Gamepad2,
 } from "lucide-react";
 
-// Duck Hunt game interfaces
-interface Duck {
-  id: string;
-  x: number;
-  y: number;
-  direction: "left" | "right" | "up" | "diagonal";
-  speed: number;
-  alive: boolean;
-  hit: boolean;
-}
-
 export default function MiniGames() {
-  const [activeGame, setActiveGame] = useState<string | null>(null);
-  const [gameScore, setGameScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameEnded, setGameEnded] = useState(false);
-  const [totalEarned, setTotalEarned] = useState(0);
-  const [ducks, setDucks] = useState<Duck[]>([]);
-  const [ducksShot, setDucksShot] = useState(0);
-  const [bullets, setBullets] = useState(25);
-  const [round, setRound] = useState(1);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const duckSpawnRef = useRef<NodeJS.Timeout | null>(null);
-  const duckMoveRef = useRef<NodeJS.Timeout | null>(null);
+  const { user } = useAuth();
+  const [selectedMiniGame, setSelectedMiniGame] = useState<string | null>(null);
 
   const miniGames = [
     {
-      id: "quack-attack",
-      title: "Josey's Quack Attack",
+      title: "Josey's Duck Pond",
       emoji: "🦆",
-      description: "Classic Duck Hunt style shooting game!",
-      instructions:
-        "Click on the flying ducks to shoot them. Each duck is worth exactly 0.01 SC! You have 25 bullets per round.",
-      cooldown: null, // Available to play
-      lastPlayed: null,
-      maxEarning: "0.01 SC per duck",
+      category: "Mini Game",
+      cooldown: "18:24:15",
+      provider: "CoinKrazy",
+      description: "Pick the lucky ducks to win SC rewards!",
+      maxReward: "0.25 SC",
       difficulty: "Easy",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800",
     },
     {
-      id: "colin-shots",
       title: "Colin Shots",
       emoji: "🏀",
-      description: "Make basketball shots for 60 seconds!",
-      instructions:
-        "Click to shoot basketballs into the hoop. Each successful shot earns 0.00-0.10 SC!",
-      cooldown: "18:24:15", // On cooldown
-      lastPlayed: "2024-12-19 06:35:45",
-      maxEarning: "0.10 SC per shot",
+      category: "Mini Game",
+      cooldown: null,
+      provider: "CoinKrazy",
+      description: "Shoot hoops and score baskets to earn SC!",
+      maxReward: "0.50 SC",
       difficulty: "Medium",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2Fd814c0ccb6ff4f92a9beb83abec0bcd9?format=webp&width=800",
     },
     {
-      id: "flickin-bean",
-      title: "Flickin' My Bean",
-      emoji: "🎯",
-      description: "Throw bean bags at the cornhole board!",
-      instructions:
-        "Aim and throw bean bags into the holes. Different holes have different values!",
-      cooldown: "12:45:30", // On cooldown
-      lastPlayed: "2024-12-19 11:14:30",
-      maxEarning: "0.10 SC per bag",
-      difficulty: "Medium",
-    },
-    {
-      id: "haylie-coins",
-      title: "Haylie's Coins",
-      emoji: "🪙",
-      description: "Drop coins in the coin pusher!",
-      instructions:
-        "Time your coin drops to push coins off the edge and earn SC!",
-      cooldown: null, // Available to play
-      lastPlayed: null,
-      maxEarning: "0.10 SC per coin",
-      difficulty: "Easy",
-    },
-    {
-      id: "beth-darts",
-      title: "Beth's Darts",
-      emoji: "🎪",
-      description: "Pop balloons with darts!",
-      instructions:
-        "Throw darts at balloons. Each balloon has a different SC value!",
-      cooldown: "23:15:42", // On cooldown
-      lastPlayed: "2024-12-19 00:44:18",
-      maxEarning: "0.10 SC per balloon",
+      title: "Crack the Vault",
+      emoji: "🔐",
+      category: "Mini Game",
+      cooldown: "12:45:30",
+      provider: "CoinKrazy",
+      description: "Crack the code and unlock the vault for rewards!",
+      maxReward: "1.00 SC",
       difficulty: "Hard",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F158ad80714ee4ada8f8c644f5204f766?format=webp&width=800",
+    },
+    {
+      title: "Lucky Wheel Spin",
+      emoji: "🎡",
+      category: "Mini Game",
+      cooldown: null,
+      provider: "CoinKrazy",
+      description: "Spin the wheel for your chance at SC prizes!",
+      maxReward: "0.30 SC",
+      difficulty: "Easy",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800",
+    },
+    {
+      title: "Number Guess Master",
+      emoji: "🔢",
+      category: "Mini Game",
+      cooldown: "23:15:42",
+      provider: "CoinKrazy",
+      description: "Guess the secret number to win SC rewards!",
+      maxReward: "0.40 SC",
+      difficulty: "Medium",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F158ad80714ee4ada8f8c644f5204f766?format=webp&width=800",
+    },
+    {
+      title: "Coin Flip Challenge",
+      emoji: "🪙",
+      category: "Mini Game",
+      cooldown: "06:30:15",
+      provider: "CoinKrazy",
+      description: "Call heads or tails and test your luck!",
+      maxReward: "0.20 SC",
+      difficulty: "Easy",
+      image:
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800",
     },
   ];
 
-  const spawnDuck = () => {
-    const directions = ["left", "right", "up", "diagonal"] as const;
-    const direction = directions[Math.floor(Math.random() * directions.length)];
-
-    let startX, startY;
-    if (direction === "left") {
-      startX = -50;
-      startY = Math.random() * 300 + 100;
-    } else if (direction === "right") {
-      startX = 850;
-      startY = Math.random() * 300 + 100;
-    } else if (direction === "up") {
-      startX = Math.random() * 600 + 100;
-      startY = 450;
-    } else {
-      // diagonal
-      startX = Math.random() * 200;
-      startY = 400;
-    }
-
-    const newDuck: Duck = {
-      id: Math.random().toString(36).substr(2, 9),
-      x: startX,
-      y: startY,
-      direction,
-      speed: Math.random() * 3 + 2,
-      alive: true,
-      hit: false,
-    };
-
-    setDucks((prev) => [...prev, newDuck]);
-  };
-
-  const moveDucks = () => {
-    setDucks((prev) =>
-      prev
-        .map((duck) => {
-          if (!duck.alive) return duck;
-
-          let newX = duck.x;
-          let newY = duck.y;
-
-          switch (duck.direction) {
-            case "left":
-              newX += duck.speed;
-              break;
-            case "right":
-              newX -= duck.speed;
-              break;
-            case "up":
-              newY -= duck.speed;
-              break;
-            case "diagonal":
-              newX += duck.speed;
-              newY -= duck.speed;
-              break;
-          }
-
-          // Remove duck if it goes off screen
-          if (newX > 900 || newX < -100 || newY < -50) {
-            return { ...duck, alive: false };
-          }
-
-          return { ...duck, x: newX, y: newY };
-        })
-        .filter((duck) => duck.alive || duck.hit),
-    );
-  };
-
-  const shootDuck = (duckId: string) => {
-    if (bullets <= 0) return;
-
-    setBullets((prev) => prev - 1);
-
-    setDucks((prev) =>
-      prev.map((duck) => {
-        if (duck.id === duckId && duck.alive && !duck.hit) {
-          setDucksShot((prevShot) => prevShot + 1);
-          setGameScore((prevScore) => prevScore + 1);
-          return { ...duck, hit: true, alive: false };
-        }
-        return duck;
-      }),
-    );
-  };
-
-  const startGame = (gameId: string) => {
-    const game = miniGames.find((g) => g.id === gameId);
-    if (!game || game.cooldown) return;
-
-    setActiveGame(gameId);
-    setGameScore(0);
-    setTotalEarned(0);
-    setTimeLeft(60);
-    setGameStarted(true);
-    setGameEnded(false);
-    setDucks([]);
-    setDucksShot(0);
-    setBullets(25);
-    setRound(1);
-
-    // Start the countdown timer
-    intervalRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          endGame();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    // Duck Hunt specific logic
-    if (gameId === "quack-attack") {
-      // Spawn ducks every 2-4 seconds
-      duckSpawnRef.current = setInterval(() => {
-        if (Math.random() < 0.7) {
-          // 70% chance to spawn
-          spawnDuck();
-        }
-      }, 2000);
-
-      // Move ducks every 50ms for smooth animation
-      duckMoveRef.current = setInterval(moveDucks, 50);
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "Easy":
+        return "bg-green-500 text-white";
+      case "Medium":
+        return "bg-yellow-500 text-white";
+      case "Hard":
+        return "bg-red-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
     }
   };
-
-  const endGame = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    if (duckSpawnRef.current) {
-      clearInterval(duckSpawnRef.current);
-      duckSpawnRef.current = null;
-    }
-    if (duckMoveRef.current) {
-      clearInterval(duckMoveRef.current);
-      duckMoveRef.current = null;
-    }
-    setGameStarted(false);
-    setGameEnded(true);
-
-    // Calculate final earnings - For Duck Hunt: 0.01 SC per duck shot
-    let finalEarnings;
-    if (activeGame === "quack-attack") {
-      finalEarnings = (ducksShot * 0.01).toFixed(2);
-    } else {
-      finalEarnings = (gameScore * (Math.random() * 0.1)).toFixed(2);
-    }
-    setTotalEarned(parseFloat(finalEarnings));
-  };
-
-  const resetGame = () => {
-    setActiveGame(null);
-    setGameScore(0);
-    setTotalEarned(0);
-    setTimeLeft(60);
-    setGameStarted(false);
-    setGameEnded(false);
-    setDucks([]);
-    setDucksShot(0);
-    setBullets(25);
-    setRound(1);
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    if (duckSpawnRef.current) {
-      clearInterval(duckSpawnRef.current);
-      duckSpawnRef.current = null;
-    }
-    if (duckMoveRef.current) {
-      clearInterval(duckMoveRef.current);
-      duckMoveRef.current = null;
-    }
-  };
-
-  const handleGameAction = () => {
-    if (!gameStarted || timeLeft <= 0 || activeGame === "quack-attack") return;
-
-    // Simulate successful action (hit/shot/throw)
-    const success = Math.random() > 0.3; // 70% success rate
-    if (success) {
-      setGameScore((prev) => prev + 1);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      if (duckSpawnRef.current) {
-        clearInterval(duckSpawnRef.current);
-      }
-      if (duckMoveRef.current) {
-        clearInterval(duckMoveRef.current);
-      }
-    };
-  }, []);
-
-  if (activeGame) {
-    const game = miniGames.find((g) => g.id === activeGame);
-    if (!game) return null;
-
-    return (
-      <div className="min-h-screen bg-background">
-        <CasinoHeader />
-
-        <div className="container mx-auto px-4 py-8">
-          {/* Game Header */}
-          <div className="text-center mb-8">
-            <div className="text-8xl mb-4 animate-float">{game.emoji}</div>
-            <h1 className="text-4xl font-bold text-primary mb-2">
-              {game.title}
-            </h1>
-            <p className="text-muted-foreground mb-4">{game.description}</p>
-            <Badge className="bg-primary text-primary-foreground text-lg px-4 py-2">
-              CoinKrazy.com Exclusive ��️
-            </Badge>
-          </div>
-
-          {!gameStarted && !gameEnded && (
-            <div className="max-w-2xl mx-auto">
-              <Card className="casino-glow">
-                <CardHeader>
-                  <CardTitle className="text-center">
-                    🎮 Game Instructions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-muted-foreground mb-6">
-                    {game.instructions}
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-secondary p-3 rounded-lg">
-                      <h3 className="font-semibold text-primary">
-                        ⏰ Duration
-                      </h3>
-                      <p className="text-2xl font-bold">60 seconds</p>
-                    </div>
-                    <div className="bg-secondary p-3 rounded-lg">
-                      <h3 className="font-semibold text-accent">💰 Max Earn</h3>
-                      <p className="text-2xl font-bold">{game.maxEarning}</p>
-                    </div>
-                  </div>
-                  <Button
-                    size="lg"
-                    className="bg-primary hover:bg-primary/90 casino-pulse text-lg px-8 py-3"
-                    onClick={() => startGame(game.id)}
-                  >
-                    <Play className="w-6 h-6 mr-2" />
-                    🚀 Start Game!
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {gameStarted && (
-            <div className="max-w-4xl mx-auto">
-              {/* Game Stats */}
-              {activeGame === "quack-attack" ? (
-                <div className="grid grid-cols-4 gap-4 mb-8">
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <Clock className="w-8 h-8 mx-auto mb-2 text-destructive" />
-                      <p className="text-3xl font-bold text-destructive">
-                        {timeLeft}s
-                      </p>
-                      <p className="text-sm text-muted-foreground">Time Left</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <Target className="w-8 h-8 mx-auto mb-2 text-primary" />
-                      <p className="text-3xl font-bold text-primary">
-                        {ducksShot}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Ducks Shot
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <div className="text-red-500 text-2xl mb-2">🔫</div>
-                      <p className="text-3xl font-bold text-red-500">
-                        {bullets}
-                      </p>
-                      <p className="text-sm text-muted-foreground">Bullets</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <Coins className="w-8 h-8 mx-auto mb-2 text-accent" />
-                      <p className="text-3xl font-bold text-accent">
-                        {(ducksShot * 0.01).toFixed(2)} SC
-                      </p>
-                      <p className="text-sm text-muted-foreground">Earned</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <Clock className="w-8 h-8 mx-auto mb-2 text-destructive" />
-                      <p className="text-3xl font-bold text-destructive">
-                        {timeLeft}s
-                      </p>
-                      <p className="text-sm text-muted-foreground">Time Left</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <Target className="w-8 h-8 mx-auto mb-2 text-primary" />
-                      <p className="text-3xl font-bold text-primary">
-                        {gameScore}
-                      </p>
-                      <p className="text-sm text-muted-foreground">Score</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="casino-glow">
-                    <CardContent className="p-4 text-center">
-                      <Coins className="w-8 h-8 mx-auto mb-2 text-accent" />
-                      <p className="text-3xl font-bold text-accent">
-                        {(gameScore * 0.05).toFixed(2)} SC
-                      </p>
-                      <p className="text-sm text-muted-foreground">Estimated</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
-
-              {/* Game Area */}
-              <Card className="casino-glow mb-4">
-                <CardContent className="p-4">
-                  {activeGame === "quack-attack" ? (
-                    <div
-                      className="aspect-video bg-gradient-to-b from-blue-400 via-green-400 to-green-600 rounded-lg relative overflow-hidden cursor-crosshair"
-                      style={{
-                        background:
-                          "linear-gradient(to bottom, #87CEEB 0%, #87CEEB 30%, #228B22 30%, #228B22 70%, #8B4513 70%, #8B4513 100%)",
-                      }}
-                    >
-                      {/* Sky and clouds */}
-                      <div className="absolute top-4 left-4 text-white text-2xl opacity-75">
-                        ☁️
-                      </div>
-                      <div className="absolute top-8 right-8 text-white text-3xl opacity-60">
-                        ☁️
-                      </div>
-                      <div className="absolute top-12 left-1/3 text-white text-2xl opacity-50">
-                        ☁️
-                      </div>
-
-                      {/* Trees in background */}
-                      <div className="absolute bottom-20 left-0 text-6xl">
-                        🌲
-                      </div>
-                      <div className="absolute bottom-20 left-16 text-5xl">
-                        🌲
-                      </div>
-                      <div className="absolute bottom-20 right-0 text-6xl">
-                        🌲
-                      </div>
-                      <div className="absolute bottom-20 right-20 text-5xl">
-                        🌲
-                      </div>
-
-                      {/* Grass */}
-                      <div className="absolute bottom-8 left-4 text-2xl">
-                        🌿
-                      </div>
-                      <div className="absolute bottom-6 left-20 text-2xl">
-                        🌿
-                      </div>
-                      <div className="absolute bottom-8 right-4 text-2xl">
-                        🌿
-                      </div>
-                      <div className="absolute bottom-6 right-20 text-2xl">
-                        🌿
-                      </div>
-
-                      {/* Flying Ducks */}
-                      {ducks.map((duck) => (
-                        <div
-                          key={duck.id}
-                          className={`absolute transition-all duration-100 cursor-pointer hover:scale-110 ${duck.hit ? "animate-pulse" : ""}`}
-                          style={{
-                            left: `${duck.x}px`,
-                            top: `${duck.y}px`,
-                            transform:
-                              duck.direction === "right"
-                                ? "scaleX(-1)"
-                                : "scaleX(1)",
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            shootDuck(duck.id);
-                          }}
-                        >
-                          <div
-                            className={`text-4xl ${duck.hit ? "text-red-500" : "text-yellow-600"} ${duck.alive ? "animate-bounce" : ""}`}
-                          >
-                            {duck.hit ? "💥" : "🦆"}
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Duck Hunt UI Elements */}
-                      <div className="absolute top-4 left-4 bg-black/70 px-3 py-2 rounded text-white text-sm">
-                        <div className="font-bold text-yellow-400">
-                          DUCK HUNT
-                        </div>
-                        <div>Round {round}</div>
-                      </div>
-
-                      {/* Enhanced CoinKrazy Branding */}
-                      <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-accent px-4 py-2 rounded-lg border-2 border-gold-400 shadow-lg">
-                        <div className="text-center">
-                          <div className="text-white font-bold text-lg">
-                            🎰 COINKRIZY.COM
-                          </div>
-                          <div className="text-yellow-300 text-xs font-semibold">
-                            EXCLUSIVE MINI GAME
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Branding Watermark */}
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
-                        <div className="text-6xl font-bold text-white rotate-12">
-                          COINKRIZY.COM
-                        </div>
-                      </div>
-
-                      {/* Bullets indicator */}
-                      <div className="absolute bottom-4 left-4 bg-black/80 px-4 py-2 rounded-lg border border-red-400 shadow-lg">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-red-400">🔫</span>
-                          <span className="font-bold text-white">
-                            Bullets: {bullets}
-                          </span>
-                        </div>
-                        <div className="text-xs text-red-300">
-                          CoinKrazy Ammo
-                        </div>
-                      </div>
-
-                      {/* Score indicator */}
-                      <div className="absolute bottom-4 right-4 bg-black/80 px-4 py-2 rounded-lg border border-yellow-400 shadow-lg">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-yellow-400">🎯</span>
-                          <span className="font-bold text-white">
-                            Hit: {ducksShot}
-                          </span>
-                        </div>
-                        <div className="text-xs text-yellow-300">
-                          Earning: {(ducksShot * 0.01).toFixed(2)} SC
-                        </div>
-                      </div>
-
-                      {/* Instructions */}
-                      {ducks.length === 0 && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center text-white bg-black/70 p-6 rounded-lg border border-primary">
-                            <div className="text-primary font-bold text-sm mb-2">
-                              🎰 COINKRIZY.COM EXCLUSIVE
-                            </div>
-                            <h3 className="text-2xl font-bold mb-2">
-                              🦆 Duck Hunt!
-                            </h3>
-                            <p className="text-lg">
-                              Click on flying ducks to shoot them!
-                            </p>
-                            <p className="text-sm mt-2">
-                              Each duck = 0.01 SC • {bullets} bullets left
-                            </p>
-                            <p className="text-xs text-yellow-300 mt-1">
-                              🏆 Premium CoinKrazy Gaming Experience
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      className="aspect-video bg-gradient-to-br from-casino-blue-900 to-casino-blue-700 rounded-lg relative overflow-hidden cursor-crosshair"
-                      onClick={handleGameAction}
-                    >
-                      {/* Game-specific UI */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <div className="text-6xl mb-4 animate-bounce">
-                            {game.emoji}
-                          </div>
-                          <h3 className="text-2xl font-bold mb-2">
-                            🎮 Click to Play!
-                          </h3>
-                          <p className="text-lg">
-                            Click anywhere in this area to{" "}
-                            {game.id === "colin-shots" && "shoot basketballs"}
-                            {game.id === "flickin-bean" && "throw bean bags"}
-                            {game.id === "haylie-coins" && "drop coins"}
-                            {game.id === "beth-darts" && "throw darts"}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* CoinKrazy Branding */}
-                      <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full">
-                        <span className="text-primary font-bold text-sm">
-                          CoinKrazy.com
-                        </span>
-                      </div>
-
-                      {/* Score Popup Effects */}
-                      {gameScore > 0 && (
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                          <div className="text-gold-400 text-4xl font-bold animate-ping">
-                            +1
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <div className="text-center">
-                <Button variant="outline" onClick={resetGame} className="mr-4">
-                  <Home className="w-4 h-4 mr-2" />
-                  Exit Game
-                </Button>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {activeGame === "quack-attack"
-                    ? "🦆 Click on flying ducks to shoot them! Each duck = 0.01 SC!"
-                    : "🎯 Keep clicking to score points! Each successful action earns SC!"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {gameEnded && (
-            <div className="max-w-2xl mx-auto">
-              <Card className="casino-glow">
-                <CardHeader>
-                  <CardTitle className="text-center text-primary">
-                    🎉 Game Complete!
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <div className="text-6xl mb-4">{game.emoji}</div>
-                  <h2 className="text-2xl font-bold mb-4">
-                    Congratulations on your {totalEarned.toFixed(2)} SC WIN! 🏆
-                  </h2>
-                  <div className="bg-secondary p-6 rounded-lg mb-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          Final Score
-                        </p>
-                        <p className="text-3xl font-bold text-primary">
-                          {gameScore}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          SC Earned
-                        </p>
-                        <p className="text-3xl font-bold text-accent">
-                          {totalEarned.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mb-6">
-                    🎊 You have been credited already, see you again in 24 HOURS
-                    for another chance! ⏰
-                  </p>
-                  <div className="space-y-3">
-                    <Button
-                      size="lg"
-                      className="w-full bg-primary hover:bg-primary/90"
-                      onClick={resetGame}
-                    >
-                      <Home className="w-5 h-5 mr-2" />
-                      🏠 Back to Mini Games
-                    </Button>
-                    <p className="text-sm text-muted-foreground">
-                      🔄 Next play available: Tomorrow at the same time
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -716,104 +116,210 @@ export default function MiniGames() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-4 flex items-center justify-center">
-            <Trophy className="w-10 h-10 mr-3 text-primary" />
-            🎯 Daily Mini Games
-          </h1>
-          <p className="text-xl text-muted-foreground mb-4">
-            Play once every 24 hours to win FREE Sweepstakes Cash! 🆓
-          </p>
-          <Badge className="bg-destructive text-destructive-foreground text-lg px-4 py-2 animate-pulse">
-            🔥 Exclusive to CoinKrazy.com!
-          </Badge>
-        </div>
-
-        {/* Stats Banner */}
-        <div className="bg-card p-6 rounded-lg border border-border mb-8 casino-glow">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-primary">5</div>
-              <div className="text-sm text-muted-foreground">🎮 Mini Games</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-accent">24h</div>
-              <div className="text-sm text-muted-foreground">⏰ Cooldown</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-primary">0.10</div>
-              <div className="text-sm text-muted-foreground">
-                💰 Max SC/Game
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Home
+                </Link>
+              </Button>
+              <div>
+                <h1 className="text-4xl font-bold text-foreground flex items-center">
+                  <Gamepad2 className="w-10 h-10 mr-4 text-primary" />
+                  🎮 CoinKrazy Mini Games
+                </h1>
+                <p className="text-muted-foreground text-lg">
+                  Play daily mini games to earn free Sweep Coins! • Reset every
+                  24 hours
+                </p>
               </div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-accent">FREE</div>
-              <div className="text-sm text-muted-foreground">🎁 To Play</div>
-            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <Card className="casino-glow">
+              <CardContent className="p-4 text-center">
+                <Trophy className="w-8 h-8 mx-auto mb-2 text-primary" />
+                <p className="text-2xl font-bold text-primary">6</p>
+                <p className="text-sm text-muted-foreground">🎮 Total Games</p>
+              </CardContent>
+            </Card>
+            <Card className="casino-glow">
+              <CardContent className="p-4 text-center">
+                <Timer className="w-8 h-8 mx-auto mb-2 text-accent" />
+                <p className="text-2xl font-bold text-accent">3</p>
+                <p className="text-sm text-muted-foreground">⏰ Available</p>
+              </CardContent>
+            </Card>
+            <Card className="casino-glow">
+              <CardContent className="p-4 text-center">
+                <Zap className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                <p className="text-2xl font-bold text-green-500">1.00</p>
+                <p className="text-sm text-muted-foreground">💰 Max SC</p>
+              </CardContent>
+            </Card>
+            <Card className="casino-glow">
+              <CardContent className="p-4 text-center">
+                <Star className="w-8 h-8 mx-auto mb-2 text-primary" />
+                <p className="text-2xl font-bold text-primary">FREE</p>
+                <p className="text-sm text-muted-foreground">🎁 Daily Play</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        {/* Games Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {miniGames.map((game) => (
-            <MiniGameCard
-              key={game.id}
-              id={game.id}
-              title={game.title}
-              description={game.description}
-              maxEarning={game.maxEarning}
-              difficulty={game.difficulty}
-              cooldown={game.cooldown}
-              lastPlayed={game.lastPlayed}
-              onClick={() => startGame(game.id)}
-            />
+        {/* How It Works */}
+        <Card className="casino-glow mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Gift className="w-6 h-6 mr-2 text-primary" />
+              🎯 How Mini Games Work
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Timer className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">Daily Reset</h3>
+                <p className="text-sm text-muted-foreground">
+                  Each mini game can be played once every 24 hours. Timers reset
+                  at midnight UTC.
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Crown className="w-8 h-8 text-accent" />
+                </div>
+                <h3 className="font-semibold mb-2">Earn SC Rewards</h3>
+                <p className="text-sm text-muted-foreground">
+                  Win Sweep Coins based on your performance. Higher scores earn
+                  more SC!
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-8 h-8 text-green-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Completely Free</h3>
+                <p className="text-sm text-muted-foreground">
+                  No Gold Coins required! Play daily for free SC rewards and
+                  have fun.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Mini Games Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {miniGames.map((game, index) => (
+            <Card
+              key={index}
+              className="casino-glow hover:scale-105 transition-transform cursor-pointer"
+              onClick={() => {
+                if (!game.cooldown) {
+                  const slug = game.title
+                    .toLowerCase()
+                    .replace(/[']/g, "")
+                    .replace(/\s+/g, "-");
+                  setSelectedMiniGame(slug);
+                }
+              }}
+            >
+              <div className="relative">
+                <img
+                  src={game.image}
+                  alt={game.title}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <div className="absolute top-3 left-3">
+                  <Badge className={getDifficultyColor(game.difficulty)}>
+                    {game.difficulty}
+                  </Badge>
+                </div>
+                <div className="absolute top-3 right-3">
+                  <Badge className="bg-accent text-accent-foreground">
+                    {game.maxReward}
+                  </Badge>
+                </div>
+                {game.cooldown && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-t-lg">
+                    <div className="text-center text-white">
+                      <Timer className="w-8 h-8 mx-auto mb-2" />
+                      <p className="text-sm">Available in</p>
+                      <p className="font-bold">{game.cooldown}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-bold text-lg">{game.title}</h3>
+                  <span className="text-2xl">{game.emoji}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {game.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <Badge variant="outline">{game.category}</Badge>
+                  <Button
+                    size="sm"
+                    disabled={!!game.cooldown}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!game.cooldown) {
+                        const slug = game.title
+                          .toLowerCase()
+                          .replace(/[']/g, "")
+                          .replace(/\s+/g, "-");
+                        setSelectedMiniGame(slug);
+                      }
+                    }}
+                  >
+                    {game.cooldown ? "On Cooldown" : "Play Now 🎮"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        {/* How It Works */}
-        <div className="mt-12">
-          <Card className="casino-glow">
-            <CardHeader>
-              <CardTitle className="text-center flex items-center justify-center text-primary">
-                <Star className="w-6 h-6 mr-2" />
-                📋 How Mini Games Work
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-6 text-center">
-                <div>
-                  <div className="text-4xl mb-3">🎮</div>
-                  <h3 className="font-semibold mb-2">Choose a Game</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Pick any available mini game and click "Play Now"
-                  </p>
-                </div>
-                <div>
-                  <div className="text-4xl mb-3">⏱️</div>
-                  <h3 className="font-semibold mb-2">60 Seconds</h3>
-                  <p className="text-sm text-muted-foreground">
-                    You have exactly 60 seconds to score as many points as
-                    possible
-                  </p>
-                </div>
-                <div>
-                  <div className="text-4xl mb-3">💰</div>
-                  <h3 className="font-semibold mb-2">Win SC</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Earn Sweepstakes Cash based on your performance!
-                  </p>
-                </div>
-              </div>
-              <div className="mt-6 text-center">
-                <Badge className="bg-accent text-accent-foreground">
-                  💡 Pro Tip: Each game has different strategies to maximize
-                  your SC earnings!
-                </Badge>
+        {/* Footer Info */}
+        <div className="mt-12 text-center">
+          <Card className="casino-glow max-w-2xl mx-auto">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-bold mb-4">
+                🎮 Exclusive CoinKrazy Mini Games
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                These mini games are exclusively developed for CoinKrazy.com
+                players. Play daily to maximize your free SC earnings and have
+                fun with our unique game collection!
+              </p>
+              <div className="flex justify-center space-x-4 text-sm text-muted-foreground">
+                <span>🕒 Resets Daily at Midnight UTC</span>
+                <span>•</span>
+                <span>🎁 100% Free to Play</span>
+                <span>•</span>
+                <span>💰 Real SC Rewards</span>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Mini Game Launcher */}
+      {selectedMiniGame && (
+        <MiniGameLauncher
+          gameSlug={selectedMiniGame}
+          onClose={() => setSelectedMiniGame(null)}
+        />
+      )}
     </div>
   );
 }

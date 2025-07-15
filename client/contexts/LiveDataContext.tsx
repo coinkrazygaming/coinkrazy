@@ -27,7 +27,17 @@ const LiveDataContext = createContext<LiveDataContextType | undefined>(
   undefined,
 );
 
-const API_BASE_URL = window.location.origin + "/api";
+// Construct API base URL with fallback handling
+const getApiBaseUrl = () => {
+  try {
+    return window.location.origin + "/api";
+  } catch (error) {
+    // Fallback for environments where window.location might not be available
+    return "/api";
+  }
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export function LiveDataProvider({ children }: { children: ReactNode }) {
   const [stats, setStats] = useState<LiveStats>({
@@ -41,48 +51,86 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     activeGames: 847,
   });
   const [loading, setLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(true);
 
-  // API call helper
+  // API call helper with timeout and improved error handling
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
+
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController();
+    let isAborted = false;
+
+    const timeoutId = setTimeout(() => {
+      try {
+        isAborted = true;
+        controller.abort();
+      } catch (abortError) {
+        // Silently handle abort errors
+      }
+    }, 5000); // 5 second timeout
+
     const config: RequestInit = {
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
       },
+      signal: controller.signal,
       ...options,
     };
 
     try {
       const response = await fetch(url, config);
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        // Try to get error message from response if possible
-        let errorMessage = "API call failed";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          // If we can't parse the error response, use status text
-          errorMessage = response.statusText || errorMessage;
-        }
-        throw new Error(errorMessage);
+        // Silently return null for failed API calls to avoid console spam
+        // The app will fall back to simulated data
+        return null;
       }
 
       const data = await response.json();
       return data;
-    } catch (error) {
-      console.error("API call error:", error);
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+
+      // Handle AbortError specifically and silently
+      if (
+        isAborted ||
+        error?.name === "AbortError" ||
+        error?.message?.includes("aborted") ||
+        error?.message?.includes("signal is aborted")
+      ) {
+        // Silently handle timeout/abort errors - don't log anything
+        return null;
+      }
+
+      // Only log other errors in development mode to avoid production console spam
+      if (import.meta.env.MODE === "development") {
+        if (error?.message?.includes("fetch")) {
+          console.warn("LiveData API fetch failed, using fallback data");
+        } else {
+          console.warn(
+            "LiveData API error, using fallback data:",
+            error?.message || "Unknown error",
+          );
+        }
+      }
+
       // Return null if API fails - fetchStats will handle this gracefully
       return null;
     }
   };
 
-  // Fetch live stats from API
+  // Fetch live stats from API with graceful fallback
   const fetchStats = async () => {
+    if (!isMounted) return; // Don't fetch if component is unmounted
+
     try {
-      setLoading(true);
+      if (isMounted) setLoading(true);
       const data = await apiCall("/public/stats");
+
+      if (!isMounted) return; // Check again after async operation
 
       if (data && data.stats) {
         setStats({
@@ -96,7 +144,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
           activeGames: data.stats.activeGames,
         });
       } else {
-        // Simulate live data with small random changes if API fails
+        // Silently simulate live data with small random changes if API fails
         setStats((prev) => ({
           ...prev,
           usersOnline: Math.max(
@@ -112,7 +160,12 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
         }));
       }
     } catch (error) {
-      console.error("Failed to fetch live stats:", error);
+      if (!isMounted) return; // Don't log or update state if unmounted
+
+      // Only log in development mode to reduce production console spam
+      if (import.meta.env.MODE === "development") {
+        console.warn("LiveData fallback mode active");
+      }
       // Simulate live data with small random changes
       setStats((prev) => ({
         ...prev,
@@ -128,7 +181,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
         ),
       }));
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
@@ -137,15 +190,22 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     await fetchStats();
   };
 
-  // Auto-refresh stats every 10 seconds
+  // Auto-refresh stats every 30 seconds to reduce load and potential errors
   useEffect(() => {
-    const interval = setInterval(fetchStats, 10000);
+    const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
   }, []);
 
   // Initial load
   useEffect(() => {
     fetchStats();
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setIsMounted(false);
+    };
   }, []);
 
   const value: LiveDataContextType = {

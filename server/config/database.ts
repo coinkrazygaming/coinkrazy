@@ -1,9 +1,19 @@
 import mysql from "mysql2/promise";
+import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
-const dbConfig = {
+// Database type configuration
+const DB_TYPE = process.env.DB_TYPE || "sqlite"; // 'mysql' or 'sqlite'
+
+const mysqlConfig = {
   host: process.env.DB_HOST || "localhost",
   port: parseInt(process.env.DB_PORT || "3306"),
   user: process.env.DB_USER || "coinkriazy_user",
@@ -14,15 +24,44 @@ const dbConfig = {
   queueLimit: 0,
 };
 
-// Create connection pool
-export const pool = mysql.createPool(dbConfig);
+const sqliteConfig = {
+  filename:
+    process.env.SQLITE_DB ||
+    path.join(__dirname, "../../database/coinkriazy.db"),
+  driver: sqlite3.Database,
+};
+
+// Create connection pool for MySQL or SQLite database connection
+let pool: any = null;
+let sqliteDb: Database | null = null;
+
+if (DB_TYPE === "mysql") {
+  pool = mysql.createPool(mysqlConfig);
+} else {
+  // SQLite connection will be opened when needed
+}
+
+// Get SQLite database connection
+async function getSqliteDb(): Promise<Database> {
+  if (!sqliteDb) {
+    sqliteDb = await open(sqliteConfig);
+    await sqliteDb.exec("PRAGMA foreign_keys = ON;");
+  }
+  return sqliteDb;
+}
 
 // Test connection
 export async function testConnection() {
   try {
-    const connection = await pool.getConnection();
-    console.log("✅ Database connected successfully");
-    connection.release();
+    if (DB_TYPE === "mysql") {
+      const connection = await pool.getConnection();
+      console.log("✅ MySQL database connected successfully");
+      connection.release();
+    } else {
+      const db = await getSqliteDb();
+      await db.get("SELECT 1");
+      console.log("✅ SQLite database connected successfully");
+    }
     return true;
   } catch (error) {
     console.error("❌ Database connection failed:", error);
@@ -36,10 +75,55 @@ export async function executeQuery(
   params: any[] = [],
 ): Promise<any> {
   try {
-    const [results] = await pool.execute(query, params);
-    return results;
+    if (DB_TYPE === "mysql") {
+      const [results] = await pool.execute(query, params);
+      return results;
+    } else {
+      const db = await getSqliteDb();
+
+      // Convert MySQL-style queries to SQLite-compatible ones
+      let sqliteQuery = query
+        .replace(/`/g, '"') // Replace backticks with double quotes
+        .replace(/CURDATE\(\)/g, "date('now')")
+        .replace(/NOW\(\)/g, "datetime('now')")
+        // Fix DATE_SUB patterns more comprehensively
+        .replace(
+          /DATE_SUB\(NOW\(\), INTERVAL (\d+) (MINUTE|HOUR|DAY|MONTH|YEAR)\)/gi,
+          "datetime('now', '-$1 $2s')",
+        )
+        .replace(
+          /DATE_SUB\(datetime\('now'\), INTERVAL (\d+) (MINUTE|HOUR|DAY|MONTH|YEAR)\)/gi,
+          "datetime('now', '-$1 $2s')",
+        )
+        // Fix DATE() function
+        .replace(/DATE\(([^)]+)\)/g, "date($1)")
+        .replace(/AUTO_INCREMENT/gi, "AUTOINCREMENT")
+        .replace(/BOOLEAN/gi, "INTEGER")
+        .replace(/TEXT COLLATE utf8mb4_unicode_ci/gi, "TEXT")
+        .replace(/TIMESTAMP/gi, "DATETIME")
+        .replace(/DECIMAL\(\d+,\d+\)/gi, "REAL")
+        .replace(/INT\(\d+\)/gi, "INTEGER")
+        .replace(/VARCHAR\(\d+\)/gi, "TEXT")
+        .replace(/ENUM\([^)]+\)/gi, "TEXT")
+        .replace(/JSON/gi, "TEXT");
+
+      if (sqliteQuery.toUpperCase().includes("SELECT")) {
+        return await db.all(sqliteQuery, params);
+      } else if (
+        sqliteQuery.toUpperCase().includes("INSERT") ||
+        sqliteQuery.toUpperCase().includes("UPDATE") ||
+        sqliteQuery.toUpperCase().includes("DELETE")
+      ) {
+        const result = await db.run(sqliteQuery, params);
+        return { insertId: result.lastID, affectedRows: result.changes };
+      } else {
+        return await db.exec(sqliteQuery);
+      }
+    }
   } catch (error) {
     console.error("Database query error:", error);
+    console.error("Query:", query);
+    console.error("Params:", params);
     throw error;
   }
 }
@@ -47,15 +131,22 @@ export async function executeQuery(
 // Initialize database
 export async function initializeDatabase() {
   try {
-    // Create database if it doesn't exist
-    const createDbQuery = `CREATE DATABASE IF NOT EXISTS ${dbConfig.database} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`;
-    const tempPool = mysql.createPool({
-      ...dbConfig,
-      database: undefined,
-    });
+    if (DB_TYPE === "mysql") {
+      // Create database if it doesn't exist
+      const createDbQuery = `CREATE DATABASE IF NOT EXISTS ${mysqlConfig.database} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`;
+      const tempPool = mysql.createPool({
+        ...mysqlConfig,
+        database: undefined,
+      });
 
-    await tempPool.execute(createDbQuery);
-    console.log(`✅ Database ${dbConfig.database} created/verified`);
+      await tempPool.execute(createDbQuery);
+      console.log(`✅ MySQL database ${mysqlConfig.database} created/verified`);
+      await tempPool.end();
+    } else {
+      // For SQLite, just ensure the database file exists
+      const db = await getSqliteDb();
+      console.log(`✅ SQLite database ${sqliteConfig.filename} opened/created`);
+    }
 
     // Test connection with the actual database
     await testConnection();
@@ -64,5 +155,23 @@ export async function initializeDatabase() {
   } catch (error) {
     console.error("Database initialization failed:", error);
     throw error;
+  }
+}
+
+// Export database type for external use
+export const getDatabaseType = () => DB_TYPE;
+
+// Close database connection
+export async function closeDatabase() {
+  try {
+    if (DB_TYPE === "mysql" && pool) {
+      await pool.end();
+    } else if (sqliteDb) {
+      await sqliteDb.close();
+      sqliteDb = null;
+    }
+    console.log("✅ Database connection closed");
+  } catch (error) {
+    console.error("❌ Error closing database:", error);
   }
 }

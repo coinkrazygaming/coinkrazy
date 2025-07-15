@@ -17,6 +17,7 @@ import storeRoutes from "./routes/store.js";
 import publicRoutes from "./routes/public.js";
 import chatRoutes from "./routes/chat.js";
 import notificationRoutes from "./routes/notifications.js";
+import sportsRoutes from "./routes/sports.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +26,9 @@ dotenv.config();
 
 export function createServer() {
   const app = express();
+
+  // Trust proxy for rate limiting in cloud environments
+  app.set("trust proxy", 1);
 
   // Security middleware
   app.use(
@@ -39,6 +43,7 @@ export function createServer() {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 1000 requests per windowMs
     message: "Too many requests from this IP, please try again later.",
+    trustProxy: true,
   });
   app.use("/api", limiter);
 
@@ -68,6 +73,7 @@ export function createServer() {
   app.use("/api/store", storeRoutes);
   app.use("/api/chat", chatRoutes);
   app.use("/api/notifications", notificationRoutes);
+  app.use("/api/sports", sportsRoutes);
 
   // Health check
   app.get("/api/health", (req, res) => {

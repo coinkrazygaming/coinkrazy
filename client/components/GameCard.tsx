@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Star, Coins, Clock } from "lucide-react";
+import { Play, Star, Coins, Clock, Crown } from "lucide-react";
 
 interface GameCardProps {
   title: string;
@@ -14,6 +14,8 @@ interface GameCardProps {
   emoji: string;
   cooldown?: string;
   onClick?: () => void;
+  onPlayGold?: () => void;
+  onPlaySweeps?: () => void;
 }
 
 export default function GameCard({
@@ -27,6 +29,8 @@ export default function GameCard({
   emoji,
   cooldown,
   onClick,
+  onPlayGold,
+  onPlaySweeps,
 }: GameCardProps) {
   const isOnCooldown = !!cooldown;
 
@@ -103,8 +107,8 @@ export default function GameCard({
 
         {/* Game Info */}
         <CardContent className="p-3">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
+          <div className="space-y-3">
+            <div>
               <h3 className="font-semibold text-sm truncate text-foreground group-hover:text-primary transition-colors">
                 {title}
               </h3>
@@ -119,6 +123,37 @@ export default function GameCard({
                 </Badge>
               </div>
             </div>
+
+            {/* Dual Play Buttons for Slots */}
+            {category === "Slots" &&
+              onPlayGold &&
+              onPlaySweeps &&
+              !isOnCooldown && (
+                <div className="space-y-2">
+                  <Button
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onPlayGold();
+                    }}
+                  >
+                    <Coins className="w-3 h-3 mr-1" />
+                    Play for FUN with Gold Coins!
+                  </Button>
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onPlaySweeps();
+                    }}
+                  >
+                    <Crown className="w-3 h-3 mr-1" />
+                    Play for REAL with Sweeps Coins!
+                  </Button>
+                </div>
+              )}
           </div>
         </CardContent>
       </div>

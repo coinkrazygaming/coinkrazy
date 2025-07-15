@@ -1,12 +1,29 @@
 import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
+import jwt from "jsonwebtoken";
 import { executeQuery } from "../config/database.js";
 import { z } from "zod";
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || "coinkriazy_jwt_secret_2024";
+
+// Middleware to verify JWT token
+function verifyToken(req: any, res: any, next: any) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+}
 
 // Get user's notifications
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     // Mock notifications for demo
     const notifications = [
@@ -54,7 +71,7 @@ router.get("/", authenticateToken, async (req, res) => {
 });
 
 // Get recent notifications since a timestamp
-router.get("/recent", authenticateToken, async (req, res) => {
+router.get("/recent", verifyToken, async (req, res) => {
   try {
     res.json([]);
   } catch (error) {
@@ -64,7 +81,7 @@ router.get("/recent", authenticateToken, async (req, res) => {
 });
 
 // Create a new notification
-router.post("/", authenticateToken, async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
   try {
     const notification = {
       id: Date.now().toString(),
@@ -81,7 +98,7 @@ router.post("/", authenticateToken, async (req, res) => {
 });
 
 // Mark notification as read
-router.put("/:id/read", authenticateToken, async (req, res) => {
+router.put("/:id/read", verifyToken, async (req, res) => {
   try {
     res.json({ message: "Notification marked as read" });
   } catch (error) {
@@ -91,7 +108,7 @@ router.put("/:id/read", authenticateToken, async (req, res) => {
 });
 
 // Mark all notifications as read
-router.put("/mark-all-read", authenticateToken, async (req, res) => {
+router.put("/mark-all-read", verifyToken, async (req, res) => {
   try {
     res.json({ message: "All notifications marked as read" });
   } catch (error) {
@@ -101,7 +118,7 @@ router.put("/mark-all-read", authenticateToken, async (req, res) => {
 });
 
 // Delete a notification
-router.delete("/:id", authenticateToken, async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
   try {
     res.json({ message: "Notification deleted" });
   } catch (error) {
@@ -111,7 +128,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 });
 
 // Clear all notifications
-router.delete("/clear", authenticateToken, async (req, res) => {
+router.delete("/clear", verifyToken, async (req, res) => {
   try {
     res.json({ message: "All notifications cleared" });
   } catch (error) {
@@ -121,7 +138,7 @@ router.delete("/clear", authenticateToken, async (req, res) => {
 });
 
 // Get notification stats
-router.get("/stats", authenticateToken, async (req, res) => {
+router.get("/stats", verifyToken, async (req, res) => {
   try {
     res.json({
       total: 3,

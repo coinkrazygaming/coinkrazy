@@ -159,6 +159,43 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get user game history for dashboard
+router.get("/history", verifyToken, async (req: any, res) => {
+  try {
+    const gameHistory = await executeQuery(
+      `SELECT
+        gs.id, gs.coin_type, gs.bet_amount, gs.total_wagered, gs.total_won,
+        gs.spins_played, gs.session_start, gs.session_end, gs.status,
+        g.name as game_name, g.game_type,
+        ROUND((julianday(COALESCE(gs.session_end, datetime('now'))) - julianday(gs.session_start)) * 24 * 60) as duration_minutes
+      FROM game_sessions gs
+      JOIN games g ON gs.game_id = g.id
+      WHERE gs.user_id = ?
+      ORDER BY gs.session_start DESC
+      LIMIT 10`,
+      [req.user.id],
+    );
+
+    // Format for dashboard display
+    const formattedHistory = gameHistory.map((session: any) => ({
+      id: session.id,
+      game_name: session.game_name,
+      game_type: session.game_type,
+      amount_wagered: session.total_wagered || session.bet_amount,
+      amount_won: session.total_won || 0,
+      created_at: session.session_start,
+      duration_minutes: session.duration_minutes || 0,
+      currency_type: session.coin_type.toUpperCase(),
+    }));
+
+    res.json(formattedHistory);
+  } catch (error) {
+    console.error("Game history error:", error);
+    // Return empty array on error to prevent dashboard crashes
+    res.json([]);
+  }
+});
+
 // Get game categories
 router.get("/categories", async (req, res) => {
   try {
