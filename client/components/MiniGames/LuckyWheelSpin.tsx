@@ -560,24 +560,41 @@ export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
                   onClick={spinWheel}
                   disabled={gameState.isSpinning || gameState.hasSpunToday}
                   size="lg"
-                  className="bg-primary hover:bg-primary/90 text-white px-8 py-3 casino-pulse"
+                  className={`
+                    px-12 py-4 text-xl font-bold text-white transition-all duration-300
+                    ${
+                      gameState.hasSpunToday
+                        ? "bg-gray-500 cursor-not-allowed"
+                        : gameState.isSpinning
+                          ? "bg-primary/70 cursor-wait"
+                          : "bg-gradient-to-r from-primary via-accent to-primary hover:from-accent hover:via-primary hover:to-accent casino-pulse shadow-lg hover:shadow-2xl transform hover:scale-105"
+                    }
+                  `}
                 >
                   {gameState.isSpinning ? (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                      Spinning...
+                      <Sparkles className="w-6 h-6 mr-3 animate-spin" />
+                      🎰 SPINNING... 🎰
                     </>
                   ) : gameState.hasSpunToday ? (
-                    "Daily Spin Used ✓"
+                    <>
+                      <Gift className="w-6 h-6 mr-3" />
+                      Daily Spin Used ✓
+                    </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      🎡 SPIN THE WHEEL!
+                      <Sparkles className="w-6 h-6 mr-3 animate-pulse" />
+                      🎡 SPIN THE WHEEL! 🎡
                     </>
                   )}
                 </Button>
 
-                <Button onClick={resetGame} variant="outline" size="lg">
+                <Button
+                  onClick={resetGame}
+                  variant="outline"
+                  size="lg"
+                  className="px-6 py-4 border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                >
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Reset Demo
                 </Button>
