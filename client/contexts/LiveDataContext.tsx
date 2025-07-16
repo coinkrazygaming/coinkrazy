@@ -59,22 +59,35 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
       // Silently handle any uncaught errors related to LiveData
-      if (
-        event.error?.message?.includes("AbortError") ||
-        event.error?.message?.includes("signal is aborted")
-      ) {
-        event.preventDefault();
-        event.stopPropagation();
+      try {
+        if (
+          event.error?.message?.includes("AbortError") ||
+          event.error?.message?.includes("signal is aborted") ||
+          event.error?.name === "AbortError"
+        ) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      } catch (e) {
+        // Ignore any errors in error handling
       }
     };
 
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       // Silently handle any unhandled promise rejections related to abort
-      if (
-        event.reason?.message?.includes("AbortError") ||
-        event.reason?.message?.includes("signal is aborted")
-      ) {
-        event.preventDefault();
+      try {
+        const reason = event.reason;
+        if (
+          reason?.message?.includes("AbortError") ||
+          reason?.message?.includes("signal is aborted") ||
+          reason?.name === "AbortError" ||
+          (typeof reason === "string" && reason.includes("AbortError"))
+        ) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      } catch (e) {
+        // Ignore any errors in error handling
       }
     };
 
@@ -82,11 +95,15 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
     return () => {
-      window.removeEventListener("error", handleError);
-      window.removeEventListener(
-        "unhandledrejection",
-        handleUnhandledRejection,
-      );
+      try {
+        window.removeEventListener("error", handleError);
+        window.removeEventListener(
+          "unhandledrejection",
+          handleUnhandledRejection,
+        );
+      } catch (e) {
+        // Ignore cleanup errors
+      }
     };
   }, []);
 
