@@ -55,7 +55,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   const [isMounted, setIsMounted] = useState(true);
   const currentRequestRef = useRef<number>(0);
 
-  // API call helper with timeout and improved error handling
+  // API call helper with robust error handling - no AbortErrors will propagate
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     // Skip API calls if component is unmounted
     if (!isMounted) {
@@ -64,68 +64,63 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
     const url = `${API_BASE_URL}${endpoint}`;
 
-    // Add timeout to prevent hanging requests
+    // Create controller but handle it more carefully
     const controller = new AbortController();
-    let isAborted = false;
+    let timeoutId: NodeJS.Timeout | null = null;
+    let requestAborted = false;
 
-    const timeoutId = setTimeout(() => {
-      isAborted = true;
-      controller.abort();
-    }, 5000); // 5 second timeout
+    // Wrap the entire logic in a promise to catch all possible errors
+    return new Promise<any>((resolve) => {
+      // Set up timeout
+      timeoutId = setTimeout(() => {
+        requestAborted = true;
+        try {
+          controller.abort();
+        } catch (abortError) {
+          // Ignore any errors from aborting
+        }
+        resolve(null);
+      }, 5000);
 
-    const config: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-      signal: controller.signal,
-      ...options,
-    };
+      const config: RequestInit = {
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+        signal: controller.signal,
+        ...options,
+      };
 
-    try {
-      const response = await fetch(url, config);
-      clearTimeout(timeoutId);
+      // Perform fetch with comprehensive error handling
+      fetch(url, config)
+        .then(async (response) => {
+          if (timeoutId) clearTimeout(timeoutId);
 
-      // Check if component is still mounted before processing response
-      if (!isMounted) {
-        return null;
-      }
+          // Check if component is still mounted and request wasn't aborted
+          if (!isMounted || requestAborted) {
+            resolve(null);
+            return;
+          }
 
-      if (!response.ok) {
-        // Silently return null for failed API calls to avoid console spam
-        // The app will fall back to simulated data
-        return null;
-      }
+          if (!response.ok) {
+            resolve(null);
+            return;
+          }
 
-      const data = await response.json();
-      return data;
-    } catch (error: any) {
-      clearTimeout(timeoutId);
+          try {
+            const data = await response.json();
+            resolve(data);
+          } catch (jsonError) {
+            resolve(null);
+          }
+        })
+        .catch((error) => {
+          if (timeoutId) clearTimeout(timeoutId);
 
-      // Always handle abort errors silently, regardless of the reason
-      if (
-        isAborted ||
-        error?.name === "AbortError" ||
-        error?.code === "ABORT_ERR" ||
-        error?.message?.toLowerCase().includes("abort") ||
-        error?.message?.toLowerCase().includes("signal") ||
-        controller.signal.aborted
-      ) {
-        // Silently handle all abort-related errors
-        return null;
-      }
-
-      // Only log non-abort errors in development mode
-      if (import.meta.env.MODE === "development" && isMounted) {
-        console.warn(
-          "LiveData API error (non-abort):",
-          error?.message || "Unknown error",
-        );
-      }
-
-      // Return null if API fails - fetchStats will handle this gracefully
-      return null;
-    }
+          // Always resolve to null for any error - never throw
+          resolve(null);
+        });
+    });
   };
 
   // Fetch live stats from API with graceful fallback
