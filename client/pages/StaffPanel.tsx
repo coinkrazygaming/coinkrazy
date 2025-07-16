@@ -40,7 +40,7 @@ import {
   Award,
   Target,
   Settings,
-  PriorityHigh,
+  AlertTriangle,
   Clock3,
   UserPlus,
   Ticket,
@@ -50,6 +50,7 @@ import {
   RotateCcw,
   Paperclip,
   Play,
+  BarChart,
 } from "lucide-react";
 
 export default function StaffPanel() {
@@ -544,7 +545,7 @@ export default function StaffPanel() {
               <p className="text-2xl font-bold text-primary">
                 {staffStats.hoursWorked}h
               </p>
-              <p className="text-sm text-muted-foreground">⏰ Hours Worked</p>
+              <p className="text-sm text-muted-foreground">��� Hours Worked</p>
             </CardContent>
           </Card>
           <Card className="casino-glow">
