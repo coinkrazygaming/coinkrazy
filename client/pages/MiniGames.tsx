@@ -66,10 +66,10 @@ export default function MiniGames() {
       cooldown: null,
       provider: "CoinKrazy",
       description: "Spin the wheel for your chance at SC prizes!",
-      maxReward: "0.30 SC",
+      maxReward: "0.50 SC",
       difficulty: "Easy",
       image:
-        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F72c742a5911d473691d607381841c43f?format=webp&width=800",
+        "https://cdn.builder.io/api/v1/image/assets%2F7c34c31495aa42ffab5801e2d12a9790%2F94851f32130e47a4b85ad96fa19ed4ec?format=webp&width=800",
     },
     {
       title: "Number Guess Master",
