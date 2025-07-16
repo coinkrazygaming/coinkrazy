@@ -24,6 +24,7 @@ import Slots from "./pages/Slots";
 import TableGames from "./pages/TableGames";
 import Sports from "./pages/Sports";
 import Bingo from "./pages/Bingo";
+import WeeklyLeaderboard from "./pages/WeeklyLeaderboard";
 
 const queryClient = new QueryClient();
 
