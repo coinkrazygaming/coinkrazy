@@ -125,7 +125,10 @@ router.get("/stats", async (req, res) => {
         totalWageredToday: totalBetsToday * 45, // Estimate average bet amount
         activeBets: activeBets,
         settledBets: settledBets,
-        payoutRate: Math.min(98.5, Math.max(92.0, payoutRate.toFixed(1))), // Keep between 92-98.5%
+        payoutRate: Math.min(
+          98.5,
+          Math.max(92.0, parseFloat(payoutRate.toFixed(1))),
+        ), // Keep between 92-98.5%
       },
       liveStats: {
         activeEvents: Math.max(35, Math.floor(47 + Math.random() * 20 - 10)), // 35-67 events
