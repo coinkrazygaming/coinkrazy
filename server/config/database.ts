@@ -107,6 +107,61 @@ export async function executeQuery(
     if (DB_TYPE === "mysql") {
       const [results] = await pool.execute(query, params);
       return results;
+    } else if (DB_TYPE === "neon") {
+      if (!neonPool) {
+        throw new Error("Neon pool not initialized");
+      }
+
+      // Convert MySQL-style queries to PostgreSQL-compatible ones
+      let postgresQuery = query
+        .replace(/`/g, '"') // Replace backticks with double quotes
+        .replace(/CURDATE\(\)/g, "CURRENT_DATE")
+        .replace(/NOW\(\)/g, "NOW()")
+        // Fix DATE_SUB patterns for PostgreSQL
+        .replace(
+          /DATE_SUB\(NOW\(\), INTERVAL (\d+) (MINUTE|HOUR|DAY|MONTH|YEAR)\)/gi,
+          "NOW() - INTERVAL '$1 $2'",
+        )
+        .replace(
+          /DATE_SUB\(CURRENT_TIMESTAMP, INTERVAL (\d+) (MINUTE|HOUR|DAY|MONTH|YEAR)\)/gi,
+          "NOW() - INTERVAL '$1 $2'",
+        )
+        // Fix DATE() function
+        .replace(/DATE\(([^)]+)\)/g, "$1::date")
+        .replace(/AUTO_INCREMENT/gi, "SERIAL")
+        .replace(/BOOLEAN/gi, "BOOLEAN")
+        .replace(/TEXT COLLATE utf8mb4_unicode_ci/gi, "TEXT")
+        .replace(/TIMESTAMP/gi, "TIMESTAMP")
+        .replace(/DECIMAL\((\d+),(\d+)\)/gi, "DECIMAL($1,$2)")
+        .replace(/INT\(\d+\)/gi, "INTEGER")
+        .replace(/VARCHAR\((\d+)\)/gi, "VARCHAR($1)")
+        .replace(/ENUM\(([^)]+)\)/gi, "TEXT CHECK (value IN ($1))")
+        .replace(/JSON/gi, "JSONB");
+
+      // Convert positional parameters from ? to $1, $2, etc.
+      let paramIndex = 1;
+      const convertedQuery = postgresQuery.replace(
+        /\?/g,
+        () => `$${paramIndex++}`,
+      );
+
+      const result = await neonPool.query(convertedQuery, params);
+
+      if (convertedQuery.toUpperCase().includes("SELECT")) {
+        return result.rows;
+      } else if (
+        convertedQuery.toUpperCase().includes("INSERT") ||
+        convertedQuery.toUpperCase().includes("UPDATE") ||
+        convertedQuery.toUpperCase().includes("DELETE")
+      ) {
+        return {
+          insertId: result.rows[0]?.id || null,
+          affectedRows: result.rowCount || 0,
+          rows: result.rows,
+        };
+      } else {
+        return result;
+      }
     } else {
       const db = await getSqliteDb();
 
