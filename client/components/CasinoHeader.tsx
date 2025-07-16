@@ -360,7 +360,7 @@ export default function CasinoHeader() {
                   asChild
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Link to="/dashboard">���� Game History</Link>
+                  <Link to="/dashboard">🎮 Game History</Link>
                 </Button>
                 <Button
                   variant="ghost"
