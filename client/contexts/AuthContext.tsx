@@ -187,15 +187,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check token on mount
   useEffect(() => {
-    verifyToken();
+    let isMounted = true;
+
+    const checkToken = async () => {
+      if (isMounted) {
+        await verifyToken();
+      }
+    };
+
+    checkToken();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Refresh user data periodically
   useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+
     if (user && token) {
-      const interval = setInterval(refreshUser, 30000); // Refresh every 30 seconds
-      return () => clearInterval(interval);
+      interval = setInterval(() => {
+        refreshUser();
+      }, 30000); // Refresh every 30 seconds
     }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [user, token]);
 
   const value: AuthContextType = {
