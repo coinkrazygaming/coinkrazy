@@ -191,7 +191,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
         },
       });
 
-      await paypalButtons.render(paypalButtonRef.current);
+      await paypalButtons.render(paypalButtonRef.current!);
     } catch (error) {
       console.error("Failed to create PayPal button:", error);
       setError("Failed to create payment button");
