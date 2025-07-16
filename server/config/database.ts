@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 // Database type configuration
-const DB_TYPE = process.env.DB_TYPE || "sqlite"; // 'mysql' or 'sqlite'
+const DB_TYPE = process.env.DB_TYPE || "sqlite"; // 'mysql', 'sqlite', or 'neon'
 
 const mysqlConfig = {
   host: process.env.DB_HOST || "localhost",
