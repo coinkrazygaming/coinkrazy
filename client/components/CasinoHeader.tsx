@@ -336,6 +336,14 @@ export default function CasinoHeader() {
                 >
                   <Link to="/bingo">🏆 Bingo</Link>
                 </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-foreground hover:text-primary"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/leaderboard">🏅 Leaderboard</Link>
+                </Button>
               </div>
             </div>
 
