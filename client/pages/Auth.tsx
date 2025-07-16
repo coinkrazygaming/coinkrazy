@@ -571,6 +571,33 @@ export default function Auth() {
                       {isLoading ? "Logging in..." : "🎰 Login & Play Now!"}
                     </Button>
 
+                    {/* Admin/Staff Testing Credentials */}
+                    <div className="border-t border-border pt-4 mt-4">
+                      <p className="text-xs text-muted-foreground text-center mb-3">
+                        Quick Login (For Testing)
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => loadDemoCredentials("admin")}
+                          className="text-xs"
+                        >
+                          🔑 Admin Panel
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => loadDemoCredentials("staff")}
+                          className="text-xs"
+                        >
+                          👨‍💼 Staff Panel
+                        </Button>
+                      </div>
+                    </div>
+
                     <div className="text-center">
                       <p className="text-sm text-muted-foreground mb-4">
                         Or login with social media
