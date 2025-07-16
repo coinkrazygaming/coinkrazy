@@ -23,7 +23,7 @@ function verifyToken(req: any, res: any, next: any) {
 }
 
 // Get chat messages for a room
-router.get("/messages/:room", verifyToken, async (req, res) => {
+router.get("/messages/:room", verifyToken, async (req: any, res: any) => {
   try {
     const { room } = req.params;
     const limit = parseInt(req.query.limit as string) || 50;
@@ -53,7 +53,7 @@ router.get("/messages/:room", verifyToken, async (req, res) => {
 });
 
 // Send a chat message
-router.post("/messages", verifyToken, async (req, res) => {
+router.post("/messages", verifyToken, async (req: any, res: any) => {
   try {
     const { message, room } = req.body;
     const userId = req.user!.id;
@@ -128,7 +128,7 @@ router.post("/messages", verifyToken, async (req, res) => {
 });
 
 // Get chat rooms
-router.get("/rooms", verifyToken, async (req, res) => {
+router.get("/rooms", verifyToken, async (req: any, res: any) => {
   try {
     const rooms = [
       {
@@ -216,7 +216,7 @@ router.get("/mute-status", verifyToken, async (req, res) => {
 });
 
 // Delete a message (admin/staff only)
-router.delete("/messages/:id", verifyToken, async (req, res) => {
+router.delete("/messages/:id", verifyToken, async (req: any, res: any) => {
   try {
     if (!req.user.is_admin && !req.user.is_staff) {
       return res.status(403).json({ error: "Insufficient permissions" });
