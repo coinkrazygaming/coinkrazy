@@ -197,10 +197,16 @@ router.post("/login", async (req, res) => {
     }
 
     if (users.length === 0) {
+      console.log("No user found for email:", email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const user = users[0];
+    console.log("User found:", {
+      id: user.id,
+      email: user.email,
+      is_admin: user.is_admin,
+    });
 
     // Verify password
     let isValidPassword = false;
