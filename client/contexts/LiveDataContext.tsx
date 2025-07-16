@@ -55,6 +55,41 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   const [isMounted, setIsMounted] = useState(true);
   const currentRequestRef = useRef<number>(0);
 
+  // Global error handler to catch any uncaught errors
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      // Silently handle any uncaught errors related to LiveData
+      if (
+        event.error?.message?.includes("AbortError") ||
+        event.error?.message?.includes("signal is aborted")
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      // Silently handle any unhandled promise rejections related to abort
+      if (
+        event.reason?.message?.includes("AbortError") ||
+        event.reason?.message?.includes("signal is aborted")
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection,
+      );
+    };
+  }, []);
+
   // API call helper with robust error handling - no AbortErrors will propagate
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     // Skip API calls if component is unmounted
