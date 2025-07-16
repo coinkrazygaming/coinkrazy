@@ -60,13 +60,13 @@ export default function ChatRoom({ room, isActive, isMuted }: ChatRoomProps) {
 
   const getUserBadge = (message: any) => {
     if (message.is_admin) {
-      return <Shield className="w-3 h-3 text-red-500" title="Admin" />;
+      return <Shield className="w-3 h-3 text-red-500" />;
     }
     if (message.is_staff) {
-      return <Star className="w-3 h-3 text-blue-500" title="Staff" />;
+      return <Star className="w-3 h-3 text-blue-500" />;
     }
     if (message.is_vip || message.user_level >= 15) {
-      return <Crown className="w-3 h-3 text-accent" title="VIP" />;
+      return <Crown className="w-3 h-3 text-accent" />;
     }
     return null;
   };

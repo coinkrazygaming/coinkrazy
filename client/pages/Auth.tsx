@@ -27,7 +27,7 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("login");
+  const [activeTab, setActiveTab] = useState("register");
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [loginData, setLoginData] = useState({
@@ -123,9 +123,12 @@ export default function Auth() {
       });
 
       if (success) {
-        toast.success("Registration successful! Welcome to CoinKrazy! 🎉");
-        toast.success("You've received 10,000 Gold Coins + 10 Sweeps Coins!");
-        navigate("/dashboard");
+        toast.success("Registration successful! 🎉");
+        toast.info(
+          "📧 Please check your email to verify your account and claim your 10,000 GC + 10 SC welcome bonus!",
+        );
+        // Don't navigate immediately - user needs to verify email first
+        setActiveTab("login"); // Switch to login tab for better UX
       } else {
         toast.error(
           "Registration failed. Email or username may already exist.",
@@ -237,11 +240,15 @@ export default function Auth() {
               Join CoinKrazy! 🎰
             </h1>
             <p className="text-muted-foreground">
-              Get 10,000 GC + 10 SC FREE when you register! 🎊
+              Get 10,000 GC + 10 SC FREE when you verify your email! 🎊
             </p>
           </div>
 
-          <Tabs defaultValue="register" className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="register">Register 🆕</TabsTrigger>
               <TabsTrigger value="login">Login 🔐</TabsTrigger>

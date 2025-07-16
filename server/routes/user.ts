@@ -238,19 +238,18 @@ router.get("/stats", verifyToken, async (req: any, res) => {
     );
 
     const totalWagered = await executeQuery(
-      "SELECT SUM(total_wagered) as total FROM game_sessions WHERE user_id = ?",
+      "SELECT COALESCE(SUM(total_wagered), 0) as total FROM game_sessions WHERE user_id = ?",
       [req.user.id],
     );
 
     const totalWon = await executeQuery(
-      "SELECT SUM(total_won) as total FROM game_sessions WHERE user_id = ?",
+      "SELECT COALESCE(SUM(total_won), 0) as total FROM game_sessions WHERE user_id = ?",
       [req.user.id],
     );
 
     const biggestWin = await executeQuery(
-      `SELECT MAX(win_amount) as biggest_win, g.name as game_name
+      `SELECT COALESCE(MAX(win_amount), 0) as biggest_win
       FROM game_results gr
-      JOIN games g ON gr.game_id = g.id
       WHERE gr.user_id = ?`,
       [req.user.id],
     );
@@ -266,16 +265,95 @@ router.get("/stats", verifyToken, async (req: any, res) => {
       [req.user.id],
     );
 
+    // Calculate win rate
+    const winResults = await executeQuery(
+      `SELECT
+        COUNT(*) as total_games,
+        COUNT(CASE WHEN win_amount > 0 THEN 1 END) as winning_games
+      FROM game_results
+      WHERE user_id = ?`,
+      [req.user.id],
+    );
+
+    const totalGames = winResults[0]?.total_games || 0;
+    const winningGames = winResults[0]?.winning_games || 0;
+    const winRate = totalGames > 0 ? winningGames / totalGames : 0;
+
     res.json({
-      totalSessions: totalSessions[0].count,
-      totalWagered: totalWagered[0].total || 0,
-      totalWon: totalWon[0].total || 0,
-      biggestWin: biggestWin[0].biggest_win || 0,
-      biggestWinGame: biggestWin[0].game_name || null,
-      favoriteGame: favoriteGame[0] || null,
+      total_wagered: totalWagered[0].total,
+      total_won: totalWon[0].total,
+      games_played: totalSessions[0].count,
+      favorite_game: favoriteGame[0]?.name || "None yet",
+      win_rate: winRate,
+      biggest_win: biggestWin[0].biggest_win,
+      current_streak: 0, // TODO: Calculate actual streak
     });
   } catch (error) {
     console.error("Stats fetch error:", error);
+    // Return default stats on error to prevent dashboard crashes
+    res.json({
+      total_wagered: 0,
+      total_won: 0,
+      games_played: 0,
+      favorite_game: "None yet",
+      win_rate: 0,
+      biggest_win: 0,
+      current_streak: 0,
+    });
+  }
+});
+
+// Claim daily bonus
+router.post("/claim-daily-bonus", verifyToken, async (req: any, res) => {
+  try {
+    // Check if already claimed today
+    const todayClaim = await executeQuery(
+      `SELECT id FROM transactions
+      WHERE user_id = ?
+      AND transaction_type = 'bonus'
+      AND description LIKE '%Daily Login%'
+      AND date(created_at) = date('now')`,
+      [req.user.id],
+    );
+
+    if (todayClaim.length > 0) {
+      return res.status(400).json({
+        message: "Daily bonus already claimed today",
+      });
+    }
+
+    // Get user balance
+    const user = await executeQuery(
+      "SELECT gold_coins FROM users WHERE id = ?",
+      [req.user.id],
+    );
+
+    const bonusAmount = 1000; // Daily bonus amount
+    const newBalance = user[0].gold_coins + bonusAmount;
+
+    // Update user balance
+    await executeQuery(
+      "UPDATE users SET gold_coins = ?, experience_points = experience_points + 25 WHERE id = ?",
+      [newBalance, req.user.id],
+    );
+
+    // Create bonus transaction
+    await executeQuery(
+      `INSERT INTO transactions (
+        user_id, transaction_type, coin_type, amount,
+        previous_balance, new_balance, description, status
+      ) VALUES (?, 'bonus', 'gold', ?, ?, ?, 'Daily Login Bonus', 'completed')`,
+      [req.user.id, bonusAmount, user[0].gold_coins, newBalance],
+    );
+
+    res.json({
+      message: "Daily bonus claimed successfully",
+      amount: bonusAmount,
+      currency: "GC",
+      newBalance,
+    });
+  } catch (error) {
+    console.error("Daily bonus claim error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

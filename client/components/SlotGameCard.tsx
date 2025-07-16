@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Coins, Crown } from "lucide-react";
 import GameLauncher from "./GameLauncher";
+import SweepstakesTermsModal from "./SweepstakesTermsModal";
 
 interface SlotGameCardProps {
   title: string;
@@ -36,6 +37,7 @@ export default function SlotGameCard({
 }: SlotGameCardProps) {
   const [showLauncher, setShowLauncher] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<"GC" | "SC">("GC");
+  const [showSweepstakesModal, setShowSweepstakesModal] = useState(false);
 
   const handlePlayGold = () => {
     if (gameSymbol) {
@@ -47,6 +49,11 @@ export default function SlotGameCard({
   };
 
   const handlePlaySweeps = () => {
+    // Always show terms modal first for SweepsCoins
+    setShowSweepstakesModal(true);
+  };
+
+  const handleAcceptTermsAndPlay = () => {
     if (gameSymbol) {
       setSelectedCurrency("SC");
       setShowLauncher(true);
@@ -124,20 +131,20 @@ export default function SlotGameCard({
             {/* Dual Play Buttons */}
             <div className="space-y-2">
               <Button
-                className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold"
                 size="sm"
                 onClick={handlePlayGold}
               >
                 <Coins className="w-3 h-3 mr-1" />
-                Play with Gold Coins
+                Play for FUN with GoldCoins!
               </Button>
               <Button
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold"
                 size="sm"
                 onClick={handlePlaySweeps}
               >
                 <Crown className="w-3 h-3 mr-1" />
-                Play with Sweeps Coins
+                Play For Real with SweepsCoins!
               </Button>
             </div>
           </div>
@@ -153,6 +160,14 @@ export default function SlotGameCard({
           onClose={() => setShowLauncher(false)}
         />
       )}
+
+      {/* Sweepstakes Terms Modal */}
+      <SweepstakesTermsModal
+        isOpen={showSweepstakesModal}
+        onClose={() => setShowSweepstakesModal(false)}
+        onAccept={handleAcceptTermsAndPlay}
+        gameName={title}
+      />
     </Card>
   );
 }

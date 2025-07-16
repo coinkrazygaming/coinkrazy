@@ -65,7 +65,12 @@ router.post("/purchase", verifyToken, async (req: any, res) => {
   try {
     const purchaseSchema = z.object({
       packageId: z.number(),
-      paymentMethod: z.enum(["google_pay", "apple_pay", "credit_card"]),
+      paymentMethod: z.enum([
+        "google_pay",
+        "apple_pay",
+        "credit_card",
+        "paypal",
+      ]),
       paymentData: z.object({
         paymentMethodId: z.string().optional(),
         billingDetails: z.object({
@@ -332,25 +337,100 @@ router.get("/stats", verifyToken, async (req: any, res) => {
   }
 });
 
-// Simulated payment processing function
+// Payment processing function
 async function processPayment(
   amount: number,
   method: string,
   paymentData: any,
 ): Promise<{ success: boolean; transactionId?: string; error?: string }> {
-  // Simulate payment processing delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    console.log(`Processing ${method} payment for $${amount}:`, {
+      paymentMethodId: paymentData?.paymentMethodId?.substring(0, 20) + "...",
+      email: paymentData?.email,
+      billingDetails: paymentData?.billingDetails ? "provided" : "not provided",
+    });
 
-  // Simulate 95% success rate
-  if (Math.random() < 0.95) {
-    return {
-      success: true,
-      transactionId: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    };
-  } else {
+    // Simulate payment processing delay
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    if (method === "google_pay") {
+      // Validate Google Pay payment data
+      if (!paymentData?.paymentMethodId) {
+        return {
+          success: false,
+          error: "Invalid Google Pay payment data",
+        };
+      }
+
+      // In a real implementation, you would:
+      // 1. Validate the payment token with Google Pay
+      // 2. Process the payment with your payment processor (Stripe, etc.)
+      // 3. Handle the response and update your records
+
+      // For now, simulate a successful payment with 98% success rate
+      if (Math.random() < 0.98) {
+        return {
+          success: true,
+          transactionId: `gpy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        };
+      } else {
+        return {
+          success: false,
+          error:
+            "Payment declined by your bank. Please try another payment method.",
+        };
+      }
+    } else if (method === "credit_card") {
+      // Handle credit card payments
+      if (Math.random() < 0.95) {
+        return {
+          success: true,
+          transactionId: `cc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        };
+      } else {
+        return {
+          success: false,
+          error: "Credit card declined. Please check your card details.",
+        };
+      }
+    } else if (method === "paypal") {
+      // Handle PayPal payments
+      if (!paymentData?.paymentMethodId) {
+        return {
+          success: false,
+          error: "Invalid PayPal payment data",
+        };
+      }
+
+      // In a real implementation, you would:
+      // 1. Validate the PayPal order ID
+      // 2. Capture the payment through PayPal API
+      // 3. Verify the payment status
+
+      // For now, simulate a successful payment with 97% success rate
+      if (Math.random() < 0.97) {
+        return {
+          success: true,
+          transactionId: `pp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        };
+      } else {
+        return {
+          success: false,
+          error:
+            "PayPal payment was declined. Please try again or use another payment method.",
+        };
+      }
+    } else {
+      return {
+        success: false,
+        error: "Unsupported payment method",
+      };
+    }
+  } catch (error) {
+    console.error("Payment processing error:", error);
     return {
       success: false,
-      error: "Payment declined - insufficient funds",
+      error: "Payment processing failed. Please try again.",
     };
   }
 }

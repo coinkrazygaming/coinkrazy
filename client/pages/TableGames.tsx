@@ -117,8 +117,8 @@ export default function TableGames() {
       description: "High-limit baccarat with premium service",
     },
     {
-      id: "texas-holdem",
-      title: "Texas Hold'em",
+      id: "texas-holdem-gc",
+      title: "Texas Hold'em (Gold Coins)",
       provider: "PokerStars",
       category: "poker",
       emoji: "♠️",
@@ -129,11 +129,30 @@ export default function TableGames() {
       maxPlayers: 9,
       rtp: "98.2%",
       isLive: true,
-      description: "Tournament-style Texas Hold'em poker",
+      currencyType: "GC",
+      description:
+        "Tournament-style Texas Hold'em poker - Gold Coins only • CoinKrazy.com branded chips & cards",
     },
     {
-      id: "three-card-poker",
-      title: "Three Card Poker",
+      id: "texas-holdem-sc",
+      title: "Texas Hold'em (Sweeps Coins)",
+      provider: "PokerStars",
+      category: "poker",
+      emoji: "♠️",
+      dealerName: "Morgan",
+      minBet: 1,
+      maxBet: 50,
+      players: 3,
+      maxPlayers: 9,
+      rtp: "98.2%",
+      isLive: true,
+      currencyType: "SC",
+      description:
+        "Tournament-style Texas Hold'em poker - Sweeps Coins only • CoinKrazy.com branded chips & cards",
+    },
+    {
+      id: "three-card-poker-gc",
+      title: "Three Card Poker (Gold Coins)",
       provider: "Evolution Gaming",
       category: "poker",
       emoji: "🎲",
@@ -144,11 +163,30 @@ export default function TableGames() {
       maxPlayers: 7,
       rtp: "97.8%",
       isLive: true,
-      description: "Fast-paced poker variant",
+      currencyType: "GC",
+      description:
+        "Fast-paced poker variant - Gold Coins only • CoinKrazy.com branded table & chips",
     },
     {
-      id: "casino-holdem",
-      title: "Casino Hold'em",
+      id: "three-card-poker-sc",
+      title: "Three Card Poker (Sweeps Coins)",
+      provider: "Evolution Gaming",
+      category: "poker",
+      emoji: "🎲",
+      dealerName: "Rachel",
+      minBet: 0.5,
+      maxBet: 75,
+      players: 2,
+      maxPlayers: 7,
+      rtp: "97.8%",
+      isLive: true,
+      currencyType: "SC",
+      description:
+        "Fast-paced poker variant - Sweeps Coins only • CoinKrazy.com branded table & chips",
+    },
+    {
+      id: "casino-holdem-gc",
+      title: "Casino Hold'em (Gold Coins)",
       provider: "Evolution Gaming",
       category: "poker",
       emoji: "🃟",
@@ -159,7 +197,26 @@ export default function TableGames() {
       maxPlayers: 999,
       rtp: "97.8%",
       isLive: true,
-      description: "Play Texas Hold'em against the house",
+      currencyType: "GC",
+      description:
+        "Play Texas Hold'em against the house - Gold Coins only • CoinKrazy.com branded experience",
+    },
+    {
+      id: "casino-holdem-sc",
+      title: "Casino Hold'em (Sweeps Coins)",
+      provider: "Evolution Gaming",
+      category: "poker",
+      emoji: "🃟",
+      dealerName: "Sophie",
+      minBet: 0.5,
+      maxBet: 100,
+      players: 4,
+      maxPlayers: 999,
+      rtp: "97.8%",
+      isLive: true,
+      currencyType: "SC",
+      description:
+        "Play Texas Hold'em against the house - Sweeps Coins only • CoinKrazy.com branded experience",
     },
     {
       id: "dragon-tiger",
@@ -247,10 +304,11 @@ export default function TableGames() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4 flex items-center justify-center">
             <Crown className="w-10 h-10 mr-3 text-primary" />
-            🎲 Live Table Games
+            🎲 CoinKrazy Live Table Games
           </h1>
           <p className="text-xl text-muted-foreground mb-4">
-            Professional dealers • Real-time action • Premium tables 🎯
+            Professional CoinKrazy.com dealers • Real-time action • Premium
+            branded tables 🎯
           </p>
           <div className="flex items-center justify-center space-x-4">
             <Badge className="bg-destructive text-white px-4 py-2 animate-pulse">
@@ -345,7 +403,7 @@ export default function TableGames() {
                             🔴 LIVE
                           </Badge>
                           <Badge className="bg-accent text-accent-foreground">
-                            👩‍💼 {game.dealerName}
+                            👩‍💼 {game.dealerName} @ CoinKrazy.com
                           </Badge>
                         </div>
                       </CardHeader>
@@ -366,13 +424,17 @@ export default function TableGames() {
                               <span className="text-muted-foreground">
                                 Min Bet:
                               </span>
-                              <div className="font-bold">{game.minBet} GC</div>
+                              <div className="font-bold">
+                                {game.minBet} {game.currencyType || "GC"}
+                              </div>
                             </div>
                             <div>
                               <span className="text-muted-foreground">
                                 Max Bet:
                               </span>
-                              <div className="font-bold">{game.maxBet} GC</div>
+                              <div className="font-bold">
+                                {game.maxBet} {game.currencyType || "GC"}
+                              </div>
                             </div>
                           </div>
                           <div className="text-center">
@@ -440,9 +502,24 @@ export default function TableGames() {
                         {game.title}
                       </CardTitle>
                       <div className="flex items-center justify-between">
-                        <Badge className="bg-accent text-accent-foreground text-xs">
-                          👩‍💼 {game.dealerName}
-                        </Badge>
+                        <div className="flex items-center space-x-1">
+                          <Badge className="bg-accent text-accent-foreground text-xs">
+                            👩‍💼 {game.dealerName} @ CoinKrazy.com
+                          </Badge>
+                          {game.currencyType && (
+                            <Badge
+                              className={`text-xs ${
+                                game.currencyType === "SC"
+                                  ? "bg-green-500 text-white"
+                                  : "bg-yellow-500 text-black"
+                              }`}
+                            >
+                              {game.currencyType === "SC"
+                                ? "💎 SC Chips"
+                                : "🪙 GC Chips"}
+                            </Badge>
+                          )}
+                        </div>
                         <span className="text-xs text-green-500 font-bold">
                           {game.rtp}
                         </span>
@@ -467,7 +544,8 @@ export default function TableGames() {
                             Bet Range:
                           </span>
                           <span className="font-bold">
-                            {game.minBet}-{game.maxBet} GC
+                            {game.minBet}-{game.maxBet}{" "}
+                            {game.currencyType || "GC"}
                           </span>
                         </div>
                         <Button
@@ -524,10 +602,10 @@ export default function TableGames() {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl mb-3">♠️</div>
-                  <h3 className="font-semibold mb-2">Poker</h3>
+                  <h3 className="font-semibold mb-2">CoinKrazy Poker</h3>
                   <p className="text-sm text-muted-foreground">
-                    Various poker games available. Make the best hand to win
-                    against others!
+                    CoinKrazy.com branded poker tables with custom chips, cards
+                    & chairs! Make the best hand to win!
                   </p>
                 </div>
               </div>

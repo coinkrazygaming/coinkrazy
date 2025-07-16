@@ -1,12 +1,29 @@
 import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
+import jwt from "jsonwebtoken";
 import { executeQuery } from "../config/database.js";
 import { z } from "zod";
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || "coinkriazy_jwt_secret_2024";
+
+// Middleware to verify JWT token
+function verifyToken(req: any, res: any, next: any) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+}
 
 // Get chat messages for a room
-router.get("/messages/:room", authenticateToken, async (req, res) => {
+router.get("/messages/:room", verifyToken, async (req: any, res: any) => {
   try {
     const { room } = req.params;
     const limit = parseInt(req.query.limit as string) || 50;
@@ -36,7 +53,7 @@ router.get("/messages/:room", authenticateToken, async (req, res) => {
 });
 
 // Send a chat message
-router.post("/messages", authenticateToken, async (req, res) => {
+router.post("/messages", verifyToken, async (req: any, res: any) => {
   try {
     const { message, room } = req.body;
     const userId = req.user!.id;
@@ -111,7 +128,7 @@ router.post("/messages", authenticateToken, async (req, res) => {
 });
 
 // Get chat rooms
-router.get("/rooms", authenticateToken, async (req, res) => {
+router.get("/rooms", verifyToken, async (req: any, res: any) => {
   try {
     const rooms = [
       {
@@ -123,7 +140,7 @@ router.get("/rooms", authenticateToken, async (req, res) => {
       },
       {
         id: "vip",
-        name: "👑 VIP Lounge",
+        name: "��� VIP Lounge",
         description: "Exclusive chat for VIP members",
         user_count: Math.floor(Math.random() * 20) + 5, // Mock count
         vip_only: true,
@@ -162,7 +179,7 @@ router.get("/rooms", authenticateToken, async (req, res) => {
 });
 
 // Mute a user (admin/staff only)
-router.post("/mute", authenticateToken, async (req, res) => {
+router.post("/mute", verifyToken, async (req: any, res: any) => {
   try {
     const { user_id } = req.body;
 
@@ -178,7 +195,7 @@ router.post("/mute", authenticateToken, async (req, res) => {
 });
 
 // Report a message
-router.post("/report", authenticateToken, async (req, res) => {
+router.post("/report", verifyToken, async (req, res) => {
   try {
     const { message_id, reason = "inappropriate" } = req.body;
     res.json({ message: "Message reported successfully" });
@@ -189,7 +206,7 @@ router.post("/report", authenticateToken, async (req, res) => {
 });
 
 // Get user's mute status
-router.get("/mute-status", authenticateToken, async (req, res) => {
+router.get("/mute-status", verifyToken, async (req, res) => {
   try {
     res.json({ is_muted: false });
   } catch (error) {
@@ -199,7 +216,7 @@ router.get("/mute-status", authenticateToken, async (req, res) => {
 });
 
 // Delete a message (admin/staff only)
-router.delete("/messages/:id", authenticateToken, async (req, res) => {
+router.delete("/messages/:id", verifyToken, async (req: any, res: any) => {
   try {
     if (!req.user.is_admin && !req.user.is_staff) {
       return res.status(403).json({ error: "Insufficient permissions" });

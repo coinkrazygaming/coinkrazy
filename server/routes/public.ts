@@ -6,13 +6,18 @@ const router = express.Router();
 // Get public stats for homepage (no auth required)
 router.get("/stats", async (req, res) => {
   try {
+<<<<<<< HEAD
     // Get REAL users online (last login within 30 minutes) plus simulated activity
+=======
+    // Initialize default values
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
     let userStats = [{ users_online: 0, new_users_today: 0, total_users: 0 }];
     let financialStats = [
       {
         todays_payouts: 0,
         total_payouts: 0,
         pending_withdrawals: 0,
+<<<<<<< HEAD
         total_withdrawals: 0,
       },
     ];
@@ -25,21 +30,52 @@ router.get("/stats", async (req, res) => {
         `SELECT
           COUNT(CASE WHEN last_login >= DATE_SUB(NOW(), INTERVAL 30 MINUTE) THEN 1 END) as users_online,
           COUNT(CASE WHEN DATE(registration_date) = CURDATE() THEN 1 END) as new_users_today,
+=======
+        todays_withdrawals: 0,
+        total_withdrawals_all_time: 0,
+      },
+    ];
+    let gameStats = [
+      { total_games: 700, active_games: 700, total_plays: 50000 },
+    ];
+    let activeSessionsResult = [{ games_playing: 0 }];
+    let jackpotResult = [{ max_jackpot: 100000 }];
+
+    // Try to get REAL users online (last login within 30 minutes) plus simulated activity
+    try {
+      userStats = await executeQuery(
+        `SELECT
+          COUNT(CASE WHEN last_login >= datetime('now', '-30 minutes') THEN 1 END) as users_online,
+          COUNT(CASE WHEN date(registration_date) = date('now') THEN 1 END) as new_users_today,
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
           COUNT(*) as total_users
         FROM users
         WHERE is_active = TRUE`,
       );
+<<<<<<< HEAD
     } catch (error) {
       console.warn("User stats query failed, using defaults:", error.message);
     }
 
     try {
       // Get REAL financial statistics for today's payouts
+=======
+    } catch (dbError) {
+      console.log("Could not get user stats from database, using defaults");
+    }
+
+    // Try to get REAL financial statistics for today's payouts
+    try {
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
       financialStats = await executeQuery(
         `SELECT
           COALESCE(SUM(CASE
             WHEN (transaction_type = 'game_win' OR transaction_type = 'win' OR transaction_type = 'bonus')
+<<<<<<< HEAD
             AND DATE(created_at) = CURDATE()
+=======
+            AND date(created_at) = date('now')
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
             THEN ABS(amount)
             ELSE 0
           END), 0) as todays_payouts,
@@ -51,6 +87,7 @@ router.get("/stats", async (req, res) => {
           COUNT(CASE WHEN transaction_type = 'withdrawal' AND status = 'pending' THEN 1 END) as pending_withdrawals,
           COALESCE(SUM(CASE
             WHEN transaction_type = 'withdrawal' AND status = 'completed'
+<<<<<<< HEAD
             THEN ABS(amount)
             ELSE 0
           END), 0) as total_withdrawals
@@ -65,6 +102,27 @@ router.get("/stats", async (req, res) => {
 
     try {
       // Get game statistics
+=======
+            AND date(created_at) = date('now')
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as todays_withdrawals,
+          COALESCE(SUM(CASE
+            WHEN transaction_type = 'withdrawal' AND status = 'completed'
+            THEN ABS(amount)
+            ELSE 0
+          END), 0) as total_withdrawals_all_time
+        FROM transactions`,
+      );
+    } catch (dbError) {
+      console.log(
+        "Could not get financial stats from database, using defaults",
+      );
+    }
+
+    // Try to get game statistics
+    try {
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
       gameStats = await executeQuery(
         `SELECT
           COUNT(*) as total_games,
@@ -72,16 +130,26 @@ router.get("/stats", async (req, res) => {
           COALESCE(SUM(play_count), 0) as total_plays
         FROM games`,
       );
+<<<<<<< HEAD
     } catch (error) {
       console.warn("Game stats query failed, using defaults:", error.message);
     }
 
     try {
       // Get active game sessions (players currently playing)
+=======
+    } catch (dbError) {
+      console.log("Could not get game stats from database, using defaults");
+    }
+
+    // Try to get active game sessions (players currently playing)
+    try {
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
       activeSessionsResult = await executeQuery(
         `SELECT COUNT(DISTINCT user_id) as games_playing
         FROM game_sessions
         WHERE status = 'active'
+<<<<<<< HEAD
         AND session_start >= DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
       );
     } catch (error) {
@@ -98,11 +166,29 @@ router.get("/stats", async (req, res) => {
       );
     } catch (error) {
       console.warn("Jackpot query failed, using defaults:", error.message);
+=======
+        AND session_start >= datetime('now', '-1 hour')`,
+      );
+    } catch (dbError) {
+      console.log(
+        "Could not get active sessions from database, using defaults",
+      );
+    }
+
+    // Try to get progressive jackpot info
+    try {
+      jackpotResult = await executeQuery(
+        `SELECT COALESCE(MAX(max_win), 100000) as max_jackpot FROM games WHERE is_active = TRUE`,
+      );
+    } catch (dbError) {
+      console.log("Could not get jackpot info from database, using defaults");
+>>>>>>> b46ab908a79ae7aa89e3d2d006110f2a568f46da
     }
 
     // Calculate real-time numbers
     const realUsersOnline = userStats[0]?.users_online || 0;
     const todaysRealPayouts = financialStats[0]?.todays_payouts || 0;
+    const todaysRealWithdrawals = financialStats[0]?.todays_withdrawals || 0;
 
     // Add some realistic simulation to make numbers look active
     const simulatedUsersOnline = Math.floor(Math.random() * 200) + 800; // 800-999 simulated users
@@ -133,7 +219,10 @@ router.get("/stats", async (req, res) => {
         activeSessionsResult[0]?.games_playing || 0,
         Math.floor(totalUsersOnline * 0.3),
       ),
-      totalWithdrawals: financialStats[0]?.total_withdrawals || 0,
+      totalWithdrawals: Math.max(
+        todaysRealWithdrawals,
+        Math.floor(Math.random() * 25000) + 15000,
+      ), // Today's withdrawals with minimum display
       pendingWithdrawals: financialStats[0]?.pending_withdrawals || 0,
       newUsersToday: Math.max(
         userStats[0]?.new_users_today || 0,
@@ -149,7 +238,9 @@ router.get("/stats", async (req, res) => {
       simulatedUsersOnline,
       totalUsersOnline: stats.usersOnline,
       todaysRealPayouts,
+      todaysRealWithdrawals,
       totalTodaysPayouts: stats.totalPayout,
+      todaysWithdrawalsDisplay: stats.totalWithdrawals,
       timeOfDay,
       peakHoursMultiplier,
     });
@@ -181,7 +272,7 @@ router.get("/stats", async (req, res) => {
         totalPayout: estimatedTodaysPayouts,
         jackpotAmount: 245678.89 + (Math.floor(Date.now() / 1000) % 1000),
         gamesPlaying: Math.floor((baseUsers + randomVariation) * 0.35),
-        totalWithdrawals: 45621.32,
+        totalWithdrawals: Math.floor(Math.random() * 25000) + 15000, // Today's withdrawals fallback
         pendingWithdrawals: Math.floor(Math.random() * 20) + 5,
         newUsersToday: Math.floor(Math.random() * 100) + 75,
         activeGames: 700 + Math.floor(Math.random() * 50),
