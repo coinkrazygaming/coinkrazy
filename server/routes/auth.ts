@@ -228,10 +228,9 @@ router.post("/login", async (req, res) => {
     // Try to update last login (skip if database unavailable)
     if (!usingMockData) {
       try {
-        await executeQuery(
-          "UPDATE users SET last_login = datetime('now') WHERE id = ?",
-          [user.id],
-        );
+        await executeQuery("UPDATE users SET last_login = NOW() WHERE id = ?", [
+          user.id,
+        ]);
       } catch (dbError) {
         console.log("Could not update last login - database unavailable");
       }
