@@ -60,6 +60,7 @@ const App = () => (
                       </ProtectedRoute>
                     }
                   />
+                  <Route path="/leaderboard" element={<WeeklyLeaderboard />} />
                   <Route
                     path="/admin"
                     element={
