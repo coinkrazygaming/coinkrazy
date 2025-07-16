@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ColinShots from "./ColinShots";
+import LuckyWheelSpin from "./LuckyWheelSpin";
 
 interface MiniGameLauncherProps {
   gameSlug: string;
