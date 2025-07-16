@@ -134,8 +134,13 @@ router.post("/register", async (req, res) => {
 
 // Login endpoint
 router.post("/login", async (req, res) => {
+  console.log("Login endpoint hit with body:", {
+    email: req.body.email,
+    password: "***",
+  });
   try {
     const { email, password } = loginSchema.parse(req.body);
+    console.log("Login validation passed for:", email);
 
     // Mock users for when database is not available
     const mockUsers = [
