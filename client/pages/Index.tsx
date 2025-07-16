@@ -449,8 +449,8 @@ export default function Index() {
                 <p className="text-muted-foreground mb-4">
                   Compete for the top prizes! 🥇
                 </p>
-                <Button variant="outline" className="w-full">
-                  View Rankings 📊
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/leaderboard">View Rankings 📊</Link>
                 </Button>
               </CardContent>
             </Card>
