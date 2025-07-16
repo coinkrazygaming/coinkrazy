@@ -136,7 +136,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
       if (!isMounted) return; // Check again after async operation
 
-      if (data && data.stats) {
+      if (data && data.stats && isMounted) {
         setStats({
           usersOnline: data.stats.usersOnline,
           totalPayout: data.stats.totalPayout,
@@ -147,7 +147,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
           newUsersToday: data.stats.newUsersToday,
           activeGames: data.stats.activeGames,
         });
-      } else {
+      } else if (isMounted) {
         // Silently simulate live data with small random changes if API fails
         setStats((prev) => ({
           ...prev,
@@ -166,24 +166,23 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       if (!isMounted) return; // Don't log or update state if unmounted
 
-      // Only log in development mode to reduce production console spam
-      if (import.meta.env.MODE === "development") {
-        console.warn("LiveData fallback mode active");
+      // Only simulate data if component is still mounted
+      if (isMounted) {
+        // Simulate live data with small random changes
+        setStats((prev) => ({
+          ...prev,
+          usersOnline: Math.max(
+            247,
+            prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+          ),
+          totalPayout: prev.totalPayout + Math.random() * 1000,
+          jackpotAmount: prev.jackpotAmount + Math.random() * 100,
+          gamesPlaying: Math.max(
+            0,
+            prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
+          ),
+        }));
       }
-      // Simulate live data with small random changes
-      setStats((prev) => ({
-        ...prev,
-        usersOnline: Math.max(
-          247,
-          prev.usersOnline + Math.floor(Math.random() * 10) - 5,
-        ),
-        totalPayout: prev.totalPayout + Math.random() * 1000,
-        jackpotAmount: prev.jackpotAmount + Math.random() * 100,
-        gamesPlaying: Math.max(
-          0,
-          prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
-        ),
-      }));
     } finally {
       if (isMounted) setLoading(false);
     }
