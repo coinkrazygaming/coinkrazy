@@ -92,7 +92,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     const mockNotifications = [
       {
         id: "1",
-        type: "welcome" as const,
+        type: "system" as const,
         title: "🎉 Welcome to CoinKrazy!",
         message: "Your account is ready. Start playing to earn rewards!",
         priority: "high" as const,
