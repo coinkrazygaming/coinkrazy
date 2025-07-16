@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 
 interface GameState {
-  score: 0;
-  shots: 0;
+  score: number;
+  shots: number;
   timeLeft: number;
   gameActive: boolean;
   gameStarted: boolean;
