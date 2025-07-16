@@ -140,7 +140,7 @@ router.get("/rooms", verifyToken, async (req: any, res: any) => {
       },
       {
         id: "vip",
-        name: "👑 VIP Lounge",
+        name: "��� VIP Lounge",
         description: "Exclusive chat for VIP members",
         user_count: Math.floor(Math.random() * 20) + 5, // Mock count
         vip_only: true,
@@ -179,7 +179,7 @@ router.get("/rooms", verifyToken, async (req: any, res: any) => {
 });
 
 // Mute a user (admin/staff only)
-router.post("/mute", verifyToken, async (req, res) => {
+router.post("/mute", verifyToken, async (req: any, res: any) => {
   try {
     const { user_id } = req.body;
 
