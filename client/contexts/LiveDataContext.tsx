@@ -195,13 +195,22 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
   // Auto-refresh stats every 30 seconds to reduce load and potential errors
   useEffect(() => {
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    const interval = setInterval(() => {
+      if (isMounted) {
+        fetchStats();
+      }
+    }, 30000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isMounted]);
 
   // Initial load
   useEffect(() => {
-    fetchStats();
+    if (isMounted) {
+      fetchStats();
+    }
   }, []);
 
   // Cleanup on unmount
