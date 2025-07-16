@@ -18,6 +18,7 @@ import publicRoutes from "./routes/public.js";
 import chatRoutes from "./routes/chat.js";
 import notificationRoutes from "./routes/notifications.js";
 import sportsRoutes from "./routes/sports.js";
+import leaderboardRoutes from "./routes/leaderboard.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
