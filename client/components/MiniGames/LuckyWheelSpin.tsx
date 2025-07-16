@@ -511,15 +511,46 @@ export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
               {/* Wheel Canvas */}
               <div className="flex justify-center">
                 <div className="relative">
-                  <canvas
-                    ref={canvasRef}
-                    width={400}
-                    height={400}
-                    className="border-4 border-primary rounded-full casino-glow"
-                  />
+                  {/* Outer glow ring */}
+                  <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-primary via-accent to-primary animate-pulse opacity-30 blur-xl" />
 
-                  {/* Wheel glow effect */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 animate-pulse -z-10" />
+                  {/* Casino-style wheel frame */}
+                  <div className="relative p-4 rounded-full bg-gradient-to-br from-gold-300 via-gold-400 to-gold-600 shadow-2xl">
+                    <div className="rounded-full bg-gradient-to-br from-gold-100 to-gold-200 p-2">
+                      <canvas
+                        ref={canvasRef}
+                        width={400}
+                        height={400}
+                        className="rounded-full shadow-inner casino-glow"
+                        style={{
+                          filter: gameState.isSpinning
+                            ? "brightness(1.2) saturate(1.3)"
+                            : "brightness(1) saturate(1)",
+                          transition: "filter 0.3s ease",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Spinning indicator */}
+                  {gameState.isSpinning && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="bg-black/50 text-white px-4 py-2 rounded-full text-sm font-bold animate-bounce">
+                        🎰 SPINNING! 🎰
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Winner celebration overlay */}
+                  {gameState.selectedPrize &&
+                    !gameState.isSpinning &&
+                    gameState.selectedPrize.value > 0 && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="bg-primary/90 text-primary-foreground px-6 py-3 rounded-full text-lg font-bold animate-pulse border-4 border-accent">
+                          🎉 WINNER! 🎉
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
 
