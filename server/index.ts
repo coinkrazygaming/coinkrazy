@@ -75,6 +75,7 @@ export function createServer() {
   app.use("/api/chat", chatRoutes);
   app.use("/api/notifications", notificationRoutes);
   app.use("/api/sports", sportsRoutes);
+  app.use("/api/leaderboard", leaderboardRoutes);
 
   // Health check
   app.get("/api/health", (req, res) => {
