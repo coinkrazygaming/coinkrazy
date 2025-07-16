@@ -299,7 +299,43 @@ export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
     requestAnimationFrame(animate);
   };
 
-  const showPrizeResult = (prize: Prize) => {
+  const awardPrize = async (prize: Prize) => {
+    if (prize.value === 0) return; // No prize to award
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch("/api/transactions/mini-game-reward", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          gameType: "lucky-wheel",
+          prizeType: prize.type,
+          amount: prize.value,
+          description: `Lucky Wheel Win - ${prize.label}`,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update user balance in context
+        if (user && updateBalance) {
+          updateBalance(data.newGoldBalance, data.newSweepsBalance);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to award prize:", error);
+    }
+  };
+
+  const showPrizeResult = async (prize: Prize) => {
+    // Award the prize first
+    await awardPrize(prize);
+
     if (prize.value > 0) {
       if (prize.type === "sc") {
         toast({
@@ -557,8 +593,8 @@ export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
         {/* Footer */}
         <div className="p-6 border-t border-border bg-secondary/30 text-center">
           <p className="text-sm text-muted-foreground">
-            ��� Lucky Wheel Spin - Exclusive CoinKrazy.com Mini Game • Spin
-            daily for free prizes! 🎁
+            🎡 Lucky Wheel Spin - Exclusive CoinKrazy.com Mini Game • Spin daily
+            for free prizes! 🎁
           </p>
           <p className="text-xs text-muted-foreground mt-2">
             Game resets every 24 hours • Responsible gaming • 18+ only
