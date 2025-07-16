@@ -233,8 +233,11 @@ router.post("/login", async (req, res) => {
     }
 
     if (!isValidPassword) {
+      console.log("Password verification failed for:", email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
+    console.log("Password verification successful for:", email);
 
     // Try to update last login (skip if database unavailable)
     if (!usingMockData) {
