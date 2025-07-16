@@ -32,12 +32,32 @@ const sqliteConfig = {
   driver: sqlite3.Database,
 };
 
-// Create connection pool for MySQL or SQLite database connection
+const neonConfig = {
+  connectionString: process.env.NEON_DATABASE_URL,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+};
+
+// Create connection pool for different database types
 let pool: any = null;
 let sqliteDb: Database | null = null;
+let neonPool: pg.Pool | null = null;
 
 if (DB_TYPE === "mysql") {
   pool = mysql.createPool(mysqlConfig);
+} else if (DB_TYPE === "neon") {
+  if (process.env.NEON_DATABASE_URL) {
+    neonPool = new pg.Pool(neonConfig);
+  } else {
+    console.error(
+      "❌ NEON_DATABASE_URL is required for Neon database connection",
+    );
+  }
 } else {
   // SQLite connection will be opened when needed
 }
