@@ -3,6 +3,7 @@ import { executeQuery, initializeDatabase } from "../config/database.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
+import bcrypt from "bcryptjs";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -302,6 +303,126 @@ router.post("/seed-sports", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Sports seeding failed",
+      error: error.message,
+    });
+  }
+});
+
+// Initialize default admin user
+router.post("/init-admin-user", async (req, res) => {
+  try {
+    console.log("🔧 Initializing admin user...");
+
+    // Admin user credentials
+    const adminEmail = "coinkrazy00@gmail.com";
+    const adminPassword = "Woot6969!";
+    const adminUsername = "admin";
+
+    // Hash the password
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+    console.log("✅ Password hashed successfully");
+
+    // Check if admin user already exists
+    const existingUsers = await executeQuery(
+      "SELECT id, username, email, is_admin FROM users WHERE email = ?",
+      [adminEmail],
+    );
+
+    let adminUser;
+
+    if (existingUsers.length > 0) {
+      console.log("👤 Admin user already exists:", existingUsers[0]);
+
+      // Update the existing user to ensure admin privileges and correct password
+      await executeQuery(
+        `UPDATE users
+         SET password_hash = ?,
+             is_admin = 1,
+             is_staff = 1,
+             username = ?,
+             email_verified_at = datetime('now'),
+             kyc_status = 'verified'
+         WHERE email = ?`,
+        [passwordHash, adminUsername, adminEmail],
+      );
+
+      console.log(
+        "✅ Admin user updated with correct credentials and privileges",
+      );
+    } else {
+      // Create new admin user
+      const result = await executeQuery(
+        `INSERT INTO users (
+          username, email, password_hash, first_name, last_name,
+          date_of_birth, country, gold_coins, sweeps_coins,
+          level, experience_points, kyc_status, is_admin, is_staff,
+          is_active, email_verified_at, registration_date
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          adminUsername,
+          adminEmail,
+          passwordHash,
+          "Casino",
+          "Administrator",
+          "1990-01-01",
+          "United States",
+          1000000.0, // 1M gold coins
+          10000.0, // 10K sweeps coins
+          50, // Max level
+          100000, // Max experience
+          "verified", // KYC verified
+          1, // is_admin (SQLite uses integers for booleans)
+          1, // is_staff
+          1, // is_active
+          new Date().toISOString(), // email_verified_at
+          new Date().toISOString(), // registration_date
+        ],
+      );
+
+      console.log(
+        "✅ Admin user created successfully with ID:",
+        result.insertId,
+      );
+    }
+
+    // Verify the admin user
+    const adminUsers = await executeQuery(
+      "SELECT id, username, email, is_admin, is_staff, kyc_status FROM users WHERE email = ?",
+      [adminEmail],
+    );
+    adminUser = adminUsers[0];
+
+    console.log("🎯 Final admin user status:", adminUser);
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(adminPassword, passwordHash);
+    console.log(
+      "🔐 Password verification:",
+      isPasswordValid ? "✅ VALID" : "❌ INVALID",
+    );
+
+    res.json({
+      success: true,
+      message: "Admin user initialized successfully!",
+      admin: {
+        id: adminUser.id,
+        username: adminUser.username,
+        email: adminUser.email,
+        is_admin: Boolean(adminUser.is_admin),
+        is_staff: Boolean(adminUser.is_staff),
+        kyc_status: adminUser.kyc_status,
+      },
+      credentials: {
+        email: adminEmail,
+        password: adminPassword,
+      },
+      passwordValid: isPasswordValid,
+    });
+  } catch (error) {
+    console.error("❌ Error initializing admin user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to initialize admin user",
       error: error.message,
     });
   }

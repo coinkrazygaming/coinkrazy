@@ -62,7 +62,7 @@ const App = () => (
                   <Route
                     path="/admin"
                     element={
-                      <ProtectedRoute>
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
                         <AdminPanel />
                       </ProtectedRoute>
                     }
@@ -70,7 +70,7 @@ const App = () => (
                   <Route
                     path="/staff"
                     element={
-                      <ProtectedRoute>
+                      <ProtectedRoute requireAuth={true} requireStaff={true}>
                         <StaffPanel />
                       </ProtectedRoute>
                     }

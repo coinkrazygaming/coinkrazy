@@ -366,17 +366,7 @@ export default function StaffPanel() {
   const [ticketFilter, setTicketFilter] = useState("all");
   const [newMessage, setNewMessage] = useState("");
 
-  // Redirect if not staff
-  useEffect(() => {
-    if (user && !user.is_staff && !user.is_admin) {
-      toast({
-        title: "Access Denied",
-        description: "You need staff privileges to access this page.",
-        variant: "destructive",
-      });
-      window.location.href = "/dashboard";
-    }
-  }, [user]);
+  // Staff access is now handled by ProtectedRoute
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -487,24 +477,7 @@ export default function StaffPanel() {
     });
   };
 
-  if (!user?.is_staff && !user?.is_admin) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-96 text-center">
-          <CardContent className="p-8">
-            <Headphones className="w-16 h-16 mx-auto mb-4 text-destructive" />
-            <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-            <p className="text-muted-foreground mb-4">
-              You need staff privileges to access this panel.
-            </p>
-            <Button onClick={() => (window.location.href = "/dashboard")}>
-              Return to Dashboard
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Access control is now handled by ProtectedRoute at the routing level
 
   return (
     <div className="min-h-screen bg-background">
