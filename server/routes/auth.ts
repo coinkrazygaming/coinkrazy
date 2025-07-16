@@ -251,11 +251,13 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate token
+    console.log("Generating token for user:", user.id);
     const token = generateToken(user);
 
     // Return user data (excluding password)
     const { password_hash, ...userData } = user;
 
+    console.log("Sending successful login response for:", email);
     res.json({
       message: "Login successful",
       user: userData,
