@@ -484,6 +484,24 @@ export default function Index() {
               Support 💬
             </a>
           </div>
+          <div className="flex justify-center space-x-4 mt-6 mb-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-primary/30 text-primary/70 hover:text-primary hover:border-primary text-xs"
+              asChild
+            >
+              <Link to="/admin">🔧 Admin Login</Link>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-accent/30 text-accent/70 hover:text-accent hover:border-accent text-xs"
+              asChild
+            >
+              <Link to="/staff">👮 Staff Login</Link>
+            </Button>
+          </div>
           <p className="text-xs text-muted-foreground mt-4">
             © 2024 CoinKrazy.com • 18+ Only �� Play Responsibly 🎲
           </p>
