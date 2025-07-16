@@ -2,17 +2,12 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { executeQuery } from "../config/database.js";
 import { z } from "zod";
-import { AuthenticatedRequest } from "../middleware/auth.js";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "coinkriazy_jwt_secret_2024";
 
 // Middleware to verify JWT token
-function verifyToken(
-  req: AuthenticatedRequest,
-  res: express.Response,
-  next: express.NextFunction,
-) {
+function verifyToken(req: any, res: any, next: any) {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (!token) {
     return res.status(401).json({ message: "No token provided" });
