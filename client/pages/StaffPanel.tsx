@@ -40,7 +40,6 @@ import {
   Award,
   Target,
   Settings,
-  AlertTriangle,
   Clock3,
   UserPlus,
   Ticket,
