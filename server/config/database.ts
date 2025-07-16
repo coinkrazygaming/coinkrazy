@@ -226,6 +226,12 @@ export async function initializeDatabase() {
       await tempPool.execute(createDbQuery);
       console.log(`✅ MySQL database ${mysqlConfig.database} created/verified`);
       await tempPool.end();
+    } else if (DB_TYPE === "neon") {
+      // For Neon, just test the connection - database should already exist
+      if (!process.env.NEON_DATABASE_URL) {
+        throw new Error("NEON_DATABASE_URL environment variable is required");
+      }
+      console.log(`✅ Neon PostgreSQL database connection configured`);
     } else {
       // For SQLite, just ensure the database file exists
       const db = await getSqliteDb();
