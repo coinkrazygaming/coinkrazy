@@ -229,6 +229,13 @@ export default function CasinoHeader() {
               >
                 <Link to="/bingo">🏆 Bingo</Link>
               </Button>
+              <Button
+                variant="ghost"
+                className="text-foreground hover:text-primary"
+                asChild
+              >
+                <Link to="/leaderboard">🏅 Leaderboard</Link>
+              </Button>
             </nav>
 
             {/* Gamers Dashboard Navigation */}
