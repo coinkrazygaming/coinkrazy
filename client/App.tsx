@@ -11,6 +11,7 @@ import { LiveDataProvider } from "./contexts/LiveDataContext";
 import { ChatProvider } from "./contexts/ChatContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
