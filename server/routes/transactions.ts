@@ -579,4 +579,100 @@ router.post("/promotions/:id/claim", verifyToken, async (req: any, res) => {
   }
 });
 
+// Award mini-game rewards
+router.post("/mini-game-reward", verifyToken, async (req: any, res) => {
+  try {
+    const rewardSchema = z.object({
+      gameType: z.enum(["lucky-wheel", "colin-shots", "duck-pond", "vault"]),
+      prizeType: z.enum(["sc", "gc", "multiplier", "bonus"]),
+      amount: z.number().min(0),
+      description: z.string(),
+    });
+
+    const validatedData = rewardSchema.parse(req.body);
+
+    // Get user current balance
+    const user = await executeQuery(
+      "SELECT gold_coins, sweeps_coins FROM users WHERE id = ?",
+      [req.user.id],
+    );
+
+    if (user.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const currentUser = user[0];
+    let newGoldBalance = currentUser.gold_coins;
+    let newSweepsBalance = currentUser.sweeps_coins;
+
+    // Award the appropriate currency
+    if (validatedData.prizeType === "gc" && validatedData.amount > 0) {
+      newGoldBalance = currentUser.gold_coins + validatedData.amount;
+
+      // Update user balance
+      await executeQuery("UPDATE users SET gold_coins = ? WHERE id = ?", [
+        newGoldBalance,
+        req.user.id,
+      ]);
+
+      // Create transaction record
+      await executeQuery(
+        `INSERT INTO transactions (
+          user_id, transaction_type, coin_type, amount,
+          previous_balance, new_balance, description, status, reference_id
+        ) VALUES (?, 'game_win', 'gold', ?, ?, ?, ?, 'completed', ?)`,
+        [
+          req.user.id,
+          validatedData.amount,
+          currentUser.gold_coins,
+          newGoldBalance,
+          validatedData.description,
+          validatedData.gameType,
+        ],
+      );
+    } else if (validatedData.prizeType === "sc" && validatedData.amount > 0) {
+      newSweepsBalance = currentUser.sweeps_coins + validatedData.amount;
+
+      // Update user balance
+      await executeQuery("UPDATE users SET sweeps_coins = ? WHERE id = ?", [
+        newSweepsBalance,
+        req.user.id,
+      ]);
+
+      // Create transaction record
+      await executeQuery(
+        `INSERT INTO transactions (
+          user_id, transaction_type, coin_type, amount,
+          previous_balance, new_balance, description, status, reference_id
+        ) VALUES (?, 'game_win', 'sweeps', ?, ?, ?, ?, 'completed', ?)`,
+        [
+          req.user.id,
+          validatedData.amount,
+          currentUser.sweeps_coins,
+          newSweepsBalance,
+          validatedData.description,
+          validatedData.gameType,
+        ],
+      );
+    }
+
+    res.json({
+      message: "Reward awarded successfully",
+      prizeType: validatedData.prizeType,
+      amount: validatedData.amount,
+      newGoldBalance,
+      newSweepsBalance,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: error.errors,
+      });
+    }
+    console.error("Mini-game reward error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
