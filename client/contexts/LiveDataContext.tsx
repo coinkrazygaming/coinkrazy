@@ -153,7 +153,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
           newUsersToday: data.stats.newUsersToday,
           activeGames: data.stats.activeGames,
         });
-      } else if (isMounted) {
+      } else {
         // Silently simulate live data with small random changes if API fails
         setStats((prev) => ({
           ...prev,
@@ -170,27 +170,28 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
         }));
       }
     } catch (error) {
-      if (!isMounted) return; // Don't log or update state if unmounted
+      // Check if this is still the latest request and component is mounted
+      if (!isMounted || currentRequestRef.current !== requestId) return;
 
-      // Only simulate data if component is still mounted
-      if (isMounted) {
-        // Simulate live data with small random changes
-        setStats((prev) => ({
-          ...prev,
-          usersOnline: Math.max(
-            247,
-            prev.usersOnline + Math.floor(Math.random() * 10) - 5,
-          ),
-          totalPayout: prev.totalPayout + Math.random() * 1000,
-          jackpotAmount: prev.jackpotAmount + Math.random() * 100,
-          gamesPlaying: Math.max(
-            0,
-            prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
-          ),
-        }));
-      }
+      // Simulate live data with small random changes
+      setStats((prev) => ({
+        ...prev,
+        usersOnline: Math.max(
+          247,
+          prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+        ),
+        totalPayout: prev.totalPayout + Math.random() * 1000,
+        jackpotAmount: prev.jackpotAmount + Math.random() * 100,
+        gamesPlaying: Math.max(
+          0,
+          prev.gamesPlaying + Math.floor(Math.random() * 6) - 3,
+        ),
+      }));
     } finally {
-      if (isMounted) setLoading(false);
+      // Only update loading state if this is still the latest request
+      if (isMounted && currentRequestRef.current === requestId) {
+        setLoading(false);
+      }
     }
   };
 
