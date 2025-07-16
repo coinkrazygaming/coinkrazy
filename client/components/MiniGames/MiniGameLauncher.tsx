@@ -15,6 +15,8 @@ export default function MiniGameLauncher({
     switch (gameSlug) {
       case "colin-shots":
         return <ColinShots onClose={onClose} />;
+      case "lucky-wheel-spin":
+        return <LuckyWheelSpin onClose={onClose} />;
       case "joseys-duck-pond":
         return (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
