@@ -234,6 +234,7 @@ export default function Sports() {
       homeOdds: 1.9,
       awayOdds: 1.9,
       category: "live",
+      description: "Epic tennis match between legends Djokovic and Nadal",
       totalBets: 7820,
       liveScore: "Djokovic 6-4, 3-2",
       timeRemaining: "Set 2",
