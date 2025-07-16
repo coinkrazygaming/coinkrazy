@@ -71,7 +71,7 @@ import {
   RotateCcw,
   Pause,
   Play,
-  Stop,
+  Square,
 } from "lucide-react";
 
 export default function AdminPanel() {
