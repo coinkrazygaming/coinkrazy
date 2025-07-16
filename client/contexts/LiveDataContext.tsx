@@ -52,6 +52,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   });
   const [loading, setLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(true);
+  const currentRequestRef = useRef<number>(0);
 
   // API call helper with timeout and improved error handling
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
