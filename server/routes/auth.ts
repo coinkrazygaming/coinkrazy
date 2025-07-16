@@ -256,7 +256,12 @@ router.post("/login", async (req, res) => {
       });
     }
     console.error("Login error:", error);
-    res.status(500).json({ message: "Internal server error" });
+
+    // Return a more specific error response
+    res.status(500).json({
+      message: "Login failed due to server error. Please try again.",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 });
 
