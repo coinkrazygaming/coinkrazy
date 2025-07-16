@@ -500,17 +500,7 @@ export default function AdminPanel() {
     },
   ]);
 
-  // Redirect if not admin
-  useEffect(() => {
-    if (user && !user.is_admin) {
-      toast({
-        title: "Access Denied",
-        description: "You need admin privileges to access this page.",
-        variant: "destructive",
-      });
-      window.location.href = "/dashboard";
-    }
-  }, [user]);
+  // Admin access is now handled by ProtectedRoute
 
   // Real-time stats updates
   useEffect(() => {
@@ -646,24 +636,7 @@ export default function AdminPanel() {
     }
   };
 
-  if (!user?.is_admin) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-96 text-center">
-          <CardContent className="p-8">
-            <Shield className="w-16 h-16 mx-auto mb-4 text-destructive" />
-            <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-            <p className="text-muted-foreground mb-4">
-              You need administrator privileges to access this panel.
-            </p>
-            <Button onClick={() => (window.location.href = "/dashboard")}>
-              Return to Dashboard
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Access control is now handled by ProtectedRoute at the routing level
 
   return (
     <div className="min-h-screen bg-background">
