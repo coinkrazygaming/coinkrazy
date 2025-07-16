@@ -101,9 +101,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const data = await apiCall("/auth/verify");
+      // Only update state if component is still mounted
       setUser(data.user);
     } catch (error) {
       console.error("Token verification failed:", error);
+      // Only call logout if component is still mounted
       logout();
     } finally {
       setLoading(false);
