@@ -122,7 +122,7 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     let requestAborted = false;
 
     // Wrap the entire logic in a promise to catch all possible errors
-    return new Promise<any>((resolve) => {
+    return new Promise<any>((resolve, reject) => {
       // Set up timeout
       timeoutId = setTimeout(() => {
         requestAborted = true;
@@ -146,32 +146,39 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       // Perform fetch with comprehensive error handling
       fetch(url, config)
         .then(async (response) => {
-          if (timeoutId) clearTimeout(timeoutId);
-
-          // Check if component is still mounted and request wasn't aborted
-          if (!isMounted || requestAborted) {
-            resolve(null);
-            return;
-          }
-
-          if (!response.ok) {
-            resolve(null);
-            return;
-          }
-
           try {
+            if (timeoutId) clearTimeout(timeoutId);
+
+            // Check if component is still mounted and request wasn't aborted
+            if (!isMounted || requestAborted) {
+              resolve(null);
+              return;
+            }
+
+            if (!response.ok) {
+              resolve(null);
+              return;
+            }
+
             const data = await response.json();
             resolve(data);
-          } catch (jsonError) {
+          } catch (responseError) {
             resolve(null);
           }
         })
         .catch((error) => {
-          if (timeoutId) clearTimeout(timeoutId);
+          try {
+            if (timeoutId) clearTimeout(timeoutId);
+          } catch (e) {
+            // Ignore cleanup errors
+          }
 
-          // Always resolve to null for any error - never throw
+          // Always resolve to null for any error - never reject
           resolve(null);
         });
+    }).catch(() => {
+      // Additional safety net - if anything throws, return null
+      return null;
     });
   };
 
