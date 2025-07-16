@@ -55,6 +55,11 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
 
   // API call helper with timeout and improved error handling
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
+    // Skip API calls if component is unmounted
+    if (!isMounted) {
+      return null;
+    }
+
     const url = `${API_BASE_URL}${endpoint}`;
 
     // Add timeout to prevent hanging requests
@@ -62,12 +67,8 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     let isAborted = false;
 
     const timeoutId = setTimeout(() => {
-      try {
-        isAborted = true;
-        controller.abort();
-      } catch (abortError) {
-        // Silently handle abort errors
-      }
+      isAborted = true;
+      controller.abort();
     }, 5000); // 5 second timeout
 
     const config: RequestInit = {
@@ -83,6 +84,11 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       const response = await fetch(url, config);
       clearTimeout(timeoutId);
 
+      // Check if component is still mounted before processing response
+      if (!isMounted) {
+        return null;
+      }
+
       if (!response.ok) {
         // Silently return null for failed API calls to avoid console spam
         // The app will fall back to simulated data
@@ -94,27 +100,25 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       clearTimeout(timeoutId);
 
-      // Handle AbortError specifically and silently
+      // Always handle abort errors silently, regardless of the reason
       if (
         isAborted ||
         error?.name === "AbortError" ||
-        error?.message?.includes("aborted") ||
-        error?.message?.includes("signal is aborted")
+        error?.code === "ABORT_ERR" ||
+        error?.message?.toLowerCase().includes("abort") ||
+        error?.message?.toLowerCase().includes("signal") ||
+        controller.signal.aborted
       ) {
-        // Silently handle timeout/abort errors - don't log anything
+        // Silently handle all abort-related errors
         return null;
       }
 
-      // Only log other errors in development mode to avoid production console spam
-      if (import.meta.env.MODE === "development") {
-        if (error?.message?.includes("fetch")) {
-          console.warn("LiveData API fetch failed, using fallback data");
-        } else {
-          console.warn(
-            "LiveData API error, using fallback data:",
-            error?.message || "Unknown error",
-          );
-        }
+      // Only log non-abort errors in development mode
+      if (import.meta.env.MODE === "development" && isMounted) {
+        console.warn(
+          "LiveData API error (non-abort):",
+          error?.message || "Unknown error",
+        );
       }
 
       // Return null if API fails - fetchStats will handle this gracefully
