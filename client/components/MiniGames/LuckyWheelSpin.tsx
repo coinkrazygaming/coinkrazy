@@ -105,7 +105,7 @@ const PRIZES: Prize[] = [
 ];
 
 export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
-  const { user } = useAuth();
+  const { user, updateBalance } = useAuth();
   const { toast } = useToast();
   const wheelRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
