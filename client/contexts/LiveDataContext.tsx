@@ -132,13 +132,17 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
   const fetchStats = async () => {
     if (!isMounted) return; // Don't fetch if component is unmounted
 
+    // Create a unique request ID to handle race conditions
+    const requestId = ++currentRequestRef.current;
+
     try {
       if (isMounted) setLoading(true);
       const data = await apiCall("/public/stats");
 
-      if (!isMounted) return; // Check again after async operation
+      // Check if this is still the latest request and component is mounted
+      if (!isMounted || currentRequestRef.current !== requestId) return;
 
-      if (data && data.stats && isMounted) {
+      if (data && data.stats) {
         setStats({
           usersOnline: data.stats.usersOnline,
           totalPayout: data.stats.totalPayout,
