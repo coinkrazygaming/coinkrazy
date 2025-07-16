@@ -603,9 +603,18 @@ export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
               {/* Prize Result */}
               {gameState.selectedPrize && !gameState.isSpinning && (
                 <div className="text-center">
-                  <Card className="casino-glow max-w-md mx-auto">
-                    <CardContent className="p-6">
-                      <div className="text-6xl mb-4">
+                  <Card
+                    className={`
+                    casino-glow max-w-md mx-auto transform transition-all duration-500
+                    ${
+                      gameState.selectedPrize.value > 0
+                        ? "bg-gradient-to-br from-primary/10 to-accent/10 border-primary animate-pulse-gold scale-105"
+                        : "bg-gradient-to-br from-gray-100 to-gray-200 border-gray-300"
+                    }
+                  `}
+                  >
+                    <CardContent className="p-8">
+                      <div className="text-8xl mb-6 animate-bounce">
                         {gameState.selectedPrize.type === "sc"
                           ? "💎"
                           : gameState.selectedPrize.type === "gc"
@@ -614,21 +623,51 @@ export default function LuckyWheelSpin({ onClose }: { onClose: () => void }) {
                               ? "🎊"
                               : "🍀"}
                       </div>
-                      <h3 className="text-2xl font-bold mb-2">
+                      <h3
+                        className={`
+                        text-3xl font-bold mb-4
+                        ${
+                          gameState.selectedPrize.value > 0
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                        }
+                      `}
+                      >
                         {gameState.selectedPrize.value > 0
-                          ? "🎉 Congratulations!"
+                          ? "🎉 CONGRATULATIONS! 🎉"
                           : "🍀 Better Luck Next Time!"}
                       </h3>
-                      <p className="text-lg text-muted-foreground">
+                      <div
+                        className={`
+                        text-xl p-4 rounded-lg border-2 mb-4
+                        ${
+                          gameState.selectedPrize.value > 0
+                            ? "bg-primary/20 border-primary text-primary"
+                            : "bg-gray-100 border-gray-300 text-muted-foreground"
+                        }
+                      `}
+                      >
                         You won:{" "}
-                        <span className="font-bold text-primary">
+                        <span className="font-bold text-2xl">
                           {gameState.selectedPrize.label}
                         </span>
-                      </p>
+                      </div>
                       {gameState.selectedPrize.value === 0 && (
-                        <p className="text-sm text-muted-foreground mt-2">
+                        <p className="text-sm text-muted-foreground">
                           Come back in 24 hours for another free spin!
                         </p>
+                      )}
+                      {gameState.selectedPrize.value > 0 && (
+                        <div className="flex justify-center space-x-2 text-sm mt-4">
+                          <Badge className="bg-green-500 text-white">
+                            ✓ Prize Added to Balance
+                          </Badge>
+                          {gameState.selectedPrize.type === "sc" && (
+                            <Badge className="bg-accent text-accent-foreground">
+                              💎 Real Cash Value
+                            </Badge>
+                          )}
+                        </div>
                       )}
                     </CardContent>
                   </Card>
