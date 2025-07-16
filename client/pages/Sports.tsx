@@ -153,6 +153,8 @@ export default function Sports() {
       homeOdds: 2.1,
       awayOdds: 1.75,
       category: "live",
+      description:
+        "Western Conference showdown between LA Lakers and Golden State Warriors",
       totalBets: 8930,
       liveScore: "Lakers 89 - Warriors 94",
       timeRemaining: "Q3 8:32",
