@@ -68,16 +68,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ...options,
     };
 
+    console.log("Making API call to:", url, "with config:", config);
+
     try {
       const response = await fetch(url, config);
+      console.log("Response received:", response.status, response.statusText);
 
       if (!response.ok) {
         // Try to get error message from response if possible
-        let errorMessage = "API call failed";
+        let errorMessage = `API call failed with status ${response.status}`;
         try {
           const errorData = await response.json();
+          console.log("Error response data:", errorData);
           errorMessage = errorData.message || errorMessage;
-        } catch {
+        } catch (parseError) {
+          console.log("Could not parse error response:", parseError);
           // If we can't parse the error response, use status text
           errorMessage = response.statusText || errorMessage;
         }
@@ -85,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const data = await response.json();
+      console.log("Success response data:", data);
       return data;
     } catch (error) {
       console.error("API call error:", error);
