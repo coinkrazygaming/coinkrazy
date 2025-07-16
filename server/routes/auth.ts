@@ -200,11 +200,23 @@ router.post("/login", async (req, res) => {
     // Verify password
     let isValidPassword = false;
     if (usingMockData) {
-      // For mock data, also allow plain text password comparison for testing
-      isValidPassword =
-        (await bcrypt.compare(password, user.password_hash)) ||
-        (user.email === "coinkrazy00@gmail.com" && password === "Woot6969!") ||
-        (user.email === "demo1@coinkriazy.com" && password === "demo123");
+      // For mock data, prioritize plain text password comparison for testing
+      if (user.email === "coinkrazy00@gmail.com" && password === "Woot6969!") {
+        isValidPassword = true;
+      } else if (
+        user.email === "demo1@coinkriazy.com" &&
+        password === "demo123"
+      ) {
+        isValidPassword = true;
+      } else {
+        // Fallback to bcrypt comparison
+        try {
+          isValidPassword = await bcrypt.compare(password, user.password_hash);
+        } catch (bcryptError) {
+          console.log("Bcrypt comparison failed for mock data:", bcryptError);
+          isValidPassword = false;
+        }
+      }
     } else {
       isValidPassword = await bcrypt.compare(password, user.password_hash);
     }
