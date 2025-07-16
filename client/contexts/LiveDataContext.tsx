@@ -203,30 +203,52 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     await fetchStats();
   };
 
-  // Auto-refresh stats every 30 seconds to reduce load and potential errors
+  // Auto-refresh stats every 30 seconds with safe cleanup
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (isMounted) {
-        fetchStats();
-      }
-    }, 30000);
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isMounted) {
+      interval = setInterval(() => {
+        try {
+          if (isMounted) {
+            fetchStats().catch(() => {
+              // Silently handle any fetchStats errors
+            });
+          }
+        } catch (intervalError) {
+          // Prevent interval errors from propagating
+        }
+      }, 30000);
+    }
 
     return () => {
-      clearInterval(interval);
+      if (interval) {
+        clearInterval(interval);
+      }
     };
   }, [isMounted]);
 
-  // Initial load
+  // Initial load with error safety
   useEffect(() => {
     if (isMounted) {
-      fetchStats();
+      try {
+        fetchStats().catch(() => {
+          // Silently handle initial load errors
+        });
+      } catch (initialError) {
+        // Prevent initial load errors from propagating
+      }
     }
   }, []);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      setIsMounted(false);
+      try {
+        setIsMounted(false);
+      } catch (unmountError) {
+        // Even unmount cleanup should be safe
+      }
     };
   }, []);
 
