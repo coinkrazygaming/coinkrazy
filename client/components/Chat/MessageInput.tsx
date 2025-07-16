@@ -18,7 +18,7 @@ import {
   ThumbsUp,
   Laugh,
   Angry,
-  Sad,
+  Frown,
 } from "lucide-react";
 
 const emojis = [
