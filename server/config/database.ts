@@ -256,6 +256,9 @@ export async function closeDatabase() {
   try {
     if (DB_TYPE === "mysql" && pool) {
       await pool.end();
+    } else if (DB_TYPE === "neon" && neonPool) {
+      await neonPool.end();
+      neonPool = null;
     } else if (sqliteDb) {
       await sqliteDb.close();
       sqliteDb = null;
