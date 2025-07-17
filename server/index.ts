@@ -53,7 +53,7 @@ export function createServer() {
       origin:
         process.env.NODE_ENV === "production"
           ? ["https://coinkriazy.com", "https://www.coinkriazy.com"]
-          : ["http://localhost:3000", "http://localhost:5173"],
+          : ["http://localhost:8080", "http://localhost:5173"],
       credentials: true,
     }),
   );
