@@ -192,6 +192,9 @@ export async function closeDatabase() {
   try {
     if (DB_TYPE === "mysql" && pool) {
       await pool.end();
+    } else if (DB_TYPE === "neon") {
+      // Neon connections are automatically managed, no explicit close needed
+      console.log("✅ Neon database connection will be automatically managed");
     } else if (sqliteDb) {
       await sqliteDb.close();
       sqliteDb = null;
