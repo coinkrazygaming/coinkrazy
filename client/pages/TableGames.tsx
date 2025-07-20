@@ -172,8 +172,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "GC",
-      description:
+            description:
         "Fast-paced poker variant - Gold Coins only • CoinKrazy.com branded table & chips",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_three_card_poker.jpg",
     },
     {
       id: "three-card-poker-sc",
@@ -189,8 +190,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "SC",
-      description:
+            description:
         "Fast-paced poker variant - Sweeps Coins only • CoinKrazy.com branded table & chips",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_three_card_poker.jpg",
     },
     {
       id: "casino-holdem-gc",
@@ -206,8 +208,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "GC",
-      description:
+            description:
         "Play Texas Hold'em against the house - Gold Coins only • CoinKrazy.com branded experience",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_casino_holdem.jpg",
     },
     {
       id: "casino-holdem-sc",
@@ -223,8 +226,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "SC",
-      description:
+            description:
         "Play Texas Hold'em against the house - Sweeps Coins only • CoinKrazy.com branded experience",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_casino_holdem.jpg",
     },
     {
       id: "dragon-tiger",
