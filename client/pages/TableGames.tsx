@@ -243,7 +243,8 @@ export default function TableGames() {
       maxPlayers: 999,
       rtp: "96.7%",
       isLive: true,
-      description: "Simple and exciting Asian favorite",
+            description: "Simple and exciting Asian favorite",
+      thumbnail: "https://cdn.evolution.lv/live_casino/specialty/game_thumb_340x240_dragon_tiger.jpg",
     },
     {
       id: "sic-bo",
@@ -258,7 +259,8 @@ export default function TableGames() {
       maxPlayers: 999,
       rtp: "97.2%",
       isLive: true,
-      description: "Ancient Chinese dice game",
+            description: "Ancient Chinese dice game",
+      thumbnail: "https://cdn.evolution.lv/live_casino/specialty/game_thumb_340x240_sic_bo.jpg",
     },
     {
       id: "craps",
@@ -273,7 +275,8 @@ export default function TableGames() {
       maxPlayers: 16,
       rtp: "98.6%",
       isLive: true,
-      description: "Classic American dice game",
+            description: "Classic American dice game",
+      thumbnail: "https://cdn.evolution.lv/live_casino/specialty/game_thumb_340x240_craps.jpg",
     },
   ];
 
@@ -663,7 +666,7 @@ export default function TableGames() {
         <div className="mt-8 text-center">
           <div className="bg-card p-4 rounded-lg border border-border">
             <p className="text-sm text-muted-foreground">
-              🎲 Play responsibly • 🔞 18+ Only • 🏆 Fair play certified • 💰
+              🎲 Play responsibly • �� 18+ Only • 🏆 Fair play certified • 💰
               Set limits and enjoy the game
             </p>
           </div>
