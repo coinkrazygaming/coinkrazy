@@ -399,28 +399,49 @@ export default function TableGames() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredGames.slice(0, 3).map((game) => (
-                    <Card
+                                        <Card
                       key={game.id}
-                      className="casino-glow hover:scale-105 transition-all duration-300"
+                      className="casino-glow hover:scale-105 transition-all duration-300 overflow-hidden"
                     >
-                      <CardHeader className="text-center">
-                        <div className="text-5xl mb-2 animate-float">
-                          {game.emoji}
+                      {/* Featured Game Thumbnail */}
+                      <div className="relative aspect-[16/9] bg-gradient-to-br from-secondary to-muted overflow-hidden">
+                        {game.thumbnail ? (
+                          <>
+                            <img
+                              src={game.thumbnail}
+                              alt={game.title}
+                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-black/20" />
+                          </>
+                        ) : (
+                          <div className="flex items-center justify-center h-full">
+                            <div className="text-6xl animate-float">{game.emoji}</div>
+                          </div>
+                        )}
+
+                        {/* Live Badge Overlay */}
+                        <div className="absolute top-2 left-2">
+                          <Badge className="bg-destructive text-white animate-pulse">
+                            🔴 LIVE
+                          </Badge>
                         </div>
+
+                        {/* Dealer Badge */}
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <Badge className="bg-accent text-accent-foreground w-full justify-center">
+                            👩‍💼 {game.dealerName} @ CoinKrazy.com
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <CardHeader className="text-center pb-3">
                         <CardTitle className="text-xl text-primary">
                           {game.title}
                         </CardTitle>
                         <p className="text-sm text-muted-foreground">
                           {game.provider}
                         </p>
-                        <div className="flex items-center justify-center space-x-2">
-                          <Badge className="bg-destructive text-white animate-pulse">
-                            🔴 LIVE
-                          </Badge>
-                          <Badge className="bg-accent text-accent-foreground">
-                            👩‍💼 {game.dealerName} @ CoinKrazy.com
-                          </Badge>
-                        </div>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
