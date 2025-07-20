@@ -284,7 +284,7 @@ export default function TableGames() {
     { id: "all", name: "All Tables", icon: "🎲" },
     { id: "blackjack", name: "Blackjack", icon: "🃏" },
     { id: "roulette", name: "Roulette", icon: "🎡" },
-    { id: "baccarat", name: "Baccarat", icon: "🎭" },
+    { id: "baccarat", name: "Baccarat", icon: "����" },
     { id: "poker", name: "Poker", icon: "♠️" },
     { id: "specialty", name: "Specialty", icon: "🎯" },
   ];
@@ -497,20 +497,49 @@ export default function TableGames() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredGames.map((game) => (
-                  <Card
+                                    <Card
                     key={game.id}
-                    className="casino-glow hover:scale-105 transition-all duration-300 cursor-pointer"
+                    className="casino-glow hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden"
                   >
+                    {/* Game Thumbnail */}
+                    <div className="relative aspect-[16/9] bg-gradient-to-br from-secondary to-muted overflow-hidden">
+                      {game.thumbnail ? (
+                        <>
+                          <img
+                            src={game.thumbnail}
+                            alt={game.title}
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-black/20" />
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <div className="text-6xl">{game.emoji}</div>
+                        </div>
+                      )}
+
+                      {/* Live Badge Overlay */}
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-destructive text-white animate-pulse text-xs">
+                          🔴 LIVE
+                        </Badge>
+                      </div>
+
+                      {/* Provider Badge */}
+                      <div className="absolute top-2 right-2">
+                        <Badge className="bg-black/50 text-white text-xs">
+                          {game.provider}
+                        </Badge>
+                      </div>
+                    </div>
+
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <div className="text-3xl">{game.emoji}</div>
+                        <div className="text-2xl">{game.emoji}</div>
                         <div className="text-right">
-                          <Badge className="bg-destructive text-white animate-pulse text-xs">
-                            🔴 LIVE
-                          </Badge>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {game.provider}
-                          </p>
+                          <span className="text-xs text-green-500 font-bold">
+                            {game.rtp}
+                          </span>
                         </div>
                       </div>
                       <CardTitle className="text-lg text-primary">
