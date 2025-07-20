@@ -65,6 +65,9 @@ export async function testConnection() {
       const connection = await pool.getConnection();
       console.log("✅ MySQL database connected successfully");
       connection.release();
+    } else if (DB_TYPE === "neon") {
+      await neonSql`SELECT 1`;
+      console.log("✅ Neon database connected successfully");
     } else {
       const db = await getSqliteDb();
       await db.get("SELECT 1");
