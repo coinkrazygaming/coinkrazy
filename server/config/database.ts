@@ -89,6 +89,18 @@ export async function executeQuery(
     if (DB_TYPE === "mysql") {
       const [results] = await pool.execute(query, params);
       return results;
+    } else if (DB_TYPE === "neon") {
+      // For Neon, we need to handle parameterized queries differently
+      if (params.length > 0) {
+        // Convert positional parameters to Neon's template literal format
+        let neonQuery = query;
+        params.forEach((param, index) => {
+          neonQuery = neonQuery.replace('?', `$${index + 1}`);
+        });
+        return await neonSql(neonQuery, ...params);
+      } else {
+        return await neonSql(query);
+      }
     } else {
       const db = await getSqliteDb();
 
