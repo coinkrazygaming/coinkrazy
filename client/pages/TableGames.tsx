@@ -42,7 +42,7 @@ export default function TableGames() {
       description: "Classic blackjack with professional dealers",
       thumbnail: "https://cdn.evolution.lv/live_casino/blackjack/game_thumb_340x240_classic_blackjack.jpg",
     },
-    {
+        {
       id: "blackjack-vip",
       title: "VIP Blackjack",
       provider: "Evolution Gaming",
@@ -56,8 +56,9 @@ export default function TableGames() {
       rtp: "99.5%",
       isLive: true,
       description: "High-stakes blackjack for VIP players",
+      thumbnail: "https://cdn.evolution.lv/live_casino/blackjack/game_thumb_340x240_vip_blackjack.jpg",
     },
-    {
+        {
       id: "european-roulette",
       title: "European Roulette",
       provider: "Evolution Gaming",
@@ -71,8 +72,9 @@ export default function TableGames() {
       rtp: "97.3%",
       isLive: true,
       description: "Single zero roulette with best odds",
+      thumbnail: "https://cdn.evolution.lv/live_casino/roulette/game_thumb_340x240_european_roulette.jpg",
     },
-    {
+        {
       id: "american-roulette",
       title: "American Roulette",
       provider: "Playtech",
@@ -86,8 +88,9 @@ export default function TableGames() {
       rtp: "94.7%",
       isLive: true,
       description: "Double zero roulette with exciting action",
+      thumbnail: "https://cdn.evolution.lv/live_casino/roulette/game_thumb_340x240_american_roulette.jpg",
     },
-    {
+        {
       id: "baccarat-classic",
       title: "Baccarat Classic",
       provider: "Evolution Gaming",
@@ -101,6 +104,7 @@ export default function TableGames() {
       rtp: "98.9%",
       isLive: true,
       description: "Traditional punto banco baccarat",
+      thumbnail: "https://cdn.evolution.lv/live_casino/baccarat/game_thumb_340x240_classic_baccarat.jpg",
     },
     {
       id: "baccarat-vip",
