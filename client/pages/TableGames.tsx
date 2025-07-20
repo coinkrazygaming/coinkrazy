@@ -106,7 +106,7 @@ export default function TableGames() {
       description: "Traditional punto banco baccarat",
       thumbnail: "https://cdn.evolution.lv/live_casino/baccarat/game_thumb_340x240_classic_baccarat.jpg",
     },
-    {
+        {
       id: "baccarat-vip",
       title: "VIP Baccarat",
       provider: "Evolution Gaming",
@@ -120,8 +120,9 @@ export default function TableGames() {
       rtp: "99.1%",
       isLive: true,
       description: "High-limit baccarat with premium service",
+      thumbnail: "https://cdn.evolution.lv/live_casino/baccarat/game_thumb_340x240_vip_baccarat.jpg",
     },
-    {
+        {
       id: "texas-holdem-gc",
       title: "Texas Hold'em (Gold Coins)",
       provider: "PokerStars",
@@ -137,8 +138,9 @@ export default function TableGames() {
       currencyType: "GC",
       description:
         "Tournament-style Texas Hold'em poker - Gold Coins only • CoinKrazy.com branded chips & cards",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_texas_holdem.jpg",
     },
-    {
+        {
       id: "texas-holdem-sc",
       title: "Texas Hold'em (Sweeps Coins)",
       provider: "PokerStars",
@@ -154,6 +156,7 @@ export default function TableGames() {
       currencyType: "SC",
       description:
         "Tournament-style Texas Hold'em poker - Sweeps Coins only • CoinKrazy.com branded chips & cards",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_texas_holdem.jpg",
     },
     {
       id: "three-card-poker-gc",
