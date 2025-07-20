@@ -24,7 +24,7 @@ export default function TableGames() {
   const [livePlayersCount, setLivePlayersCount] = useState(1247);
   const [liveDealersOnline, setLiveDealersOnline] = useState(24);
 
-  // Mock table games data
+    // Mock table games data
   const tableGames = [
     {
       id: "blackjack-classic",
@@ -40,8 +40,9 @@ export default function TableGames() {
       rtp: "99.4%",
       isLive: true,
       description: "Classic blackjack with professional dealers",
+      thumbnail: "https://cdn.evolution.lv/live_casino/blackjack/game_thumb_340x240_classic_blackjack.jpg",
     },
-    {
+        {
       id: "blackjack-vip",
       title: "VIP Blackjack",
       provider: "Evolution Gaming",
@@ -55,8 +56,9 @@ export default function TableGames() {
       rtp: "99.5%",
       isLive: true,
       description: "High-stakes blackjack for VIP players",
+      thumbnail: "https://cdn.evolution.lv/live_casino/blackjack/game_thumb_340x240_vip_blackjack.jpg",
     },
-    {
+        {
       id: "european-roulette",
       title: "European Roulette",
       provider: "Evolution Gaming",
@@ -70,8 +72,9 @@ export default function TableGames() {
       rtp: "97.3%",
       isLive: true,
       description: "Single zero roulette with best odds",
+      thumbnail: "https://cdn.evolution.lv/live_casino/roulette/game_thumb_340x240_european_roulette.jpg",
     },
-    {
+        {
       id: "american-roulette",
       title: "American Roulette",
       provider: "Playtech",
@@ -85,8 +88,9 @@ export default function TableGames() {
       rtp: "94.7%",
       isLive: true,
       description: "Double zero roulette with exciting action",
+      thumbnail: "https://cdn.evolution.lv/live_casino/roulette/game_thumb_340x240_american_roulette.jpg",
     },
-    {
+        {
       id: "baccarat-classic",
       title: "Baccarat Classic",
       provider: "Evolution Gaming",
@@ -100,8 +104,9 @@ export default function TableGames() {
       rtp: "98.9%",
       isLive: true,
       description: "Traditional punto banco baccarat",
+      thumbnail: "https://cdn.evolution.lv/live_casino/baccarat/game_thumb_340x240_classic_baccarat.jpg",
     },
-    {
+        {
       id: "baccarat-vip",
       title: "VIP Baccarat",
       provider: "Evolution Gaming",
@@ -115,8 +120,9 @@ export default function TableGames() {
       rtp: "99.1%",
       isLive: true,
       description: "High-limit baccarat with premium service",
+      thumbnail: "https://cdn.evolution.lv/live_casino/baccarat/game_thumb_340x240_vip_baccarat.jpg",
     },
-    {
+        {
       id: "texas-holdem-gc",
       title: "Texas Hold'em (Gold Coins)",
       provider: "PokerStars",
@@ -132,8 +138,9 @@ export default function TableGames() {
       currencyType: "GC",
       description:
         "Tournament-style Texas Hold'em poker - Gold Coins only • CoinKrazy.com branded chips & cards",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_texas_holdem.jpg",
     },
-    {
+        {
       id: "texas-holdem-sc",
       title: "Texas Hold'em (Sweeps Coins)",
       provider: "PokerStars",
@@ -149,6 +156,7 @@ export default function TableGames() {
       currencyType: "SC",
       description:
         "Tournament-style Texas Hold'em poker - Sweeps Coins only • CoinKrazy.com branded chips & cards",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_texas_holdem.jpg",
     },
     {
       id: "three-card-poker-gc",
@@ -164,8 +172,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "GC",
-      description:
+            description:
         "Fast-paced poker variant - Gold Coins only • CoinKrazy.com branded table & chips",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_three_card_poker.jpg",
     },
     {
       id: "three-card-poker-sc",
@@ -181,8 +190,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "SC",
-      description:
+            description:
         "Fast-paced poker variant - Sweeps Coins only • CoinKrazy.com branded table & chips",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_three_card_poker.jpg",
     },
     {
       id: "casino-holdem-gc",
@@ -198,8 +208,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "GC",
-      description:
+            description:
         "Play Texas Hold'em against the house - Gold Coins only • CoinKrazy.com branded experience",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_casino_holdem.jpg",
     },
     {
       id: "casino-holdem-sc",
@@ -215,8 +226,9 @@ export default function TableGames() {
       rtp: "97.8%",
       isLive: true,
       currencyType: "SC",
-      description:
+            description:
         "Play Texas Hold'em against the house - Sweeps Coins only • CoinKrazy.com branded experience",
+      thumbnail: "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_casino_holdem.jpg",
     },
     {
       id: "dragon-tiger",
@@ -231,7 +243,8 @@ export default function TableGames() {
       maxPlayers: 999,
       rtp: "96.7%",
       isLive: true,
-      description: "Simple and exciting Asian favorite",
+            description: "Simple and exciting Asian favorite",
+      thumbnail: "https://cdn.evolution.lv/live_casino/specialty/game_thumb_340x240_dragon_tiger.jpg",
     },
     {
       id: "sic-bo",
@@ -246,7 +259,8 @@ export default function TableGames() {
       maxPlayers: 999,
       rtp: "97.2%",
       isLive: true,
-      description: "Ancient Chinese dice game",
+            description: "Ancient Chinese dice game",
+      thumbnail: "https://cdn.evolution.lv/live_casino/specialty/game_thumb_340x240_sic_bo.jpg",
     },
     {
       id: "craps",
@@ -261,7 +275,8 @@ export default function TableGames() {
       maxPlayers: 16,
       rtp: "98.6%",
       isLive: true,
-      description: "Classic American dice game",
+            description: "Classic American dice game",
+      thumbnail: "https://cdn.evolution.lv/live_casino/specialty/game_thumb_340x240_craps.jpg",
     },
   ];
 
@@ -269,7 +284,7 @@ export default function TableGames() {
     { id: "all", name: "All Tables", icon: "🎲" },
     { id: "blackjack", name: "Blackjack", icon: "🃏" },
     { id: "roulette", name: "Roulette", icon: "🎡" },
-    { id: "baccarat", name: "Baccarat", icon: "🎭" },
+    { id: "baccarat", name: "Baccarat", icon: "����" },
     { id: "poker", name: "Poker", icon: "♠️" },
     { id: "specialty", name: "Specialty", icon: "🎯" },
   ];
@@ -384,28 +399,49 @@ export default function TableGames() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredGames.slice(0, 3).map((game) => (
-                    <Card
+                                        <Card
                       key={game.id}
-                      className="casino-glow hover:scale-105 transition-all duration-300"
+                      className="casino-glow hover:scale-105 transition-all duration-300 overflow-hidden"
                     >
-                      <CardHeader className="text-center">
-                        <div className="text-5xl mb-2 animate-float">
-                          {game.emoji}
+                      {/* Featured Game Thumbnail */}
+                      <div className="relative aspect-[16/9] bg-gradient-to-br from-secondary to-muted overflow-hidden">
+                        {game.thumbnail ? (
+                          <>
+                            <img
+                              src={game.thumbnail}
+                              alt={game.title}
+                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-black/20" />
+                          </>
+                        ) : (
+                          <div className="flex items-center justify-center h-full">
+                            <div className="text-6xl animate-float">{game.emoji}</div>
+                          </div>
+                        )}
+
+                        {/* Live Badge Overlay */}
+                        <div className="absolute top-2 left-2">
+                          <Badge className="bg-destructive text-white animate-pulse">
+                            🔴 LIVE
+                          </Badge>
                         </div>
+
+                        {/* Dealer Badge */}
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <Badge className="bg-accent text-accent-foreground w-full justify-center">
+                            👩‍💼 {game.dealerName} @ CoinKrazy.com
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <CardHeader className="text-center pb-3">
                         <CardTitle className="text-xl text-primary">
                           {game.title}
                         </CardTitle>
                         <p className="text-sm text-muted-foreground">
                           {game.provider}
                         </p>
-                        <div className="flex items-center justify-center space-x-2">
-                          <Badge className="bg-destructive text-white animate-pulse">
-                            🔴 LIVE
-                          </Badge>
-                          <Badge className="bg-accent text-accent-foreground">
-                            👩‍💼 {game.dealerName} @ CoinKrazy.com
-                          </Badge>
-                        </div>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
@@ -482,20 +518,49 @@ export default function TableGames() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredGames.map((game) => (
-                  <Card
+                                    <Card
                     key={game.id}
-                    className="casino-glow hover:scale-105 transition-all duration-300 cursor-pointer"
+                    className="casino-glow hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden"
                   >
+                    {/* Game Thumbnail */}
+                    <div className="relative aspect-[16/9] bg-gradient-to-br from-secondary to-muted overflow-hidden">
+                      {game.thumbnail ? (
+                        <>
+                          <img
+                            src={game.thumbnail}
+                            alt={game.title}
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-black/20" />
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <div className="text-6xl">{game.emoji}</div>
+                        </div>
+                      )}
+
+                      {/* Live Badge Overlay */}
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-destructive text-white animate-pulse text-xs">
+                          🔴 LIVE
+                        </Badge>
+                      </div>
+
+                      {/* Provider Badge */}
+                      <div className="absolute top-2 right-2">
+                        <Badge className="bg-black/50 text-white text-xs">
+                          {game.provider}
+                        </Badge>
+                      </div>
+                    </div>
+
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <div className="text-3xl">{game.emoji}</div>
+                        <div className="text-2xl">{game.emoji}</div>
                         <div className="text-right">
-                          <Badge className="bg-destructive text-white animate-pulse text-xs">
-                            🔴 LIVE
-                          </Badge>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {game.provider}
-                          </p>
+                          <span className="text-xs text-green-500 font-bold">
+                            {game.rtp}
+                          </span>
                         </div>
                       </div>
                       <CardTitle className="text-lg text-primary">
@@ -651,7 +716,7 @@ export default function TableGames() {
         <div className="mt-8 text-center">
           <div className="bg-card p-4 rounded-lg border border-border">
             <p className="text-sm text-muted-foreground">
-              🎲 Play responsibly • 🔞 18+ Only • 🏆 Fair play certified • 💰
+              🎲 Play responsibly • �� 18+ Only • 🏆 Fair play certified • 💰
               Set limits and enjoy the game
             </p>
           </div>

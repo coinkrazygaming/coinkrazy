@@ -132,39 +132,39 @@ export default function Index() {
   ];
 
   const tableGames = [
-    {
+        {
       title: "Blackjack Classic",
       emoji: "🃏",
       category: "Table Game",
       isPopular: true,
       provider: "Evolution",
       image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
+        "https://cdn.evolution.lv/live_casino/blackjack/game_thumb_340x240_classic_blackjack.jpg",
     },
-    {
+        {
       title: "European Roulette",
       emoji: "🎡",
       category: "Table Game",
       provider: "Evolution",
       image:
-        "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=600&fit=crop&crop=center",
+        "https://cdn.evolution.lv/live_casino/roulette/game_thumb_340x240_european_roulette.jpg",
     },
-    {
+        {
       title: "Baccarat Deluxe",
       emoji: "🎭",
       category: "Table Game",
       provider: "Playtech",
       image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
+        "https://cdn.evolution.lv/live_casino/baccarat/game_thumb_340x240_classic_baccarat.jpg",
     },
-    {
+        {
       title: "Texas Hold'em",
       emoji: "♠️",
       category: "Poker",
       isPopular: true,
       provider: "PokerStars",
       image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop&crop=center",
+        "https://cdn.evolution.lv/live_casino/poker/game_thumb_340x240_texas_holdem.jpg",
     },
   ];
 
