@@ -24,7 +24,7 @@ export default function TableGames() {
   const [livePlayersCount, setLivePlayersCount] = useState(1247);
   const [liveDealersOnline, setLiveDealersOnline] = useState(24);
 
-  // Mock table games data
+    // Mock table games data
   const tableGames = [
     {
       id: "blackjack-classic",
@@ -40,6 +40,7 @@ export default function TableGames() {
       rtp: "99.4%",
       isLive: true,
       description: "Classic blackjack with professional dealers",
+      thumbnail: "https://cdn.evolution.lv/live_casino/blackjack/game_thumb_340x240_classic_blackjack.jpg",
     },
     {
       id: "blackjack-vip",
