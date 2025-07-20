@@ -21,6 +21,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
     "@stackframe/stack": "^2.8.21",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.0.1",
