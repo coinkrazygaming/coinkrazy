@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
@@ -19,10 +19,12 @@ import {
   Facebook,
   Twitter,
   ArrowLeft,
+  Chrome,
 } from "lucide-react";
 
 export default function Auth() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login, register, user, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,6 +32,7 @@ export default function Auth() {
   const [activeTab, setActiveTab] = useState("register");
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [oauthProviders, setOauthProviders] = useState<any[]>([]);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -48,6 +51,41 @@ export default function Auth() {
     phone: "",
     agreeToTerms: false,
   });
+
+  // Check for OAuth callback token in URL
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const success = searchParams.get('success');
+    const error = searchParams.get('error');
+
+    if (token && success === 'true') {
+      // Store the token and redirect
+      localStorage.setItem('token', token);
+      toast.success('OAuth login successful! Welcome!');
+      navigate('/dashboard');
+    } else if (error) {
+      toast.error(`OAuth login failed: ${error.replace('_', ' ')}`);
+      // Clean up URL
+      navigate('/auth', { replace: true });
+    }
+  }, [searchParams, navigate]);
+
+  // Fetch available OAuth providers
+  useEffect(() => {
+    const fetchOAuthProviders = async () => {
+      try {
+        const response = await fetch('/api/oauth/providers');
+        if (response.ok) {
+          const data = await response.json();
+          setOauthProviders(data.providers || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch OAuth providers:', error);
+      }
+    };
+
+    fetchOAuthProviders();
+  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -192,6 +230,16 @@ export default function Auth() {
         password: "demo123",
       });
       toast.success("Demo user credentials loaded!");
+    }
+  };
+
+  const handleOAuthLogin = (provider: string) => {
+    if (provider === 'google') {
+      window.location.href = '/api/oauth/google';
+    } else if (provider === 'facebook') {
+      toast.info('Facebook OAuth coming soon!');
+    } else {
+      toast.error('Unknown OAuth provider');
     }
   };
 
@@ -460,23 +508,33 @@ export default function Auth() {
                       <p className="text-sm text-muted-foreground mb-4">
                         Or register with social media
                       </p>
-                      <div className="flex space-x-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          <Facebook className="w-4 h-4 mr-2" />
-                          Facebook
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          <Twitter className="w-4 h-4 mr-2" />
-                          Twitter
-                        </Button>
+                      <div className="space-y-2">
+                        {oauthProviders.map((provider) => (
+                          <Button
+                            key={provider.name}
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => handleOAuthLogin(provider.name)}
+                            disabled={!provider.enabled || isLoading}
+                          >
+                            {provider.name === 'google' && (
+                              <Chrome className="w-4 h-4 mr-2" />
+                            )}
+                            {provider.name === 'facebook' && (
+                              <Facebook className="w-4 h-4 mr-2" />
+                            )}
+                            {provider.name === 'twitter' && (
+                              <Twitter className="w-4 h-4 mr-2" />
+                            )}
+                            {provider.displayName}
+                            {!provider.enabled && (
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                {provider.note || 'Soon'}
+                              </Badge>
+                            )}
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   </form>
@@ -602,23 +660,33 @@ export default function Auth() {
                       <p className="text-sm text-muted-foreground mb-4">
                         Or login with social media
                       </p>
-                      <div className="flex space-x-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          <Facebook className="w-4 h-4 mr-2" />
-                          Facebook
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          <Twitter className="w-4 h-4 mr-2" />
-                          Twitter
-                        </Button>
+                      <div className="space-y-2">
+                        {oauthProviders.map((provider) => (
+                          <Button
+                            key={provider.name}
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => handleOAuthLogin(provider.name)}
+                            disabled={!provider.enabled || isLoading}
+                          >
+                            {provider.name === 'google' && (
+                              <Chrome className="w-4 h-4 mr-2" />
+                            )}
+                            {provider.name === 'facebook' && (
+                              <Facebook className="w-4 h-4 mr-2" />
+                            )}
+                            {provider.name === 'twitter' && (
+                              <Twitter className="w-4 h-4 mr-2" />
+                            )}
+                            {provider.displayName}
+                            {!provider.enabled && (
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                {provider.note || 'Soon'}
+                              </Badge>
+                            )}
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   </form>
