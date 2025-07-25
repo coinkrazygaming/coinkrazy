@@ -5,6 +5,8 @@ import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import passport from "passport";
+import session from "express-session";
 
 // Import routes
 import authRoutes from "./routes/auth.js";
@@ -18,6 +20,7 @@ import publicRoutes from "./routes/public.js";
 import chatRoutes from "./routes/chat.js";
 import notificationRoutes from "./routes/notifications.js";
 import sportsRoutes from "./routes/sports.js";
+import oauthRoutes from "./routes/oauth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
