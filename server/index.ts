@@ -85,6 +85,7 @@ export function createServer() {
   // API routes
   app.use("/api/public", publicRoutes);
   app.use("/api/auth", authRoutes);
+  app.use("/api/oauth", oauthRoutes);
   app.use("/api/user", userRoutes);
   app.use("/api/games", gameRoutes);
   app.use("/api/transactions", transactionRoutes);
