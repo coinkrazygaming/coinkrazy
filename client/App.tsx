@@ -25,6 +25,7 @@ import Slots from "./pages/Slots";
 import TableGames from "./pages/TableGames";
 import Sports from "./pages/Sports";
 import Bingo from "./pages/Bingo";
+import OAuthTest from "./pages/OAuthTest";
 
 const queryClient = new QueryClient();
 
