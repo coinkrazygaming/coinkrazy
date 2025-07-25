@@ -41,7 +41,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           try {
             users = await executeQuery(
               "SELECT * FROM users WHERE email = ? OR google_id = ?",
-              [email, googleId]
+              [email, googleId],
             );
           } catch (dbError) {
             console.log("Database not available, checking mock users");
@@ -76,7 +76,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
               try {
                 await executeQuery(
                   "UPDATE users SET google_id = ? WHERE id = ?",
-                  [googleId, user.id]
+                  [googleId, user.id],
                 );
                 user.google_id = googleId;
               } catch (updateError) {
@@ -110,13 +110,13 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
                   new Date().toISOString(), // email_verified_at (OAuth emails are verified)
                   new Date().toISOString(), // registration_date
                   "Unknown", // country
-                ]
+                ],
               );
 
               // Get the created user
               const newUsers = await executeQuery(
                 "SELECT * FROM users WHERE id = ?",
-                [result.insertId]
+                [result.insertId],
               );
               user = newUsers[0];
 
@@ -128,7 +128,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
                 ) VALUES
                 (?, 'bonus', 'gold', 10000.00, 0.00, 10000.00, 'Google OAuth Welcome Bonus - Gold Coins', 'completed'),
                 (?, 'bonus', 'sweeps', 10.00, 0.00, 10.00, 'Google OAuth Welcome Bonus - Sweeps Coins', 'completed')`,
-                [result.insertId, result.insertId]
+                [result.insertId, result.insertId],
               );
             } catch (createError) {
               console.log("Could not create user in database:", createError);
@@ -157,8 +157,8 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           console.error("OAuth error:", error);
           return done(error, null);
         }
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -187,7 +187,7 @@ function generateToken(user: any) {
       is_staff: user.is_staff,
     },
     JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 }
 
@@ -196,7 +196,7 @@ router.get(
   "/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
-  })
+  }),
 );
 
 router.get(
@@ -205,7 +205,7 @@ router.get(
   (req, res) => {
     try {
       const user = req.user as any;
-      
+
       if (!user) {
         return res.redirect(`${CLIENT_URL}/auth?error=oauth_failed`);
       }
@@ -219,28 +219,28 @@ router.get(
       console.error("OAuth callback error:", error);
       res.redirect(`${CLIENT_URL}/auth?error=oauth_callback_failed`);
     }
-  }
+  },
 );
 
 // Facebook OAuth routes (placeholder for future implementation)
 router.get("/facebook", (req, res) => {
-  res.status(501).json({ 
+  res.status(501).json({
     message: "Facebook OAuth not implemented yet",
-    availableProviders: ["google"]
+    availableProviders: ["google"],
   });
 });
 
 router.get("/facebook/callback", (req, res) => {
-  res.status(501).json({ 
+  res.status(501).json({
     message: "Facebook OAuth not implemented yet",
-    availableProviders: ["google"]
+    availableProviders: ["google"],
   });
 });
 
 // Get available OAuth providers
 router.get("/providers", (req, res) => {
   const providers = [];
-  
+
   if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
     providers.push({
       name: "google",
@@ -249,10 +249,10 @@ router.get("/providers", (req, res) => {
       enabled: true,
     });
   }
-  
+
   providers.push({
     name: "facebook",
-    displayName: "Facebook", 
+    displayName: "Facebook",
     authUrl: "/api/oauth/facebook",
     enabled: false,
     note: "Coming soon",

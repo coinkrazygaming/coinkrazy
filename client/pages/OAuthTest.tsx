@@ -51,9 +51,11 @@ export default function OAuthTest() {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
-        alert(`Admin login successful! User: ${data.user.username}, Admin: ${data.user.is_admin}, Staff: ${data.user.is_staff}`);
+        alert(
+          `Admin login successful! User: ${data.user.username}, Admin: ${data.user.is_admin}, Staff: ${data.user.is_staff}`,
+        );
         localStorage.setItem("token", data.token);
       } else {
         alert(`Login failed: ${data.message}`);
@@ -87,7 +89,7 @@ export default function OAuthTest() {
                   Error: {error}
                 </div>
               )}
-              
+
               <div className="space-y-2">
                 {providers.map((provider) => (
                   <Button
@@ -125,9 +127,17 @@ export default function OAuthTest() {
             <div className="bg-muted p-4 rounded">
               <h4 className="font-medium mb-2">Setup Instructions:</h4>
               <ol className="text-sm space-y-1 list-decimal list-inside">
-                <li>Configure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env</li>
-                <li>Add http://localhost:8080/api/oauth/google/callback to Google OAuth redirect URIs</li>
-                <li>The admin user coinkrazy00@gmail.com/Woot6969! should work for testing</li>
+                <li>
+                  Configure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env
+                </li>
+                <li>
+                  Add http://localhost:8080/api/oauth/google/callback to Google
+                  OAuth redirect URIs
+                </li>
+                <li>
+                  The admin user coinkrazy00@gmail.com/Woot6969! should work for
+                  testing
+                </li>
               </ol>
             </div>
           </CardContent>

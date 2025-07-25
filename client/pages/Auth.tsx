@@ -54,19 +54,19 @@ export default function Auth() {
 
   // Check for OAuth callback token in URL
   useEffect(() => {
-    const token = searchParams.get('token');
-    const success = searchParams.get('success');
-    const error = searchParams.get('error');
+    const token = searchParams.get("token");
+    const success = searchParams.get("success");
+    const error = searchParams.get("error");
 
-    if (token && success === 'true') {
+    if (token && success === "true") {
       // Store the token and redirect
-      localStorage.setItem('token', token);
-      toast.success('OAuth login successful! Welcome!');
-      navigate('/dashboard');
+      localStorage.setItem("token", token);
+      toast.success("OAuth login successful! Welcome!");
+      navigate("/dashboard");
     } else if (error) {
-      toast.error(`OAuth login failed: ${error.replace('_', ' ')}`);
+      toast.error(`OAuth login failed: ${error.replace("_", " ")}`);
       // Clean up URL
-      navigate('/auth', { replace: true });
+      navigate("/auth", { replace: true });
     }
   }, [searchParams, navigate]);
 
@@ -74,13 +74,13 @@ export default function Auth() {
   useEffect(() => {
     const fetchOAuthProviders = async () => {
       try {
-        const response = await fetch('/api/oauth/providers');
+        const response = await fetch("/api/oauth/providers");
         if (response.ok) {
           const data = await response.json();
           setOauthProviders(data.providers || []);
         }
       } catch (error) {
-        console.error('Failed to fetch OAuth providers:', error);
+        console.error("Failed to fetch OAuth providers:", error);
       }
     };
 
@@ -234,12 +234,12 @@ export default function Auth() {
   };
 
   const handleOAuthLogin = (provider: string) => {
-    if (provider === 'google') {
-      window.location.href = '/api/oauth/google';
-    } else if (provider === 'facebook') {
-      toast.info('Facebook OAuth coming soon!');
+    if (provider === "google") {
+      window.location.href = "/api/oauth/google";
+    } else if (provider === "facebook") {
+      toast.info("Facebook OAuth coming soon!");
     } else {
-      toast.error('Unknown OAuth provider');
+      toast.error("Unknown OAuth provider");
     }
   };
 
@@ -518,19 +518,22 @@ export default function Auth() {
                             onClick={() => handleOAuthLogin(provider.name)}
                             disabled={!provider.enabled || isLoading}
                           >
-                            {provider.name === 'google' && (
+                            {provider.name === "google" && (
                               <Chrome className="w-4 h-4 mr-2" />
                             )}
-                            {provider.name === 'facebook' && (
+                            {provider.name === "facebook" && (
                               <Facebook className="w-4 h-4 mr-2" />
                             )}
-                            {provider.name === 'twitter' && (
+                            {provider.name === "twitter" && (
                               <Twitter className="w-4 h-4 mr-2" />
                             )}
                             {provider.displayName}
                             {!provider.enabled && (
-                              <Badge variant="secondary" className="ml-2 text-xs">
-                                {provider.note || 'Soon'}
+                              <Badge
+                                variant="secondary"
+                                className="ml-2 text-xs"
+                              >
+                                {provider.note || "Soon"}
                               </Badge>
                             )}
                           </Button>
@@ -670,19 +673,22 @@ export default function Auth() {
                             onClick={() => handleOAuthLogin(provider.name)}
                             disabled={!provider.enabled || isLoading}
                           >
-                            {provider.name === 'google' && (
+                            {provider.name === "google" && (
                               <Chrome className="w-4 h-4 mr-2" />
                             )}
-                            {provider.name === 'facebook' && (
+                            {provider.name === "facebook" && (
                               <Facebook className="w-4 h-4 mr-2" />
                             )}
-                            {provider.name === 'twitter' && (
+                            {provider.name === "twitter" && (
                               <Twitter className="w-4 h-4 mr-2" />
                             )}
                             {provider.displayName}
                             {!provider.enabled && (
-                              <Badge variant="secondary" className="ml-2 text-xs">
-                                {provider.note || 'Soon'}
+                              <Badge
+                                variant="secondary"
+                                className="ml-2 text-xs"
+                              >
+                                {provider.note || "Soon"}
                               </Badge>
                             )}
                           </Button>
