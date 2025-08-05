@@ -481,4 +481,37 @@ router.post("/logout", (req, res) => {
   res.json({ message: "Logout successful" });
 });
 
+// Temporary endpoint to fix admin password hash
+router.post("/fix-admin", async (req, res) => {
+  try {
+    console.log("🔧 Fixing admin user password hash...");
+
+    const adminEmail = "coinkrazy00@gmail.com";
+    const adminPassword = "Woot6969!";
+
+    // Hash the password correctly
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+
+    // Update the admin user with correct password hash
+    await executeQuery(
+      `UPDATE users SET password_hash = ? WHERE email = ?`,
+      [passwordHash, adminEmail],
+    );
+
+    console.log("✅ Admin password hash fixed!");
+
+    res.json({
+      success: true,
+      message: "Admin password hash fixed successfully"
+    });
+  } catch (error) {
+    console.error("❌ Error fixing admin password:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fix admin password",
+      error: error.message
+    });
+  }
+});
+
 export default router;
