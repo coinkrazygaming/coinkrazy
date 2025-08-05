@@ -54,9 +54,39 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     };
 
     try {
-      // Use native fetch directly to avoid third-party intercepts
-      const nativeFetch = window.fetch;
-      const response = await nativeFetch(url, config);
+      // Store original fetch to avoid third-party interception issues
+      const originalFetch = (window as any).__ORIGINAL_FETCH__ ||
+        XMLHttpRequest.prototype.constructor.length > 0 ?
+        (() => {
+          return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open(config.method || 'GET', url);
+
+            // Set headers
+            Object.entries(config.headers || {}).forEach(([key, value]) => {
+              xhr.setRequestHeader(key, value as string);
+            });
+
+            xhr.onload = () => {
+              try {
+                const response = {
+                  ok: xhr.status >= 200 && xhr.status < 300,
+                  status: xhr.status,
+                  json: () => Promise.resolve(JSON.parse(xhr.responseText))
+                };
+                resolve(response);
+              } catch (e) {
+                reject(e);
+              }
+            };
+
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(config.body as string);
+          });
+        }) :
+        window.fetch;
+
+      const response = await originalFetch(url, config);
 
       if (!response.ok) {
         // Don't log warnings for expected scenarios (server might be down)
