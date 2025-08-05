@@ -30,15 +30,11 @@ const LiveDataContext = createContext<LiveDataContextType | undefined>(
 const API_BASE_URL = window.location.origin + "/api";
 
 // Preserve original fetch before third-party scripts can modify it
+// Use a simpler approach that's HMR-safe
 const preservedFetch = (() => {
   try {
-    // Try to get the original fetch before any modifications
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-    const originalFetch = iframe.contentWindow?.fetch;
-    document.body.removeChild(iframe);
-    return originalFetch || fetch;
+    // Store reference to original fetch if available
+    return (globalThis as any).__ORIGINAL_FETCH__ || fetch;
   } catch {
     return fetch;
   }
