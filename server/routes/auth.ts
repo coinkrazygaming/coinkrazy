@@ -239,7 +239,10 @@ router.post("/login", async (req, res) => {
             console.log("Updating admin password hash for demo account");
             const newHash = await bcrypt.hash(password, 10);
             try {
-              await executeQuery("UPDATE users SET password_hash = ? WHERE id = ?", [newHash, user.id]);
+              await executeQuery(
+                "UPDATE users SET password_hash = ? WHERE id = ?",
+                [newHash, user.id],
+              );
               isValidPassword = true;
             } catch (updateError) {
               console.log("Could not update password hash:", updateError);
@@ -248,7 +251,10 @@ router.post("/login", async (req, res) => {
             }
           }
         } catch (bcryptError) {
-          console.log("Bcrypt comparison failed, but allowing demo admin login:", bcryptError);
+          console.log(
+            "Bcrypt comparison failed, but allowing demo admin login:",
+            bcryptError,
+          );
           isValidPassword = true;
         }
       } else {
@@ -493,23 +499,23 @@ router.post("/fix-admin", async (req, res) => {
     const passwordHash = await bcrypt.hash(adminPassword, 10);
 
     // Update the admin user with correct password hash
-    await executeQuery(
-      `UPDATE users SET password_hash = ? WHERE email = ?`,
-      [passwordHash, adminEmail],
-    );
+    await executeQuery(`UPDATE users SET password_hash = ? WHERE email = ?`, [
+      passwordHash,
+      adminEmail,
+    ]);
 
     console.log("✅ Admin password hash fixed!");
 
     res.json({
       success: true,
-      message: "Admin password hash fixed successfully"
+      message: "Admin password hash fixed successfully",
     });
   } catch (error) {
     console.error("❌ Error fixing admin password:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fix admin password",
-      error: error.message
+      error: error.message,
     });
   }
 });

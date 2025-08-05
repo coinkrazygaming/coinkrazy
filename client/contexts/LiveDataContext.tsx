@@ -33,8 +33,8 @@ const API_BASE_URL = window.location.origin + "/api";
 const preservedFetch = (() => {
   try {
     // Try to get the original fetch before any modifications
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
     document.body.appendChild(iframe);
     const originalFetch = iframe.contentWindow?.fetch;
     document.body.removeChild(iframe);
@@ -91,10 +91,10 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       return data;
     } catch (error) {
       // Network error, timeout, or fetch was intercepted/failed - use fallback
-      if ((error as Error).name === 'AbortError') {
-        console.debug('API call timed out, using fallback data');
+      if ((error as Error).name === "AbortError") {
+        console.debug("API call timed out, using fallback data");
       } else {
-        console.debug('API call failed, using fallback data:', error);
+        console.debug("API call failed, using fallback data:", error);
       }
       return null;
     }
@@ -145,10 +145,13 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       // Fallback to simulation if anything fails
-      console.debug('Stats fetch error handled with simulation:', error);
+      console.debug("Stats fetch error handled with simulation:", error);
       setStats((prev) => ({
         ...prev,
-        usersOnline: Math.max(1200, prev.usersOnline + Math.floor(Math.random() * 20) - 10),
+        usersOnline: Math.max(
+          1200,
+          prev.usersOnline + Math.floor(Math.random() * 20) - 10,
+        ),
         totalPayout: prev.totalPayout + Math.random() * 2000,
         jackpotAmount: prev.jackpotAmount + Math.random() * 150,
       }));
