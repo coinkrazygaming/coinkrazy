@@ -29,6 +29,21 @@ const LiveDataContext = createContext<LiveDataContextType | undefined>(
 
 const API_BASE_URL = window.location.origin + "/api";
 
+// Preserve original fetch before third-party scripts can modify it
+const preservedFetch = (() => {
+  try {
+    // Try to get the original fetch before any modifications
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    const originalFetch = iframe.contentWindow?.fetch;
+    document.body.removeChild(iframe);
+    return originalFetch || fetch;
+  } catch {
+    return fetch;
+  }
+})();
+
 export function LiveDataProvider({ children }: { children: ReactNode }) {
   const [stats, setStats] = useState<LiveStats>({
     usersOnline: 1247,
