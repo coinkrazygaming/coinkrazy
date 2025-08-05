@@ -202,9 +202,9 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
-  (req, res) => {
+  (req: express.Request & { user?: any }, res) => {
     try {
-      const user = req.user as any;
+      const user = req.user;
 
       if (!user) {
         return res.redirect(`${CLIENT_URL}/auth?error=oauth_failed`);
