@@ -69,8 +69,18 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
     };
 
     try {
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      const configWithTimeout = {
+        ...config,
+        signal: controller.signal,
+      };
+
       // Use preserved fetch to avoid third-party interference
-      const response = await preservedFetch(url, config);
+      const response = await preservedFetch(url, configWithTimeout);
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         // API responded but with error status - return null for fallback
@@ -80,8 +90,12 @@ export function LiveDataProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
       return data;
     } catch (error) {
-      // Network error or fetch was intercepted/failed - use fallback
-      console.debug('API call failed, using fallback data:', error);
+      // Network error, timeout, or fetch was intercepted/failed - use fallback
+      if ((error as Error).name === 'AbortError') {
+        console.debug('API call timed out, using fallback data');
+      } else {
+        console.debug('API call failed, using fallback data:', error);
+      }
       return null;
     }
   };
